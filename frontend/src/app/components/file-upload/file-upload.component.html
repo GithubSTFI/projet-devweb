@@ -1,0 +1,41 @@
+<div class="card">
+    <!-- Title removed (handled by parent) -->
+
+    <!-- Zone Drag & Drop -->
+    <div class="drop-zone" [class.dragover]="isDragOver" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+        <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none;">
+        <p *ngIf="!selectedFile">📁 Glissez un fichier ici ou cliquez</p>
+        <p *ngIf="selectedFile" style="color: #2b6cb0; font-weight: bold;">
+            📄 {{ selectedFile.name }}
+        </p>
+    </div>
+
+    <div class="actions" style="margin-top: 15px; text-align: center;">
+        <button (click)="upload()" [disabled]="!selectedFile" class="btn btn-success full-width">
+            Envoyer sur le Serveur
+        </button>
+    </div>
+
+    <!-- Feedback -->
+    <div *ngIf="message" class="message animate-fade-in" [class.success]="isSuccess" [class.error]="!isSuccess">
+        {{ message }}
+    </div>
+
+    <!-- Server File History -->
+    <div class="file-history animate-fade-in">
+        <h3 style="font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px;">
+            Fichiers sauvegardés (Serveur)
+        </h3>
+
+        <ul class="file-list" *ngIf="serverFiles.length > 0; else noFiles">
+            <li *ngFor="let file of serverFiles">
+                <span class="file-icon">📄</span>
+                <a [href]="downloadUrl(file)" target="_blank" class="file-link" title="Télécharger">{{ file }}</a>
+            </li>
+        </ul>
+        <ng-template #noFiles>
+            <p class="text-muted" style="font-size: 0.9rem; text-align: center;">Aucun fichier stocké.</p>
+        </ng-template>
+    </div>
+</div>

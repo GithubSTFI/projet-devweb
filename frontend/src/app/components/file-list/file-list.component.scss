@@ -1,0 +1,87 @@
+.file-page {
+    padding: 24px;
+}
+
+.header {
+    margin-bottom: 32px;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.file-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.file-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    font-size: 28px;
+    color: #6366f1;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.size {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.download-btn {
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+.download-btn:hover {
+    color: #6366f1;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #94a3b8;
+}
+
+.empty-state .material-icons {
+    font-size: 48px;
+    margin-bottom: 16px;
+}

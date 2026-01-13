@@ -1,0 +1,26 @@
+<div class="file-page">
+    <div class="header">
+        <h1>Mes Fichiers</h1>
+        <p class="subtitle">Tous les documents liés à vos tâches</p>
+    </div>
+
+    <div class="file-grid" *ngIf="files().length > 0">
+        <div *ngFor="let file of files()" class="file-card">
+            <div class="file-info">
+                <span class="material-icons icon">insert_drive_file</span>
+                <div class="details">
+                    <span class="name">{{ file.originalName }}</span>
+                    <span class="size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+                </div>
+            </div>
+            <a [href]="getDownloadUrl(file.filename)" target="_blank" class="download-btn">
+                <span class="material-icons">download</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="files().length === 0">
+        <span class="material-icons">folder_off</span>
+        <p>Aucun fichier trouvé. Ajoutez des fichiers dans vos tâches.</p>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-purple {
+    background: #6f42c1;
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.logs {
+    margin-top: 15px;
+    background: #212529;
+    color: #0f0;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+}

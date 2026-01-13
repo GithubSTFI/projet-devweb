@@ -1,0 +1,109 @@
+<div class="dashboard-overview" [@staggerCards]>
+
+    <!-- WELCOME CARD -->
+    <div class="welcome-card stagger-item">
+        <div class="welcome-content">
+            <h1 [@fadeIn]>Bonjour, {{ auth.currentUser()?.username }}</h1>
+            <div class="welcome-date">
+                <span class="material-icons">calendar_today</span>
+                <span>{{ today | date:'mediumDate' }}</span>
+            </div>
+        </div>
+        <div class="welcome-illustration">
+            <div class="circle circle-1"></div>
+            <div class="circle circle-2"></div>
+            <div class="circle circle-3"></div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD GRID CONTENT -->
+    <div class="dashboard-grid">
+        <!-- SUMMARY CARD (Left 50%) -->
+        <div class="summary-card stagger-item">
+            <div class="summary-header">
+                <h3>Résumé des Tâches</h3>
+                <a routerLink="/dashboard/tasks" class="view-all-link">
+                    <span>Voir tout</span>
+                    <span class="material-icons">arrow_forward</span>
+                </a>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item todo hover-lift">
+                    <div class="stat-icon">
+                        <span class="material-icons">event_note</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">{{ stats().todo }}</div>
+                        <div class="stat-label">À faire</div>
+                    </div>
+                </div>
+
+                <div class="stat-item progress hover-lift">
+                    <div class="stat-icon">
+                        <span class="material-icons">autorenew</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">{{ stats().inProgress }}</div>
+                        <div class="stat-label">En cours</div>
+                    </div>
+                </div>
+
+                <div class="stat-item done hover-lift">
+                    <div class="stat-icon">
+                        <span class="material-icons">check_circle</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">{{ stats().done }}</div>
+                        <div class="stat-label">Terminées</div>
+                    </div>
+                </div>
+
+                <div class="stat-item archived hover-lift">
+                    <div class="stat-icon">
+                        <span class="material-icons">archive</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">{{ stats().archived }}</div>
+                        <div class="stat-label">Archivées</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT TASKS IN SUMMARY -->
+            <div class="recent-tasks-list">
+                <div *ngFor="let task of recentTasks()" class="task-row hover-row stagger-item">
+                    <div class="task-check">
+                        <span class="material-icons" *ngIf="task.status === 'DONE'">check_circle</span>
+                        <span class="material-icons" *ngIf="task.status !== 'DONE'">radio_button_unchecked</span>
+                    </div>
+                    <div class="task-details">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="task-meta">
+                            <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
+                                {{ task.priority }}
+                            </span>
+                            <span class="status-text">{{ getStatusLabel(task.status) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="recentTasks().length === 0" class="empty-tasks">
+                    <span class="material-icons">inbox</span>
+                    <p>Aucune tâche récente</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART SECTION (Right 50%) -->
+        <div class="chart-card stagger-item">
+            <h3>Répartition des Tâches</h3>
+            <div class="chart-container">
+                <canvas #taskChart></canvas>
+            </div>
+        </div>
+
+    </div>
+    <!-- END DASHBOARD GRID -->
+
+</div>

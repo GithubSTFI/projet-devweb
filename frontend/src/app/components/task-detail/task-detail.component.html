@@ -1,0 +1,149 @@
+<div class="modal-overlay" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <!-- HEADER -->
+        <div class="modal-header">
+            <h2 class="modal-title">
+                {{ isNew ? 'Nouvelle Tâche' : (mode() === 'VIEW' ? 'Détails de la tâche' : 'Modifier la tâche') }}
+            </h2>
+            <div class="header-actions">
+                <button *ngIf="!isNew && mode() === 'VIEW'" (click)="setMode('EDIT')" class="btn-icon-mode"
+                    title="Modifier">
+                    <span class="material-icons">edit</span>
+                </button>
+                <button *ngIf="!isNew && mode() === 'EDIT'" (click)="setMode('VIEW')" class="btn-icon-mode"
+                    title="Voir détails">
+                    <span class="material-icons">visibility</span>
+                </button>
+                <button (click)="close()" class="btn-close">✕</button>
+            </div>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- VIEW MODE -->
+            <div *ngIf="mode() === 'VIEW'" class="detail-view">
+                <div class="detail-section">
+                    <h1 class="task-title-view">{{ editTask.title || 'Sans titre' }}</h1>
+                    <div class="badges-row">
+                        <span class="badge priority" [ngClass]="(editTask.priority || 'MEDIUM').toLowerCase()">
+                            {{ getPriorityLabel(editTask.priority || 'MEDIUM') }}
+                        </span>
+                        <span class="badge status" [ngClass]="(editTask.status || 'TODO').toLowerCase()">
+                            {{ getStatusLabel(editTask.status || 'TODO') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Date de création</label>
+                        <span>{{ (editTask.createdAt || '') | date:'medium' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Date d'échéance</label>
+                        <span>{{ editTask.dueDate ? (editTask.dueDate | date:'longDate') : 'Non définie' }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section description">
+                    <label>Description</label>
+                    <p class="description-text">{{ editTask.description || 'Aucune description.' }}</p>
+                </div>
+            </div>
+
+            <!-- EDIT MODE -->
+            <div *ngIf="mode() === 'EDIT'" class="edit-view">
+                <!-- TITLE -->
+                <div class="form-group">
+                    <label>Titre</label>
+                    <input [(ngModel)]="editTask.title" class="input-main" placeholder="Ex: Rédiger le rapport...">
+                </div>
+
+                <!-- META ROW -->
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Priorité</label>
+                        <select [(ngModel)]="editTask.priority" class="input-select">
+                            <option value="LOW">Basse</option>
+                            <option value="MEDIUM">Moyenne</option>
+                            <option value="HIGH">Haute</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label>Statut</label>
+                        <select [(ngModel)]="editTask.status" class="input-select">
+                            <option value="TODO">À faire</option>
+                            <option value="IN_PROGRESS">En cours</option>
+                            <option value="DONE">Terminé</option>
+                            <option value="ARCHIVED">Archivé</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half" *ngIf="!isNew">
+                        <label>Date de création</label>
+                        <input type="text" [value]="(editTask.createdAt || '') | date:'short'" class="input-main"
+                            disabled style="background: #f1f5f9;">
+                    </div>
+                    <div class="form-group" [class.half]="!isNew">
+                        <label>Date d'échéance</label>
+                        <input type="date" [(ngModel)]="editTask.dueDate" class="input-main">
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea [(ngModel)]="editTask.description" class="input-desc"
+                        placeholder="Ajouter une description détaillée..."></textarea>
+                </div>
+            </div>
+
+            <!-- FILES SECTION -->
+            <div class="files-section" *ngIf="!isNew">
+                <div class="section-title-with-icon">
+                    <span class="material-icons">attach_file</span>
+                    <h3>Fichiers attachés</h3>
+                </div>
+
+                <div class="file-list" *ngIf="files().length > 0">
+                    <div *ngFor="let file of files()" class="file-item">
+                        <span class="material-icons file-icon">insert_drive_file</span>
+                        <a [href]="getDownloadUrl(file.filename)" target="_blank" class="file-name">{{ file.originalName
+                            }}</a>
+                        <span class="file-size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+                    </div>
+                </div>
+                <p *ngIf="files().length === 0" class="text-muted">Aucun fichier lié.</p>
+
+                <div class="upload-box" *ngIf="mode() === 'EDIT'">
+                    <label for="file-upload" class="btn-upload">
+                        <span class="material-icons">cloud_upload</span>
+                        {{ isUploading ? 'Envoi...' : 'Ajouter un fichier' }}
+                    </label>
+                    <input id="file-upload" type="file" (change)="uploadFile($event)" [disabled]="isUploading"
+                        style="display:none">
+                </div>
+            </div>
+
+            <div *ngIf="isNew" class="alert-info">
+                <span class="material-icons">info</span>
+                <span>Enregistrez la tâche pour pouvoir ajouter des fichiers.</span>
+            </div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="modal-footer">
+            <button *ngIf="mode() === 'EDIT'" (click)="save()" class="btn-save">
+                {{ isNew ? 'Créer' : 'Enregistrer les modifications' }}
+            </button>
+            <button *ngIf="mode() === 'VIEW' && !isNew" (click)="setMode('EDIT')" class="btn-save">
+                Modifier
+            </button>
+            <button (click)="close()" class="btn-secondary">Fermer</button>
+        </div>
+
+    </div>
+</div>

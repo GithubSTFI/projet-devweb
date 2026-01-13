@@ -1,0 +1,126 @@
+<div class="task-page" [@staggerList]>
+
+    <!-- STATS CARDS -->
+    <div class="stats-row">
+        <div class="stat-card todo stagger-card">
+            <div class="stat-icon">
+                <span class="material-icons">event_note</span>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ getCountByStatus('TODO') }}</div>
+                <div class="stat-label">À faire</div>
+            </div>
+        </div>
+
+        <div class="stat-card progress stagger-card">
+            <div class="stat-icon">
+                <span class="material-icons">autorenew</span>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ getCountByStatus('IN_PROGRESS') }}</div>
+                <div class="stat-label">En cours</div>
+            </div>
+        </div>
+
+        <div class="stat-card done stagger-card">
+            <div class="stat-icon">
+                <span class="material-icons">check_circle</span>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ getCountByStatus('DONE') }}</div>
+                <div class="stat-label">Terminées</div>
+            </div>
+        </div>
+
+        <div class="stat-card archived stagger-card">
+            <div class="stat-icon">
+                <span class="material-icons">archive</span>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ getCountByStatus('ARCHIVED') }}</div>
+                <div class="stat-label">Archivées</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE CONTAINER -->
+    <div class="table-container">
+        <!-- HEADER WITH FILTERS & NEW BUTTON -->
+        <div class="table-header">
+            <div class="filter-tabs">
+                <button *ngFor="let f of filters" (click)="setFilter(f.value)" [class.active]="filter() === f.value"
+                    class="filter-tab">
+                    {{ f.label }}
+                </button>
+            </div>
+            <button class="new-task-btn" (click)="openNewTask()">
+                <span class="material-icons">add</span>
+                <span>Nouvelle Tâche</span>
+            </button>
+        </div>
+
+        <!-- TASK TABLE -->
+        <div class="task-table">
+            <div class="table-row table-head">
+                <div class="col-check"></div>
+                <div class="col-title">Titre</div>
+                <div class="col-priority">Priorité</div>
+                <div class="col-status">Statut</div>
+                <div class="col-actions">Actions</div>
+            </div>
+
+            <div *ngFor="let task of tasks()" class="table-row stagger-row" (click)="openDetail(task)">
+
+                <div class="col-check">
+                    <div class="task-check" [class.checked]="task.status === 'DONE'"
+                        (click)="toggleStatus(task); $event.stopPropagation()">
+                        <span class="material-icons" *ngIf="task.status === 'DONE'">check</span>
+                    </div>
+                </div>
+
+                <div class="col-title">
+                    <div class="task-title" [class.done]="task.status === 'DONE'">
+                        {{ task.title }}
+                    </div>
+                    <div class="task-desc" *ngIf="task.description">{{ task.description }}</div>
+                </div>
+
+                <div class="col-priority">
+                    <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
+                        {{ getPriorityLabel(task.priority) }}
+                    </span>
+                </div>
+
+                <div class="col-status">
+                    <span class="status-badge" [ngClass]="task.status.toLowerCase()">
+                        {{ getStatusLabel(task.status) }}
+                    </span>
+                </div>
+
+                <div class="col-actions">
+                    <button class="btn-delete" (click)="deleteTask(task.id); $event.stopPropagation()">
+                        <span class="material-icons">delete_outline</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div *ngIf="tasks().length === 0" class="empty-state">
+                <span class="material-icons">inbox</span>
+                <p>Aucune tâche trouvée</p>
+                <button (click)="openNewTask()" class="create-first-btn">Créer votre première tâche</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <app-task-detail *ngIf="showModal" [task]="selectedTask" [isNew]="isNewMode" (closeEvent)="closeModal()"
+        (updateEvent)="refresh()"></app-task-detail>
+
+    <!-- CONFIRM DIALOG -->
+    <app-confirm-dialog *ngIf="showConfirmDialog" [title]="'Supprimer la tâche'"
+        [message]="'Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.'"
+        [confirmText]="'Supprimer'" [cancelText]="'Annuler'" [icon]="'delete_outline'" (confirm)="confirmDelete()"
+        (cancel)="cancelDelete()"></app-confirm-dialog>
+
+</div>

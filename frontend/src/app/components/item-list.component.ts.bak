@@ -1,0 +1,119 @@
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../api.service';
+
+@Component({
+  selector: 'app-item-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="card">
+      <h2>Gestion des Éléments (CRUD)</h2>
+      
+      <!-- Formulaire Ajout / Modification -->
+      <div class="form-group">
+        <input type="text" [(ngModel)]="itemName" placeholder="Nom de l'élément" class="input">
+        <input type="text" [(ngModel)]="itemDesc" placeholder="Description" class="input">
+        
+        <button *ngIf="!editMode" (click)="createItem()" class="btn btn-primary">Ajouter</button>
+        <button *ngIf="editMode" (click)="updateItem()" class="btn btn-warning">Modifier</button>
+        <button *ngIf="editMode" (click)="cancelEdit()" class="btn btn-secondary">Annuler</button>
+      </div>
+
+      <!-- Liste -->
+      <ul class="list">
+        <li *ngFor="let item of items()" class="list-item">
+          <div>
+            <strong>{{ item.name }}</strong>
+            <p>{{ item.description }}</p>
+          </div>
+          <div class="actions">
+            <button (click)="startEdit(item)" class="btn btn-info">Éditer</button>
+            <button (click)="deleteItem(item.id)" class="btn btn-danger">Supprimer</button>
+          </div>
+        </li>
+      </ul>
+      
+      <p *ngIf="items().length === 0">Aucun élément trouvé.</p>
+    </div>
+  `,
+  styles: [`
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .form-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex: 1; }
+    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; margin-left: 5px; }
+    .btn-primary { background: #007bff; }
+    .btn-danger { background: #dc3545; }
+    .btn-warning { background: #ffc107; color: black; }
+    .btn-info { background: #17a2b8; }
+    .btn-secondary { background: #6c757d; }
+    .list { list-style: none; padding: 0; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+    .actions { display: flex; gap: 5px; }
+  `]
+})
+export class ItemListComponent implements OnInit {
+  private api = inject(ApiService);
+  items = signal<any[]>([]);
+
+  // Form fields
+  itemName = '';
+  itemDesc = '';
+
+  // Edit State
+  editMode = false;
+  editingId: number | null = null;
+
+  ngOnInit() {
+    this.loadItems();
+  }
+
+  loadItems() {
+    this.api.getItems().subscribe((res: any) => {
+      this.items.set(res.data);
+    });
+  }
+
+  createItem() {
+    if (!this.itemName) return;
+    this.api.createItem({ name: this.itemName, description: this.itemDesc }).subscribe(() => {
+      this.loadItems();
+      this.resetForm();
+    });
+  }
+
+  startEdit(item: any) {
+    this.editMode = true;
+    this.editingId = item.id;
+    this.itemName = item.name;
+    this.itemDesc = item.description;
+  }
+
+  updateItem() {
+    if (!this.itemName || this.editingId === null) return;
+    this.api.updateItem(this.editingId, { name: this.itemName, description: this.itemDesc }).subscribe(() => {
+      this.loadItems();
+      this.resetForm();
+    });
+  }
+
+  cancelEdit() {
+    this.resetForm();
+  }
+
+  deleteItem(id: number) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+      this.api.deleteItem(id).subscribe(() => {
+        this.loadItems();
+      });
+    }
+  }
+
+  resetForm() {
+    this.itemName = '';
+    this.itemDesc = '';
+    this.editMode = false;
+    this.editingId = null;
+  }
+}

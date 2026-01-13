@@ -1,0 +1,61 @@
+.full-width {
+    width: 100%;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.success {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.error {
+    background: #fed7d7;
+    color: #822727;
+}
+
+.file-history {
+    margin-top: 30px;
+}
+
+.file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.file-list li {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px dotted #eee;
+    font-size: 0.9rem;
+}
+
+.file-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.file-link {
+    color: #4a5568;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    max-width: 200px;
+}
+
+.file-link:hover {
+    color: #3182ce;
+    text-decoration: underline;
+}

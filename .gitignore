@@ -1,0 +1,33 @@
+# Common
+node_modules/
+.DS_Store
+*.log
+.env
+.angular/
+.vscode/
+
+# Frontend
+frontend/dist/
+frontend/.angular/
+frontend/node_modules/
+frontend/tmp/
+
+# Backend
+backend/node_modules/
+backend/database.sqlite
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Project Uploads (root level if any)
+uploads/*
+!uploads/.gitkeep
+
+# IDEs and editors
+.idea/
+.vscode//*.code-snippets
+.history/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

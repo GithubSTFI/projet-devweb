@@ -1,0 +1,108 @@
+<div class="auth-body">
+    <div class="container" [class.right-panel-active]="isSignUpMode">
+
+        <!-- SIGN UP FORM (Left) -->
+        <div class="form-container sign-up-container">
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+                <h1>Créer un compte</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-google"></i>G</a>
+                </div>
+                <span>ou utilisez votre email pour l'inscription</span>
+
+                <!-- Username -->
+                <div class="input-group">
+                    <input type="text" formControlName="username" placeholder="Nom d'utilisateur"
+                        [class.is-invalid]="fReg['username'].touched && fReg['username'].invalid" />
+                    <div class="invalid-feedback" *ngIf="fReg['username'].touched && fReg['username'].errors">
+                        <span *ngIf="fReg['username'].errors['required']">Le nom est requis</span>
+                        <span *ngIf="fReg['username'].errors['minlength']">Minimum 3 caractères</span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <input type="email" formControlName="email" placeholder="Email"
+                        [class.is-invalid]="fReg['email'].touched && fReg['email'].invalid" />
+                    <div class="invalid-feedback" *ngIf="fReg['email'].touched && fReg['email'].errors">
+                        <span *ngIf="fReg['email'].errors['required']">L'email est requis</span>
+                        <span *ngIf="fReg['email'].errors['email']">Format email invalide</span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <input type="password" formControlName="password" placeholder="Mot de passe"
+                        [class.is-invalid]="fReg['password'].touched && fReg['password'].invalid" />
+                    <div class="invalid-feedback" *ngIf="fReg['password'].touched && fReg['password'].errors">
+                        <span *ngIf="fReg['password'].errors['required']">Le mot de passe est requis</span>
+                        <span *ngIf="fReg['password'].errors['minlength']">Minimum 6 caractères</span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <input type="password" formControlName="confirmPassword" placeholder="Confirmer le mot de passe"
+                        [class.is-invalid]="fReg['confirmPassword'].touched && fReg['confirmPassword'].invalid" />
+                    <div class="invalid-feedback"
+                        *ngIf="fReg['confirmPassword'].touched && fReg['confirmPassword'].errors">
+                        <span *ngIf="fReg['confirmPassword'].errors['required']">Confirmation requise</span>
+                        <span *ngIf="fReg['confirmPassword'].errors['mismatch']">Les mots de passe ne correspondent
+                            pas</span>
+                    </div>
+                </div>
+
+                <button type="submit" [disabled]="registerForm.invalid">S'inscrire</button>
+                <p *ngIf="registerError" class="error-msg">{{ registerError }}</p>
+            </form>
+        </div>
+
+        <!-- SIGN IN FORM (Right) -->
+        <div class="form-container sign-in-container">
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                <h1>Se connecter</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-google"></i>G</a>
+                </div>
+                <span>ou utilisez votre compte</span>
+
+                <div class="input-group">
+                    <input type="text" formControlName="username" placeholder="Identifiant"
+                        [class.is-invalid]="fLog['username'].touched && fLog['username'].invalid" />
+                    <div class="invalid-feedback" *ngIf="fLog['username'].touched && fLog['username'].errors">
+                        <span *ngIf="fLog['username'].errors['required']">Identifiant requis</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" formControlName="password" placeholder="Mot de passe"
+                        [class.is-invalid]="fLog['password'].touched && fLog['password'].invalid" />
+                    <div class="invalid-feedback" *ngIf="fLog['password'].touched && fLog['password'].errors">
+                        <span *ngIf="fLog['password'].errors['required']">Mot de passe requis</span>
+                    </div>
+                </div>
+
+                <a href="#" class="forgot-pass">Mot de passe oublié ?</a>
+                <button type="submit" [disabled]="loginForm.invalid">Connexion</button>
+                <p *ngIf="loginError" class="error-msg">{{ loginError }}</p>
+            </form>
+        </div>
+
+        <!-- OVERLAY -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Bon retour !</h1>
+                    <p>Restez connecté avec nous en utilisant vos identifiants personnels</p>
+                    <button class="ghost" (click)="toggleMode()">Se connecter</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Bonjour !</h1>
+                    <p>Entrez vos détails personnels et commencez votre voyage avec nous</p>
+                    <button class="ghost" (click)="toggleMode()">S'inscrire</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

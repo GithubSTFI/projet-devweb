@@ -1,0 +1,12 @@
+<div class="card">
+    <h2>Démonstration Asynchrone</h2>
+    <p>Cliquez ci-dessous pour lancer un processus long sur le serveur (simulé 5 secondes).</p>
+
+    <button (click)="startTask()" [disabled]="loading" class="btn btn-purple">
+        {{ loading ? 'Traitement en cours...' : 'Lancer le processus' }}
+    </button>
+
+    <div *ngIf="log.length > 0" class="logs">
+        <div *ngFor="let line of log" class="log-line">{{ line }}</div>
+    </div>
+</div>

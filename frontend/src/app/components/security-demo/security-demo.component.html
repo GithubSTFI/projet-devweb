@@ -1,0 +1,29 @@
+<div class="card security-card">
+    <h2>Sécurité : Démonstration Injection SQL</h2>
+    <p class="warning">Attention : Cette page démontre des failles de sécurité.</p>
+
+    <div class="demo-section">
+        <h3>Recherche Vulnérable</h3>
+        <p>Essayez d'entrer : <code>' OR '1'='1</code></p>
+        <div class="input-group">
+            <input [(ngModel)]="insecureQuery" placeholder="Rechercher..." class="input">
+            <button (click)="testInsecure()" class="btn btn-warning">Rechercher (Faille)</button>
+        </div>
+        <div class="result" *ngIf="insecureResult">
+            <h4>Résultat ({{insecureResult.length}} éléments) :</h4>
+            <pre>{{ insecureJson }}</pre>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h3>Recherche Sécurisée</h3>
+        <div class="input-group">
+            <input [(ngModel)]="secureQuery" placeholder="Rechercher..." class="input">
+            <button (click)="testSecure()" class="btn btn-primary">Rechercher (Sécurisé)</button>
+        </div>
+        <div class="result" *ngIf="secureResult">
+            <h4>Résultat ({{secureResult.length}} éléments) :</h4>
+            <pre>{{ secureJson }}</pre>
+        </div>
+    </div>
+</div>

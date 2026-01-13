@@ -1,0 +1,70 @@
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>TaskFlow</h1>
+        </div>
+
+        <nav class="nav-menu">
+            <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                class="nav-item">
+                <span class="material-icons">dashboard</span>
+                <span>Tableau de bord</span>
+            </a>
+            <a routerLink="/dashboard/tasks" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">task_alt</span>
+                <span>Mes Tâches</span>
+            </a>
+            <a routerLink="/dashboard/files" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">folder_open</span>
+                <span>Fichiers</span>
+            </a>
+            <a class="nav-item" *ngIf="auth.currentUser()?.role === 'ADMIN'">
+                <span class="material-icons">admin_panel_settings</span>
+                <span>Admin</span>
+            </a>
+        </nav>
+
+        <div class="user-section">
+            <div class="user-avatar">
+                <span class="material-icons">account_circle</span>
+            </div>
+            <div class="user-details">
+                <div class="user-name">{{ auth.currentUser()?.username }}</div>
+                <div class="user-role">{{ auth.currentUser()?.role }}</div>
+            </div>
+            <button (click)="auth.logout()" class="logout-btn" title="Déconnexion">
+                <span class="material-icons">logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-area">
+        <div class="scrollable-content">
+            <!-- TOP BAR -->
+            <header class="top-header">
+                <h2>Tableau de bord</h2>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <span class="material-icons">search</span>
+                        <input type="text" placeholder="Rechercher">
+                    </div>
+                    <button class="icon-btn">
+                        <span class="material-icons">notifications_none</span>
+                    </button>
+                    <div class="user-avatar-small">
+                        <span class="material-icons">account_circle</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT GRID -->
+            <div class="content-wrapper">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </main>
+
+</div>
