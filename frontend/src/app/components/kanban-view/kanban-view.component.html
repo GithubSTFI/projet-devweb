@@ -1,0 +1,86 @@
+<div class="kanban-container" cdkDropListGroup>
+    <!-- TODO COLUMN -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="header-content">
+                <span class="dot todo"></span>
+                <h3>À faire</h3>
+                <span class="count">{{ todo().length }}</span>
+            </div>
+        </div>
+
+        <div id="TODO" cdkDropList [cdkDropListData]="todo()" class="task-list" (cdkDropListDropped)="drop($event)">
+            @for (task of todo(); track task.id) {
+            <div class="task-card" cdkDrag>
+                <div class="card-priority" [ngClass]="getPriorityClass(task.priority)"></div>
+                <div class="card-content">
+                    <h4>{{ task.title }}</h4>
+                    <p v-if="task.description">{{ task.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="date" *ngIf="task.dueDate">
+                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- IN PROGRESS COLUMN -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="header-content">
+                <span class="dot in-progress"></span>
+                <h3>En cours</h3>
+                <span class="count">{{ inProgress().length }}</span>
+            </div>
+        </div>
+
+        <div id="IN_PROGRESS" cdkDropList [cdkDropListData]="inProgress()" class="task-list"
+            (cdkDropListDropped)="drop($event)">
+            @for (task of inProgress(); track task.id) {
+            <div class="task-card" cdkDrag>
+                <div class="card-priority" [ngClass]="getPriorityClass(task.priority)"></div>
+                <div class="card-content">
+                    <h4>{{ task.title }}</h4>
+                    <p *ngIf="task.description">{{ task.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="date" *ngIf="task.dueDate">
+                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- DONE COLUMN -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="header-content">
+                <span class="dot done"></span>
+                <h3>Terminé</h3>
+                <span class="count">{{ done().length }}</span>
+            </div>
+        </div>
+
+        <div id="DONE" cdkDropList [cdkDropListData]="done()" class="task-list" (cdkDropListDropped)="drop($event)">
+            @for (task of done(); track task.id) {
+            <div class="task-card" cdkDrag>
+                <div class="card-priority" [ngClass]="getPriorityClass(task.priority)"></div>
+                <div class="card-content">
+                    <h4>{{ task.title }}</h4>
+                    <p *ngIf="task.description">{{ task.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="date" *ngIf="task.dueDate">
+                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

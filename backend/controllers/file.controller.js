@@ -31,11 +31,17 @@ exports.uploadFile = async (req, res) => {
 exports.getFiles = async (req, res) => {
     try {
         const { taskId } = req.query;
-        const where = { userId: req.user.id }; // ALWAYS FILTER BY USER
+
+        // Sécurité supplémentaire : s'assurer que l'ID utilisateur est bien présent
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ error: 'Utilisateur non identifié.' });
+        }
+
+        const where = { userId: req.user.id }; // TOUJOURS FILTRER PAR UTILISATEUR
         if (taskId) where.taskId = taskId;
 
         const files = await File.findAll({ where, order: [['createdAt', 'DESC']] });
-        res.json({ files }); // Match frontend expected format
+        res.json({ files });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

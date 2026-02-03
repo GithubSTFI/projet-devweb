@@ -45,70 +45,108 @@
 
     <!-- TABLE CONTAINER -->
     <div class="table-container">
-        <!-- HEADER WITH FILTERS & NEW BUTTON -->
+        <!-- HEADER WITH FILTERS, SEARCH & NEW BUTTON -->
         <div class="table-header">
-            <div class="filter-tabs">
-                <button *ngFor="let f of filters" (click)="setFilter(f.value)" [class.active]="filter() === f.value"
-                    class="filter-tab">
-                    {{ f.label }}
-                </button>
-            </div>
-            <button class="new-task-btn" (click)="openNewTask()">
-                <span class="material-icons">add</span>
-                <span>Nouvelle Tâche</span>
-            </button>
-        </div>
-
-        <!-- TASK TABLE -->
-        <div class="task-table">
-            <div class="table-row table-head">
-                <div class="col-check"></div>
-                <div class="col-title">Titre</div>
-                <div class="col-priority">Priorité</div>
-                <div class="col-status">Statut</div>
-                <div class="col-actions">Actions</div>
-            </div>
-
-            <div *ngFor="let task of tasks()" class="table-row stagger-row" (click)="openDetail(task)">
-
-                <div class="col-check">
-                    <div class="task-check" [class.checked]="task.status === 'DONE'"
-                        (click)="toggleStatus(task); $event.stopPropagation()">
-                        <span class="material-icons" *ngIf="task.status === 'DONE'">check</span>
-                    </div>
-                </div>
-
-                <div class="col-title">
-                    <div class="task-title" [class.done]="task.status === 'DONE'">
-                        {{ task.title }}
-                    </div>
-                    <div class="task-desc" *ngIf="task.description">{{ task.description }}</div>
-                </div>
-
-                <div class="col-priority">
-                    <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
-                        {{ getPriorityLabel(task.priority) }}
-                    </span>
-                </div>
-
-                <div class="col-status">
-                    <span class="status-badge" [ngClass]="task.status.toLowerCase()">
-                        {{ getStatusLabel(task.status) }}
-                    </span>
-                </div>
-
-                <div class="col-actions">
-                    <button class="btn-delete" (click)="deleteTask(task.id); $event.stopPropagation()">
-                        <span class="material-icons">delete_outline</span>
+            <div class="header-left">
+                <div class="filter-tabs">
+                    <button *ngFor="let f of filters" (click)="setFilter(f.value)" [class.active]="filter() === f.value"
+                        class="filter-tab">
+                        {{ f.label }}
                     </button>
                 </div>
+
+                <div class="search-bar">
+                    <span class="material-icons">search</span>
+                    <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="searchQuery.set($event)"
+                        placeholder="Rechercher une tâche...">
+                </div>
             </div>
 
+            <div class="header-right">
+                <div class="view-toggle">
+                    <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="Vue Liste">
+                        <span class="material-icons">format_list_bulleted</span>
+                    </button>
+                    <button [class.active]="viewMode() === 'kanban'" (click)="viewMode.set('kanban')"
+                        title="Vue Kanban">
+                        <span class="material-icons">view_kanban</span>
+                    </button>
+                </div>
+
+                <button class="new-task-btn" (click)="openNewTask()">
+                    <span class="material-icons">add</span>
+                    <span>Nouvelle Tâche</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TASK CONTENT (LIST OR KANBAN) -->
+        <div class="task-content">
+            <!-- LIST VIEW -->
+            <div *ngIf="viewMode() === 'list'" class="task-table">
+                <div class="table-row table-head">
+                    <div class="col-check"></div>
+                    <div class="col-title">Titre</div>
+                    <div class="col-priority">Priorité</div>
+                    <div class="col-status">Statut</div>
+                    <div class="col-actions">Actions</div>
+                </div>
+
+                <div *ngFor="let task of filteredTasks()" class="table-row stagger-row" (click)="openDetail(task)">
+                    <div class="col-check">
+                        <div class="task-check" [class.checked]="task.status === 'DONE'"
+                            (click)="toggleStatus(task); $event.stopPropagation()">
+                            <span class="material-icons" *ngIf="task.status === 'DONE'">check</span>
+                        </div>
+                    </div>
+
+                    <div class="col-title">
+                        <div class="task-title" [class.done]="task.status === 'DONE'">
+                            {{ task.title }}
+                        </div>
+                        <div class="task-desc" *ngIf="task.description">{{ task.description }}</div>
+                    </div>
+
+                    <div class="col-priority">
+                        <div class="priority-selector">
+                            <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
+                                {{ getPriorityLabel(task.priority) }}
+                            </span>
+                            <select [ngModel]="task.priority"
+                                (change)="updatePriority(task, $any($event.target).value); $event.stopPropagation()"
+                                (click)="$event.stopPropagation()">
+                                <option value="LOW">Basse</option>
+                                <option value="MEDIUM">Moyenne</option>
+                                <option value="HIGH">Haute</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-status">
+                        <span class="status-badge" [ngClass]="task.status.toLowerCase()">
+                            {{ getStatusLabel(task.status) }}
+                        </span>
+                    </div>
+
+                    <div class="col-actions">
+                        <button class="btn-delete" (click)="deleteTask(task.id); $event.stopPropagation()">
+                            <span class="material-icons">delete_outline</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KANBAN VIEW -->
+            <app-kanban-view *ngIf="viewMode() === 'kanban'" [tasks]="filteredTasks()"
+                (taskUpdated)="loadTasks(filter())">
+            </app-kanban-view>
+
             <!-- EMPTY STATE -->
-            <div *ngIf="tasks().length === 0" class="empty-state">
+            <div *ngIf="filteredTasks().length === 0" class="empty-state">
                 <span class="material-icons">inbox</span>
-                <p>Aucune tâche trouvée</p>
-                <button (click)="openNewTask()" class="create-first-btn">Créer votre première tâche</button>
+                <p>{{ searchQuery() ? 'Aucun résultat pour cette recherche' : 'Aucune tâche trouvée' }}</p>
+                <button *ngIf="!searchQuery()" (click)="openNewTask()" class="create-first-btn">Créer votre première
+                    tâche</button>
             </div>
         </div>
     </div>

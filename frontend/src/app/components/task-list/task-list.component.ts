@@ -1,8 +1,9 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
 import { TaskDetailComponent } from '../task-detail/task-detail.component';
+import { KanbanViewComponent } from '../kanban-view/kanban-view.component';
 import { ToastService } from '../toast/toast.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
@@ -10,7 +11,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
 @Component({
     selector: 'app-task-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, TaskDetailComponent, ConfirmDialogComponent],
+    imports: [CommonModule, FormsModule, TaskDetailComponent, ConfirmDialogComponent, KanbanViewComponent],
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.scss'],
     animations: [
@@ -32,6 +33,18 @@ export class TaskListComponent implements OnInit {
 
     tasks = signal<Task[]>([]);
     filter = signal<string>('all');
+    searchQuery = signal<string>('');
+    viewMode = signal<'list' | 'kanban'>('list');
+
+    filteredTasks = computed(() => {
+        const query = this.searchQuery().toLowerCase().trim();
+        const allTasks = this.tasks();
+        if (!query) return allTasks;
+        return allTasks.filter(t =>
+            t.title.toLowerCase().includes(query) ||
+            (t.description && t.description.toLowerCase().includes(query))
+        );
+    });
 
     showModal = false;
     selectedTask: Partial<Task> = {};
@@ -135,6 +148,17 @@ export class TaskListComponent implements OnInit {
                 this.taskToDelete = null;
             });
         }
+    }
+
+    updatePriority(task: Task, newPriority: string) {
+        if (task.priority === newPriority) return;
+        this.api.updateTask(task.id, { priority: newPriority as any }).subscribe({
+            next: () => {
+                this.loadTasks(this.filter());
+                this.toast.show('Priorité mise à jour', 'info');
+            },
+            error: () => this.toast.show('Erreur de mise à jour', 'error')
+        });
     }
 
     cancelDelete() {

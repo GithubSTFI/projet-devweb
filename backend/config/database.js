@@ -4,7 +4,7 @@ const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize('projet_web', 'postgres', '0000', {
     host: 'localhost',
     dialect: 'postgres',
-    logging: false, // Set to console.log to see SQL queries
+    logging: console.log, // ACTIVATION DES LOGS POUR DÉBOGAGE
     pool: {
         max: 5,
         min: 0,

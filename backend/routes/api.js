@@ -21,6 +21,7 @@ const authenticateToken = (req, res, next) => {
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
+        console.log(`[AUTH-DEBUG] Requête de l'utilisateur: ${user.username} (ID: ${user.id}) sur ${req.originalUrl}`);
         next();
     });
 };

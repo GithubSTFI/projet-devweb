@@ -28,6 +28,10 @@ const File = sequelize.define('File', {
     path: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true // Allow null for legacy files, but we will filter them out
     }
 }, {
     tableName: 'files',
