@@ -1,109 +1,123 @@
-<div class="dashboard-overview" [@staggerCards]>
+<app-loader *ngIf="isLoading()" message="Chargement de vos statistiques..."></app-loader>
 
-    <!-- WELCOME CARD -->
-    <div class="welcome-card stagger-item">
-        <div class="welcome-content">
-            <h1 [@fadeIn]>Bonjour, {{ auth.currentUser()?.username }}</h1>
-            <div class="welcome-date">
-                <span class="material-icons">calendar_today</span>
-                <span>{{ today | date:'mediumDate' }}</span>
-            </div>
-        </div>
-        <div class="welcome-illustration">
-            <div class="circle circle-1"></div>
-            <div class="circle circle-2"></div>
-            <div class="circle circle-3"></div>
+<div class="overview-container" *ngIf="!isLoading() && stats()">
+    <!-- Welcome Section -->
+    <div class="welcome-card">
+        <div class="welcome-text">
+            <h1>Bienvenue, {{ user()?.username }} 👋</h1>
+            <p *ngIf="role() === 'USER'">Voici un aperçu de vos tâches et de votre productivité.</p>
+            <p *ngIf="role() === 'ADMIN'">Panneau d'administration - Vue globale du système.</p>
         </div>
     </div>
 
-    <!-- DASHBOARD GRID CONTENT -->
+    <!-- Stats Grid for USER -->
+    <div class="stats-grid" *ngIf="role() === 'USER'">
+        <div class="stat-card total">
+            <div class="stat-icon"><span class="material-icons">task</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().total }}</span>
+                <span class="stat-label">Total</span>
+            </div>
+        </div>
+        <div class="stat-card done">
+            <div class="stat-icon"><span class="material-icons">check_circle</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().done }}</span>
+                <span class="stat-label">Terminées</span>
+            </div>
+        </div>
+        <div class="stat-card danger" [class.active]="stats().overdue > 0">
+            <div class="stat-icon"><span class="material-icons">priority_high</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().overdue }}</span>
+                <span class="stat-label">En retard</span>
+            </div>
+        </div>
+        <div class="stat-card assigned">
+            <div class="stat-icon"><span class="material-icons">group</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().assigned }}</span>
+                <span class="stat-label">Assignées</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid for ADMIN -->
+    <div class="stats-grid" *ngIf="role() === 'ADMIN'">
+        <div class="stat-card total">
+            <div class="stat-icon"><span class="material-icons">groups</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().totalUsers }}</span>
+                <span class="stat-label">Utilisateurs</span>
+            </div>
+        </div>
+        <div class="stat-card progress">
+            <div class="stat-icon"><span class="material-icons">assignment</span></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats().totalTasks }}</span>
+                <span class="stat-label">Tâches globales</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Body -->
     <div class="dashboard-grid">
-        <!-- SUMMARY CARD (Left 50%) -->
-        <div class="summary-card stagger-item">
-            <div class="summary-header">
-                <h3>Résumé des Tâches</h3>
-                <a routerLink="/dashboard/tasks" class="view-all-link">
-                    <span>Voir tout</span>
-                    <span class="material-icons">arrow_forward</span>
-                </a>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-item todo hover-lift">
-                    <div class="stat-icon">
-                        <span class="material-icons">event_note</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ stats().todo }}</div>
-                        <div class="stat-label">À faire</div>
-                    </div>
+        <!-- USER VIEW: Recent Tasks & Chart -->
+        <ng-container *ngIf="role() === 'USER'">
+            <div class="card-premium">
+                <div class="card-header">
+                    <h2><span class="material-icons">event_note</span> Tâches récentes</h2>
+                    <a routerLink="/dashboard/tasks" class="view-all">Voir tout →</a>
                 </div>
-
-                <div class="stat-item progress hover-lift">
-                    <div class="stat-icon">
-                        <span class="material-icons">autorenew</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ stats().inProgress }}</div>
-                        <div class="stat-label">En cours</div>
-                    </div>
-                </div>
-
-                <div class="stat-item done hover-lift">
-                    <div class="stat-icon">
-                        <span class="material-icons">check_circle</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ stats().done }}</div>
-                        <div class="stat-label">Terminées</div>
-                    </div>
-                </div>
-
-                <div class="stat-item archived hover-lift">
-                    <div class="stat-icon">
-                        <span class="material-icons">archive</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ stats().archived }}</div>
-                        <div class="stat-label">Archivées</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RECENT TASKS IN SUMMARY -->
-            <div class="recent-tasks-list">
-                <div *ngFor="let task of recentTasks()" class="task-row hover-row stagger-item">
-                    <div class="task-check">
-                        <span class="material-icons" *ngIf="task.status === 'DONE'">check_circle</span>
-                        <span class="material-icons" *ngIf="task.status !== 'DONE'">radio_button_unchecked</span>
-                    </div>
-                    <div class="task-details">
-                        <div class="task-title">{{ task.title }}</div>
-                        <div class="task-meta">
-                            <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
-                                {{ task.priority }}
-                            </span>
-                            <span class="status-text">{{ getStatusLabel(task.status) }}</span>
+                <div class="task-mini-list">
+                    <div class="task-mini-item" *ngFor="let task of recentTasks()">
+                        <span class="status-dot" [class]="'status-' + task.status"></span>
+                        <div class="task-details">
+                            <span class="task-title">{{ task.title }}</span>
+                            <span class="task-owner" *ngIf="task.owner?.id !== user()?.id">Par {{ task.owner?.username
+                                }}</span>
                         </div>
+                        <span class="task-time">{{ formatDate(task.createdAt) }}</span>
                     </div>
                 </div>
+            </div>
 
-                <div *ngIf="recentTasks().length === 0" class="empty-tasks">
-                    <span class="material-icons">inbox</span>
-                    <p>Aucune tâche récente</p>
+            <div class="card-premium">
+                <div class="card-header">
+                    <h2><span class="material-icons">pie_chart</span> Répartition</h2>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas #taskChart></canvas>
                 </div>
             </div>
-        </div>
+        </ng-container>
 
-        <!-- CHART SECTION (Right 50%) -->
-        <div class="chart-card stagger-item">
-            <h3>Répartition des Tâches</h3>
-            <div class="chart-container">
-                <canvas #taskChart></canvas>
+        <!-- ADMIN VIEW: Activity Logs & Chart -->
+        <ng-container *ngIf="role() === 'ADMIN'">
+            <div class="card-premium">
+                <div class="card-header">
+                    <h2><span class="material-icons">history</span> Journal d'activité</h2>
+                    <a routerLink="/dashboard/admin/logs" class="view-all">Détails →</a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item" *ngFor="let log of recentActivities()">
+                        <div class="act-left">
+                            <span class="activity-user">{{ log.user?.username }}</span>
+                            <span class="activity-action">{{ log.action }}</span>
+                        </div>
+                        <span class="activity-time">{{ formatDate(log.createdAt) }}</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
+            <div class="card-premium">
+                <div class="card-header">
+                    <h2><span class="material-icons">pie_chart</span> États Globaux</h2>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas #taskChart></canvas>
+                </div>
+            </div>
+        </ng-container>
     </div>
-    <!-- END DASHBOARD GRID -->
-
 </div>

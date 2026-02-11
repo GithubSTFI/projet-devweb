@@ -31,6 +31,10 @@ const Task = sequelize.define('Task', {
     dueDate: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    assignedUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 }, {
     tableName: 'tasks',

@@ -1,16 +1,17 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'projet_web',
-    password: '0000',
-    port: 5432,
+    user: process.env.DB_USER || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'projet_web',
+    password: process.env.DB_PASS || '0000',
+    port: process.env.DB_PORT || 5432,
 });
 
 async function checkUsers() {
     try {
-        const res = await pool.query('SELECT id, username, created_at FROM users');
+        const res = await pool.query('SELECT * FROM users');
         console.log('\n--- UTILISATEURS INSCRITS ---');
         if (res.rows.length === 0) {
             console.log('Aucun utilisateur trouvé.');

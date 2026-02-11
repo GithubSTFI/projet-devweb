@@ -106,8 +106,12 @@ export class AuthLayoutComponent implements OnInit {
     onLogin() {
         if (this.loginForm.invalid) return;
 
-        const { username, password } = this.loginForm.value;
-        this.authService.login(username, password).subscribe({
+        const credentials = {
+            username: this.loginForm.value.username,
+            password: this.loginForm.value.password
+        };
+
+        this.authService.login(credentials).subscribe({
             next: () => {
                 this.router.navigate(['/dashboard']);
             },
@@ -120,11 +124,19 @@ export class AuthLayoutComponent implements OnInit {
     onRegister() {
         if (this.registerForm.invalid) return;
 
-        const { username, email, password } = this.registerForm.value;
-        this.authService.register(username, email, password).subscribe({
+        const credentials = {
+            username: this.registerForm.value.username,
+            email: this.registerForm.value.email,
+            password: this.registerForm.value.password
+        };
+
+        this.authService.register(credentials).subscribe({
             next: () => {
                 this.setMode(false);
-                this.loginForm.patchValue({ username, password });
+                this.loginForm.patchValue({
+                    username: credentials.username,
+                    password: credentials.password
+                });
             },
             error: (err) => {
                 this.registerError = err.error?.message || 'Erreur lors de l\'inscription';

@@ -12,8 +12,34 @@ export interface Task {
     dueDate?: string;
     createdAt?: string;
     updatedAt?: string;
-    completed?: boolean; // Legacy support
     userId: number;
+    assignedUserId?: number | null;
+    owner?: { id: number; username: string };
+    assignedUser?: { id: number; username: string };
+}
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    role: 'USER' | 'ADMIN';
+    createdAt: string;
+}
+
+export interface Notification {
+    id: number;
+    message: string;
+    isRead: boolean;
+    createdAt: string;
+}
+
+export interface ActivityLog {
+    id: number;
+    action: string;
+    entityType: string;
+    entityId?: number;
+    createdAt: string;
+    user?: { username: string };
 }
 
 @Injectable({
@@ -33,11 +59,15 @@ export class ApiService {
 
     // --- TASKS ---
 
-    getTasks(status: string = 'all'): Observable<any> {
-        let params = new HttpParams();
-        if (status && status !== 'all') {
-            params = params.set('status', status);
-        }
+    getTasks(status: string = 'all', priority: string = 'all', q: string = '', page: number = 1, limit: number = 10): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('limit', limit.toString());
+
+        if (status && status !== 'all') params = params.set('status', status);
+        if (priority && priority !== 'all') params = params.set('priority', priority);
+        if (q) params = params.set('q', q);
+
         return this.http.get(`${this.apiUrl}/tasks`, { headers: this.getHeaders(), params });
     }
 
@@ -74,17 +104,55 @@ export class ApiService {
         return this.http.get(`${this.apiUrl}/tasks/stats`, { headers: this.getHeaders() });
     }
 
-    // --- DEMOS (Async & Security) ---
-
-    startAsyncTask(): Observable<any> {
-        return this.http.post(`${this.apiUrl}/async-task`, {});
+    // --- NOTIFICATIONS ---
+    getNotifications(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/notifications`, { headers: this.getHeaders() });
     }
 
-    searchSecure(query: string): Observable<any> {
-        return this.http.get(`${this.apiUrl}/secure/search?q=${query}`);
+    listUsers(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/users`, { headers: this.getHeaders() });
+    }
+
+    markAsRead(id: number): Observable<any> {
+        return this.http.put(`${this.apiUrl}/notifications/${id}/read`, {}, { headers: this.getHeaders() });
+    }
+
+    markAllAsRead(): Observable<any> {
+        return this.http.put(`${this.apiUrl}/notifications/read-all`, {}, { headers: this.getHeaders() });
+    }
+
+    // --- ADMIN ---
+    getUsers(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/admin/users`, { headers: this.getHeaders() });
+    }
+
+    deleteUser(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/admin/users/${id}`, { headers: this.getHeaders() });
+    }
+
+    updateUser(id: number, userData: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/admin/users/${id}`, userData, { headers: this.getHeaders() });
+    }
+
+    getLogs(page: number = 1, limit: number = 20): Observable<any> {
+        const params = new HttpParams().set('page', page).set('limit', limit);
+        return this.http.get(`${this.apiUrl}/admin/logs`, { headers: this.getHeaders(), params });
+    }
+
+    // --- LEGACY / DEMO METHODS ---
+    getProfile(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/profile`, { headers: this.getHeaders() });
+    }
+
+    startAsyncTask(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/async-task`, { headers: this.getHeaders() });
     }
 
     searchInsecure(query: string): Observable<any> {
-        return this.http.get(`${this.apiUrl}/insecure/search?q=${query}`);
+        return this.http.get(`${this.apiUrl}/search-insecure?q=${query}`, { headers: this.getHeaders() });
+    }
+
+    searchSecure(query: string): Observable<any> {
+        return this.http.get(`${this.apiUrl}/search-secure?q=${query}`, { headers: this.getHeaders() });
     }
 }

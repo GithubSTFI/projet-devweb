@@ -3,33 +3,21 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
+// Controllers
 const authController = require('../controllers/auth.controller');
 const taskController = require('../controllers/task.controller');
 const fileController = require('../controllers/file.controller');
-const jwt = require('jsonwebtoken');
+const userController = require('../controllers/user.controller');
+const notificationController = require('../controllers/notification.controller');
 
-const JWT_SECRET = 'mon_secret_super_securise_etudiant_2024';
-
-// --- MIDDLEWARE CONFIG ---
-
-// Auth
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.sendStatus(401);
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        console.log(`[AUTH-DEBUG] Requête de l'utilisateur: ${user.username} (ID: ${user.id}) sur ${req.originalUrl}`);
-        next();
-    });
-};
+// Middlewares
+const { authenticateToken } = require('../middlewares/auth.middleware');
+const { checkRole } = require('../middlewares/role.middleware');
 
 // Multer (File Upload)
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Ensure this folder exists
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
@@ -37,57 +25,46 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-
-// --- ROUTES ---
-
-// Auth
+// --- PUBLIC ROUTES ---
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 
+router.get('/test-email', (req, res) => {
+    const { sendEmail } = require('../services/email.service');
+    sendEmail('fsiewe@yaba-in.com', 'Test TaskFlow', 'Si vous voyez ce mail, la config SMTP est enfin correcte !')
+        .then(() => res.json({ message: 'Email de test envoyé.' }))
+        .catch(err => res.status(500).json({ error: err.message }));
+});
+
+// --- PROTECTED ROUTES (USER & ADMIN) ---
+router.use(authenticateToken); // Protect all routes below
+
+// User Profile & Listing
+router.get('/profile', userController.getProfile);
+router.get('/users', userController.listUsers);
+
 // Tasks
-router.get('/tasks', authenticateToken, taskController.getTasks);
-router.get('/tasks/stats', authenticateToken, taskController.getStats);
-router.post('/tasks', authenticateToken, taskController.createTask);
-router.put('/tasks/:id', authenticateToken, taskController.updateTask);
-router.delete('/tasks/:id', authenticateToken, taskController.deleteTask);
+router.get('/tasks', taskController.getTasks);
+router.get('/tasks/stats', taskController.getStats);
+router.post('/tasks', taskController.createTask);
+router.put('/tasks/:id', taskController.updateTask);
+router.delete('/tasks/:id', taskController.deleteTask);
 
-// Files (Protected or Public depending on needs, simplifying for demo)
-router.post('/upload', authenticateToken, upload.single('file'), fileController.uploadFile);
-router.get('/files', authenticateToken, fileController.getFiles); // Now protected
-router.get('/download/:filename', authenticateToken, fileController.downloadFile); // Now protected
+// Files
+router.post('/upload', upload.single('file'), fileController.uploadFile);
+router.get('/files', fileController.getFiles);
+router.get('/download/:filename', fileController.downloadFile);
 
-// Demos (Required for Requirements 4 & 5)
-router.post('/async-task', (req, res) => {
-    console.log('[Async] Début...');
-    setTimeout(() => console.log('[Async] Fin.'), 5000);
-    res.json({ message: 'Traitement lancé.' });
-});
+// Notifications
+router.get('/notifications', notificationController.getNotifications);
+router.put('/notifications/:id/read', notificationController.markAsRead);
+router.put('/notifications/read-all', notificationController.markAllAsRead);
 
-router.get('/secure/search', async (req, res) => {
-    // Re-implementing simplified search for demo
-    const { Task } = require('../models');
-    const { Op } = require('sequelize');
-    const query = req.query.q || '';
+// --- ADMIN ONLY ROUTES ---
+router.get('/admin/users', checkRole(['ADMIN']), userController.getAllUsers);
+router.put('/admin/users/:id', checkRole(['ADMIN']), userController.updateUser);
+router.delete('/admin/users/:id', checkRole(['ADMIN']), userController.deleteUser);
+router.get('/admin/logs', checkRole(['ADMIN']), userController.getActivityLogs);
 
-    try {
-        // Secure way (Sequelize does parameterization automatically)
-        const tasks = await Task.findAll({
-            where: { title: { [Op.like]: `%${query}%` } }
-        });
-        res.json({ data: tasks, info: 'SÉCURISÉ (ORM)' });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-router.get('/insecure/search', async (req, res) => {
-    const { sequelize } = require('../models');
-    const query = req.query.q;
-    // VERY BAD: Direct SQL Concatenation for Demo purpose
-    const sql = `SELECT * FROM tasks WHERE title LIKE '%${query}%'`;
-
-    try {
-        const [results] = await sequelize.query(sql);
-        res.json({ data: results, warning: 'VULNÉRABLE (Injection SQL)' });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-});
 
 module.exports = router;

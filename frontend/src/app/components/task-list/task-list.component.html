@@ -1,64 +1,33 @@
 <div class="task-page" [@staggerList]>
-
-    <!-- STATS CARDS -->
-    <div class="stats-row">
-        <div class="stat-card todo stagger-card">
-            <div class="stat-icon">
-                <span class="material-icons">event_note</span>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ getCountByStatus('TODO') }}</div>
-                <div class="stat-label">À faire</div>
-            </div>
-        </div>
-
-        <div class="stat-card progress stagger-card">
-            <div class="stat-icon">
-                <span class="material-icons">autorenew</span>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ getCountByStatus('IN_PROGRESS') }}</div>
-                <div class="stat-label">En cours</div>
-            </div>
-        </div>
-
-        <div class="stat-card done stagger-card">
-            <div class="stat-icon">
-                <span class="material-icons">check_circle</span>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ getCountByStatus('DONE') }}</div>
-                <div class="stat-label">Terminées</div>
-            </div>
-        </div>
-
-        <div class="stat-card archived stagger-card">
-            <div class="stat-icon">
-                <span class="material-icons">archive</span>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ getCountByStatus('ARCHIVED') }}</div>
-                <div class="stat-label">Archivées</div>
-            </div>
-        </div>
-    </div>
-
     <!-- TABLE CONTAINER -->
     <div class="table-container">
         <!-- HEADER WITH FILTERS, SEARCH & NEW BUTTON -->
         <div class="table-header">
             <div class="header-left">
-                <div class="filter-tabs">
-                    <button *ngFor="let f of filters" (click)="setFilter(f.value)" [class.active]="filter() === f.value"
-                        class="filter-tab">
-                        {{ f.label }}
-                    </button>
+                <div class="filter-group">
+                    <span class="filter-label">Statut</span>
+                    <div class="filter-tabs">
+                        <button *ngFor="let f of filters" (click)="setFilter(f.value)"
+                            [class.active]="filter() === f.value" class="filter-tab">
+                            {{ f.label }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Priorité</span>
+                    <div class="filter-tabs priority-tabs">
+                        <button *ngFor="let p of priorities" (click)="setPriority(p.value)"
+                            [class.active]="priorityFilter() === p.value" class="filter-tab">
+                            {{ p.label }}
+                        </button>
+                    </div>
                 </div>
 
                 <div class="search-bar">
                     <span class="material-icons">search</span>
-                    <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="searchQuery.set($event)"
-                        placeholder="Rechercher une tâche...">
+                    <input type="text" [ngModel]="searchQuery()" (input)="onSearch($event)"
+                        placeholder="Rechercher par mot-clé...">
                 </div>
             </div>
 
@@ -82,8 +51,11 @@
 
         <!-- TASK CONTENT (LIST OR KANBAN) -->
         <div class="task-content">
+            <!-- LOADER -->
+            <app-loader *ngIf="isLoading()" message="Chargement des tâches..."></app-loader>
+
             <!-- LIST VIEW -->
-            <div *ngIf="viewMode() === 'list'" class="task-table">
+            <div *ngIf="viewMode() === 'list' && !isLoading()" class="task-table">
                 <div class="table-row table-head">
                     <div class="col-check"></div>
                     <div class="col-title">Titre</div>
@@ -92,34 +64,26 @@
                     <div class="col-actions">Actions</div>
                 </div>
 
-                <div *ngFor="let task of filteredTasks()" class="table-row stagger-row" (click)="openDetail(task)">
-                    <div class="col-check">
-                        <div class="task-check" [class.checked]="task.status === 'DONE'"
-                            (click)="toggleStatus(task); $event.stopPropagation()">
+                <div *ngFor="let task of tasks()" class="table-row stagger-row" (click)="openDetail(task)">
+                    <div class="col-check" (click)="$event.stopPropagation()">
+                        <div class="task-check" [class.checked]="task.status === 'DONE'" (click)="toggleStatus(task)">
                             <span class="material-icons" *ngIf="task.status === 'DONE'">check</span>
                         </div>
                     </div>
 
                     <div class="col-title">
-                        <div class="task-title" [class.done]="task.status === 'DONE'">
-                            {{ task.title }}
+                        <div class="title-wrapper">
+                            <span class="task-title-text" [class.done]="task.status === 'DONE'">{{ task.title }}</span>
+                            <span class="overdue-badge" *ngIf="isOverdue(task)">
+                                <span class="material-icons">priority_high</span> En retard
+                            </span>
                         </div>
-                        <div class="task-desc" *ngIf="task.description">{{ task.description }}</div>
                     </div>
 
                     <div class="col-priority">
-                        <div class="priority-selector">
-                            <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
-                                {{ getPriorityLabel(task.priority) }}
-                            </span>
-                            <select [ngModel]="task.priority"
-                                (change)="updatePriority(task, $any($event.target).value); $event.stopPropagation()"
-                                (click)="$event.stopPropagation()">
-                                <option value="LOW">Basse</option>
-                                <option value="MEDIUM">Moyenne</option>
-                                <option value="HIGH">Haute</option>
-                            </select>
-                        </div>
+                        <span class="priority-badge" [ngClass]="task.priority.toLowerCase()">
+                            {{ getPriorityLabel(task.priority) }}
+                        </span>
                     </div>
 
                     <div class="col-status">
@@ -134,15 +98,30 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- PAGINATION PREMIUM -->
+                <div class="pagination-premium" *ngIf="totalPages() > 1">
+                    <button [disabled]="page() === 1" (click)="prevPage()" class="page-nav-btn">
+                        <span class="material-icons">chevron_left</span>
+                    </button>
+
+                    <div class="page-numbers">
+                        <span class="page-info">Page <strong>{{ page() }}</strong> sur {{ totalPages() }}</span>
+                    </div>
+
+                    <button [disabled]="page() === totalPages()" (click)="nextPage()" class="page-nav-btn">
+                        <span class="material-icons">chevron_right</span>
+                    </button>
+                </div>
             </div>
 
             <!-- KANBAN VIEW -->
-            <app-kanban-view *ngIf="viewMode() === 'kanban'" [tasks]="filteredTasks()"
-                (taskUpdated)="loadTasks(filter())">
+            <app-kanban-view *ngIf="viewMode() === 'kanban' && !isLoading()" [tasks]="tasks()"
+                (taskUpdated)="loadTasks()">
             </app-kanban-view>
 
             <!-- EMPTY STATE -->
-            <div *ngIf="filteredTasks().length === 0" class="empty-state">
+            <div *ngIf="tasks().length === 0 && !isLoading()" class="empty-state">
                 <span class="material-icons">inbox</span>
                 <p>{{ searchQuery() ? 'Aucun résultat pour cette recherche' : 'Aucune tâche trouvée' }}</p>
                 <button *ngIf="!searchQuery()" (click)="openNewTask()" class="create-first-btn">Créer votre première
@@ -160,5 +139,4 @@
         [message]="'Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.'"
         [confirmText]="'Supprimer'" [cancelText]="'Annuler'" [icon]="'delete_outline'" (confirm)="confirmDelete()"
         (cancel)="cancelDelete()"></app-confirm-dialog>
-
 </div>

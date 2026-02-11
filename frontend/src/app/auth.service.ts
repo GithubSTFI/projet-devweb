@@ -40,7 +40,11 @@ export class AuthService {
     login(credentials: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
             tap((res: any) => {
-                const user: User = { username: res.username, role: res.role || 'USER' };
+                const user: User = {
+                    id: res.id,
+                    username: res.username,
+                    role: res.role || 'USER'
+                };
                 this.saveSession(res.token, user);
                 this.router.navigate(['/dashboard']);
             })

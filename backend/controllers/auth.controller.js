@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
+const { sendEmail } = require('../services/email.service');
 
-const JWT_SECRET = 'mon_secret_super_securise_etudiant_2024'; // En prod: .env
+const JWT_SECRET = process.env.JWT_SECRET || 'mon_secret_super_securise_etudiant_2024';
 
 exports.register = async (req, res) => {
     try {
@@ -17,6 +18,16 @@ exports.register = async (req, res) => {
             email,
             password: hashedPassword
         });
+
+        // Envoi de l'email de bienvenue (Async)
+        sendEmail(
+            email,
+            'Bienvenue sur TaskFlow Manager !',
+            `Bonjour ${username}, votre compte a été créé avec succès.`,
+            `<h1>Bienvenue ${username} !</h1>
+             <p>Nous sommes ravis de vous compter parmi nous.</p>
+             <p>Vous pouvez maintenant vous connecter pour gérer vos tâches.</p>`
+        );
 
         res.status(201).json({ message: 'Utilisateur créé', userId: user.id });
     } catch (error) {
@@ -46,7 +57,7 @@ exports.login = async (req, res) => {
             { expiresIn: '2h' }
         );
 
-        res.json({ token, username: user.username, role: user.role });
+        res.json({ token, id: user.id, username: user.username, role: user.role });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

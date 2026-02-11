@@ -6,12 +6,13 @@ import { TaskDetailComponent } from '../task-detail/task-detail.component';
 import { KanbanViewComponent } from '../kanban-view/kanban-view.component';
 import { ToastService } from '../toast/toast.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { LoaderComponent } from '../loader/loader.component';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 @Component({
     selector: 'app-task-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, TaskDetailComponent, ConfirmDialogComponent, KanbanViewComponent],
+    imports: [CommonModule, FormsModule, TaskDetailComponent, ConfirmDialogComponent, KanbanViewComponent, LoaderComponent],
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.scss'],
     animations: [
@@ -33,18 +34,16 @@ export class TaskListComponent implements OnInit {
 
     tasks = signal<Task[]>([]);
     filter = signal<string>('all');
+    priorityFilter = signal<string>('all');
     searchQuery = signal<string>('');
     viewMode = signal<'list' | 'kanban'>('list');
+    isLoading = signal<boolean>(false);
 
-    filteredTasks = computed(() => {
-        const query = this.searchQuery().toLowerCase().trim();
-        const allTasks = this.tasks();
-        if (!query) return allTasks;
-        return allTasks.filter(t =>
-            t.title.toLowerCase().includes(query) ||
-            (t.description && t.description.toLowerCase().includes(query))
-        );
-    });
+    // Pagination
+    page = signal<number>(1);
+    limit = signal<number>(10);
+    totalPages = signal<number>(1);
+    totalItems = signal<number>(0);
 
     showModal = false;
     selectedTask: Partial<Task> = {};
@@ -61,28 +60,69 @@ export class TaskListComponent implements OnInit {
         { label: 'Archivées', value: 'ARCHIVED' }
     ];
 
+    priorities = [
+        { label: 'Toutes', value: 'all' },
+        { label: 'Haute', value: 'HIGH' },
+        { label: 'Moyenne', value: 'MEDIUM' },
+        { label: 'Basse', value: 'LOW' }
+    ];
+
+    // Effect déclenché par tout changement de filtre ou recherche
     effectRef = effect(() => {
-        this.loadTasks(this.filter());
+        const query = this.searchQuery();
+        // Debounce simple via timeout si nécessaire, mais ici on réagit direct
+        this.loadTasks();
     });
 
     ngOnInit() { }
 
     setFilter(status: string) {
+        this.page.set(1);
         this.filter.set(status);
     }
 
-    loadTasks(status: string) {
-        this.api.getTasks(status).subscribe({
+    setPriority(priority: string) {
+        this.page.set(1);
+        this.priorityFilter.set(priority);
+    }
+
+    onSearch(event: any) {
+        this.page.set(1);
+        this.searchQuery.set(event.target.value);
+    }
+
+    loadTasks() {
+        this.isLoading.set(true);
+        this.api.getTasks(
+            this.filter(),
+            this.priorityFilter(),
+            this.searchQuery(),
+            this.page(),
+            this.limit()
+        ).subscribe({
             next: (res: any) => {
-                const data = res.data as Task[];
-                this.tasks.set(data);
+                this.tasks.set(res.data);
+                this.totalPages.set(res.pagination.totalPages);
+                this.totalItems.set(res.pagination.total);
+                this.isLoading.set(false);
             },
-            error: () => this.toast.show('Erreur de chargement', 'error')
+            error: () => {
+                this.toast.show('Erreur de chargement', 'error');
+                this.isLoading.set(false);
+            }
         });
     }
 
-    getCountByStatus(status: string): number {
-        return this.tasks().filter(t => t.status === status).length;
+    nextPage() {
+        if (this.page() < this.totalPages()) {
+            this.page.update(p => p + 1);
+        }
+    }
+
+    prevPage() {
+        if (this.page() > 1) {
+            this.page.update(p => p - 1);
+        }
     }
 
     getStatusLabel(status: string): string {
@@ -122,14 +162,14 @@ export class TaskListComponent implements OnInit {
     }
 
     refresh() {
-        this.loadTasks(this.filter());
+        this.loadTasks();
         this.toast.show(this.isNewMode ? 'Tâche créée !' : 'Tâche mise à jour !', 'success');
     }
 
     toggleStatus(task: Task) {
         const newStatus = task.status === 'DONE' ? 'TODO' : 'DONE';
         this.api.updateTask(task.id, { status: newStatus }).subscribe(() => {
-            this.loadTasks(this.filter());
+            this.loadTasks();
             this.toast.show(`Tâche ${newStatus === 'DONE' ? 'terminée' : 'réouverte'}`, 'info');
         });
     }
@@ -142,7 +182,7 @@ export class TaskListComponent implements OnInit {
     confirmDelete() {
         if (this.taskToDelete !== null) {
             this.api.deleteTask(this.taskToDelete).subscribe(() => {
-                this.loadTasks(this.filter());
+                this.loadTasks();
                 this.toast.show('Tâche supprimée', 'info');
                 this.showConfirmDialog = false;
                 this.taskToDelete = null;
@@ -154,7 +194,7 @@ export class TaskListComponent implements OnInit {
         if (task.priority === newPriority) return;
         this.api.updateTask(task.id, { priority: newPriority as any }).subscribe({
             next: () => {
-                this.loadTasks(this.filter());
+                this.loadTasks();
                 this.toast.show('Priorité mise à jour', 'info');
             },
             error: () => this.toast.show('Erreur de mise à jour', 'error')
@@ -164,5 +204,10 @@ export class TaskListComponent implements OnInit {
     cancelDelete() {
         this.showConfirmDialog = false;
         this.taskToDelete = null;
+    }
+
+    isOverdue(task: Task): boolean {
+        if (task.status === 'DONE' || !task.dueDate) return false;
+        return new Date(task.dueDate) < new Date();
     }
 }

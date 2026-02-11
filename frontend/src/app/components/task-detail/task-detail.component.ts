@@ -18,11 +18,16 @@ export class TaskDetailComponent implements OnChanges {
 
     private api = inject(ApiService);
     files = signal<any[]>([]);
+    users = signal<any[]>([]);
     isUploading = false;
     editTask: Partial<Task> = {};
 
     // Mode Management
     mode = signal<'VIEW' | 'EDIT'>('VIEW');
+
+    ngOnInit() {
+        this.loadUsers();
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['task'] || changes['isNew']) {
@@ -35,8 +40,16 @@ export class TaskDetailComponent implements OnChanges {
                 // Defaults for new task
                 this.editTask.priority = this.editTask.priority || 'MEDIUM';
                 this.editTask.status = 'TODO';
+                this.editTask.assignedUserId = null;
             }
         }
+    }
+
+    loadUsers() {
+        this.api.listUsers().subscribe({
+            next: (res: any) => this.users.set(res.data),
+            error: (err) => console.error(err)
+        });
     }
 
     setMode(newMode: 'VIEW' | 'EDIT') {
@@ -50,8 +63,17 @@ export class TaskDetailComponent implements OnChanges {
     save() {
         if (!this.editTask.title) return;
 
+        const payload = {
+            title: this.editTask.title,
+            description: this.editTask.description,
+            priority: this.editTask.priority,
+            status: this.editTask.status,
+            dueDate: this.editTask.dueDate,
+            assignedUserId: this.editTask.assignedUserId
+        };
+
         if (this.isNew) {
-            this.api.createTask(this.editTask).subscribe({
+            this.api.createTask(payload).subscribe({
                 next: () => {
                     this.updateEvent.emit();
                     this.close();
@@ -59,13 +81,7 @@ export class TaskDetailComponent implements OnChanges {
             });
         } else {
             if (!this.task.id) return;
-            this.api.updateTask(this.task.id, {
-                title: this.editTask.title,
-                description: this.editTask.description,
-                priority: this.editTask.priority,
-                status: this.editTask.status,
-                dueDate: this.editTask.dueDate
-            }).subscribe({
+            this.api.updateTask(this.task.id, payload).subscribe({
                 next: () => {
                     this.updateEvent.emit();
                     this.close();

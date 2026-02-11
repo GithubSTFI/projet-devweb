@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -27,6 +28,17 @@ app.listen(PORT, async () => {
     try {
         await sequelize.authenticate();
         console.log('✅ Base de données connectée.');
+
+        // Simple cron-like interval for overdue tasks (every 1 hour)
+        const taskController = require('./controllers/task.controller');
+        setInterval(() => {
+            console.log('[SYSTEM] Vérification des tâches en retard...');
+            taskController.checkOverdueTasks();
+        }, 3600000);
+
+        // Run once on startup
+        taskController.checkOverdueTasks();
+
     } catch (err) {
         console.error('❌ Erreur DB:', err);
     }

@@ -10,32 +10,20 @@
     </div>
 
     <!-- Glass Container -->
-    <div class="glass-card" [@cardAnimation]>
-        <!-- Toggle Pills -->
-        <div class="mode-toggle">
-            <button [class.active]="!isSignUpMode" (click)="setMode(false)" class="toggle-btn">
-                Connexion
-            </button>
-            <button [class.active]="isSignUpMode" (click)="setMode(true)" class="toggle-btn">
-                Inscription
-            </button>
-            <div class="toggle-pill" [class.right]="isSignUpMode"></div>
-        </div>
-
-        <!-- Logo & Title -->
-        <div class="header-section" [@fadeSlide]>
-            <div class="logo-badge">
-                <span class="material-icons">bolt</span>
+    <div class="glass-card" [@cardAnimation] [class.flipped]="isSignUpMode">
+        <!-- FRONT: LOGIN -->
+        <div class="card-side card-front">
+            <!-- Logo & Title -->
+            <div class="header-section" [@fadeSlide]>
+                <div class="logo-badge">
+                    <span class="material-icons">bolt</span>
+                </div>
+                <h1 class="title">Bon retour</h1>
+                <p class="subtitle">Connectez-vous pour continuer votre aventure</p>
             </div>
-            <h1 class="title">{{ isSignUpMode ? 'Créer un compte' : 'Bon retour' }}</h1>
-            <p class="subtitle">{{ isSignUpMode ? 'Rejoignez TaskFlow et boostez votre productivité' : 'Connectez-vous
-                pour continuer votre aventure' }}</p>
-        </div>
 
-        <!-- Forms Container -->
-        <div class="forms-wrapper">
             <!-- LOGIN FORM -->
-            <form *ngIf="!isSignUpMode" [formGroup]="loginForm" (ngSubmit)="onLogin()" [@formSlide] class="auth-form">
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
 
                 <div class="input-wrapper">
                     <div class="input-icon">
@@ -72,86 +60,74 @@
                 <button type="submit" [disabled]="loginForm.invalid" class="premium-btn">
                     <span class="btn-text">Se connecter</span>
                     <span class="btn-icon material-icons">arrow_forward</span>
-                    <div class="btn-glow"></div>
                 </button>
 
                 <p *ngIf="loginError" class="error-alert">{{ loginError }}</p>
-            </form>
 
-            <!-- SIGNUP FORM -->
-            <form *ngIf="isSignUpMode" [formGroup]="registerForm" (ngSubmit)="onRegister()" [@formSlide]
-                class="auth-form">
-
-                <div class="input-wrapper">
-                    <div class="input-icon">
-                        <span class="material-icons">person_outline</span>
-                    </div>
-                    <input type="text" formControlName="username" placeholder="Nom d'utilisateur"
-                        [class.error]="fReg['username'].touched && fReg['username'].invalid" class="premium-input">
-                    <div class="input-line"></div>
-                </div>
-                <div class="error-text" *ngIf="fReg['username'].touched && fReg['username'].errors">
-                    <span *ngIf="fReg['username'].errors['required']">Nom requis</span>
-                    <span *ngIf="fReg['username'].errors['minlength']">Minimum 3 caractères</span>
+                <div class="switch-link-wrapper">
+                    <span>Pas encore de compte ?</span>
+                    <button type="button" (click)="toggleMode()" class="switch-btn">Créer un compte</button>
                 </div>
 
-                <div class="input-wrapper">
-                    <div class="input-icon">
-                        <span class="material-icons">email</span>
-                    </div>
-                    <input type="email" formControlName="email" placeholder="Email"
-                        [class.error]="fReg['email'].touched && fReg['email'].invalid" class="premium-input">
-                    <div class="input-line"></div>
+                <!-- Footer intégré -->
+                <div class="card-footer">
+                    <p class="footer-text">
+                        En continuant, vous acceptez nos
+                        <a href="#">Conditions</a> et notre
+                        <a href="#">Politique</a>
+                    </p>
                 </div>
-                <div class="error-text" *ngIf="fReg['email'].touched && fReg['email'].errors">
-                    <span *ngIf="fReg['email'].errors['required']">Email requis</span>
-                    <span *ngIf="fReg['email'].errors['email']">Format email invalide</span>
-                </div>
-
-                <div class="input-wrapper">
-                    <div class="input-icon">
-                        <span class="material-icons">lock_outline</span>
-                    </div>
-                    <input type="password" formControlName="password" placeholder="Mot de passe"
-                        [class.error]="fReg['password'].touched && fReg['password'].invalid" class="premium-input">
-                    <div class="input-line"></div>
-                </div>
-                <div class="error-text" *ngIf="fReg['password'].touched && fReg['password'].errors">
-                    <span *ngIf="fReg['password'].errors['required']">Mot de passe requis</span>
-                    <span *ngIf="fReg['password'].errors['minlength']">Minimum 6 caractères</span>
-                </div>
-
-                <div class="input-wrapper">
-                    <div class="input-icon">
-                        <span class="material-icons">verified_user</span>
-                    </div>
-                    <input type="password" formControlName="confirmPassword" placeholder="Confirmer le mot de passe"
-                        [class.error]="fReg['confirmPassword'].touched && fReg['confirmPassword'].invalid"
-                        class="premium-input">
-                    <div class="input-line"></div>
-                </div>
-                <div class="error-text" *ngIf="fReg['confirmPassword'].touched && fReg['confirmPassword'].errors">
-                    <span *ngIf="fReg['confirmPassword'].errors['required']">Confirmation requise</span>
-                    <span *ngIf="fReg['confirmPassword'].errors['mismatch']">Mots de passe différents</span>
-                </div>
-
-                <button type="submit" [disabled]="registerForm.invalid" class="premium-btn">
-                    <span class="btn-text">Créer mon compte</span>
-                    <span class="btn-icon material-icons">arrow_forward</span>
-                    <div class="btn-glow"></div>
-                </button>
-
-                <p *ngIf="registerError" class="error-alert">{{ registerError }}</p>
             </form>
         </div>
 
-        <!-- Footer -->
-        <div class="card-footer">
-            <p class="footer-text">
-                En continuant, vous acceptez nos
-                <a href="#">Conditions d'utilisation</a> et notre
-                <a href="#">Politique de confidentialité</a>
-            </p>
+        <!-- BACK: REGISTER -->
+        <div class="card-side card-back">
+            <!-- Logo & Title -->
+            <div class="header-section">
+                <div class="logo-badge">
+                    <span class="material-icons">person_add</span>
+                </div>
+                <h1 class="title">Inscription</h1>
+                <p class="subtitle">Commencez l'aventure</p>
+            </div>
+
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+                <!-- ... inputs ... -->
+                <div class="input-wrapper">
+                    <div class="input-icon"><span class="material-icons">person_outline</span></div>
+                    <input type="text" formControlName="username" placeholder="Identifiant" class="premium-input">
+                </div>
+                <div class="input-wrapper">
+                    <div class="input-icon"><span class="material-icons">email</span></div>
+                    <input type="email" formControlName="email" placeholder="Email" class="premium-input">
+                </div>
+                <div class="input-wrapper">
+                    <div class="input-icon"><span class="material-icons">lock_outline</span></div>
+                    <input type="password" formControlName="password" placeholder="Mot de passe" class="premium-input">
+                </div>
+                <div class="input-wrapper">
+                    <div class="input-icon"><span class="material-icons">verified_user</span></div>
+                    <input type="password" formControlName="confirmPassword" placeholder="Confirmer"
+                        class="premium-input">
+                </div>
+
+                <button type="submit" [disabled]="registerForm.invalid" class="premium-btn">
+                    <span class="btn-text">S'inscrire</span>
+                </button>
+
+                <div class="switch-link-wrapper">
+                    <span>Déjà inscrit ?</span>
+                    <button type="button" (click)="toggleMode()" class="switch-btn">Se connecter</button>
+                </div>
+
+                <!-- Footer intégré -->
+                <div class="card-footer">
+                    <p class="footer-text">
+                        En continuant, vous acceptez nos
+                        <a href="#">Conditions</a>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
 

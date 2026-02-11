@@ -1,13 +1,14 @@
+require('dotenv').config();
 const { Client } = require('pg');
 
 const config = {
-    user: 'postgres',
-    host: 'localhost',
-    password: '0000', // UPDATED
-    port: 5432,
+    user: process.env.DB_USER || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    password: process.env.DB_PASS || '0000',
+    port: process.env.DB_PORT || 5432,
 };
 
-const dbName = 'projet_web';
+const dbName = process.env.DB_NAME || 'projet_web';
 
 async function setup() {
     console.log('--- Initialisation de la Base de Données ---');

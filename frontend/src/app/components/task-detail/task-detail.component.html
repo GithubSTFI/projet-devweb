@@ -46,6 +46,24 @@
                     </div>
                 </div>
 
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Assigné à</label>
+                        <span class="user-badge" *ngIf="editTask.assignedUser">
+                            <span class="material-icons">person</span>
+                            {{ editTask.assignedUser.username }}
+                        </span>
+                        <span *ngIf="!editTask.assignedUser" class="text-muted">Personne</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Propriétaire</label>
+                        <span class="user-badge">
+                            <span class="material-icons">verified_user</span>
+                            {{ editTask.owner?.username || 'Moi' }}
+                        </span>
+                    </div>
+                </div>
+
                 <div class="detail-section description">
                     <label>Description</label>
                     <p class="description-text">{{ editTask.description || 'Aucune description.' }}</p>
@@ -82,14 +100,18 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group half" *ngIf="!isNew">
-                        <label>Date de création</label>
-                        <input type="text" [value]="(editTask.createdAt || '') | date:'short'" class="input-main"
-                            disabled style="background: #f1f5f9;">
-                    </div>
-                    <div class="form-group" [class.half]="!isNew">
+                    <div class="form-group half">
                         <label>Date d'échéance</label>
                         <input type="date" [(ngModel)]="editTask.dueDate" class="input-main">
+                    </div>
+                    <div class="form-group half">
+                        <label>Assigner à</label>
+                        <select [(ngModel)]="editTask.assignedUserId" class="input-select">
+                            <option [ngValue]="null">Non assigné</option>
+                            <option *ngFor="let u of users()" [value]="u.id">
+                                {{ u.username }} ({{ u.role }})
+                            </option>
+                        </select>
                     </div>
                 </div>
 

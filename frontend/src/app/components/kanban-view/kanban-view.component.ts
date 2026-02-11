@@ -24,12 +24,14 @@ export class KanbanViewComponent {
     todo = signal<Task[]>([]);
     inProgress = signal<Task[]>([]);
     done = signal<Task[]>([]);
+    archived = signal<Task[]>([]);
 
     distributeTasks() {
         const tasks = this.allTasks();
         this.todo.set(tasks.filter(t => t.status === 'TODO'));
         this.inProgress.set(tasks.filter(t => t.status === 'IN_PROGRESS'));
         this.done.set(tasks.filter(t => t.status === 'DONE'));
+        this.archived.set(tasks.filter(t => t.status === 'ARCHIVED'));
     }
 
     drop(event: CdkDragDrop<Task[]>) {
@@ -37,7 +39,7 @@ export class KanbanViewComponent {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
             const task = event.previousContainer.data[event.previousIndex];
-            const newStatus = event.container.id as 'TODO' | 'IN_PROGRESS' | 'DONE';
+            const newStatus = event.container.id as 'TODO' | 'IN_PROGRESS' | 'DONE' | 'ARCHIVED';
 
             transferArrayItem(
                 event.previousContainer.data,

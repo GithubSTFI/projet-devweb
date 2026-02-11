@@ -15,11 +15,11 @@
                 <div class="card-priority" [ngClass]="getPriorityClass(task.priority)"></div>
                 <div class="card-content">
                     <h4>{{ task.title }}</h4>
-                    <p v-if="task.description">{{ task.description }}</p>
+                    <p *ngIf="task.description">{{ task.description }}</p>
                 </div>
                 <div class="card-footer">
                     <span class="date" *ngIf="task.dueDate">
-                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                        {{ task.dueDate | date:'dd/MM/yy' }}
                     </span>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="card-footer">
                     <span class="date" *ngIf="task.dueDate">
-                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                        {{ task.dueDate | date:'dd/MM/yy' }}
                     </span>
                 </div>
             </div>
@@ -76,7 +76,36 @@
                 </div>
                 <div class="card-footer">
                     <span class="date" *ngIf="task.dueDate">
-                        <i class="icon-calendar"></i> {{ task.dueDate | date:'shortDate' }}
+                        {{ task.dueDate | date:'dd/MM/yy' }}
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- ARCHIVED COLUMN -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="header-content">
+                <span class="dot archived"></span>
+                <h3>Archivé</h3>
+                <span class="count">{{ archived().length }}</span>
+            </div>
+        </div>
+
+        <div id="ARCHIVED" cdkDropList [cdkDropListData]="archived()" class="task-list"
+            (cdkDropListDropped)="drop($event)">
+            @for (task of archived(); track task.id) {
+            <div class="task-card" cdkDrag>
+                <div class="card-priority" [ngClass]="getPriorityClass(task.priority)"></div>
+                <div class="card-content">
+                    <h4>{{ task.title }}</h4>
+                    <p *ngIf="task.description">{{ task.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="date" *ngIf="task.dueDate">
+                        {{ task.dueDate | date:'dd/MM/yy' }}
                     </span>
                 </div>
             </div>
