@@ -194,6 +194,12 @@
 .filter-tabs {
     display: flex;
     gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .filter-tab {
@@ -206,16 +212,17 @@
     color: #6b7280;
     cursor: pointer;
     transition: all 0.2s;
-}
+    white-space: nowrap;
 
-.filter-tab:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
+    &:hover {
+        background: #f3f4f6;
+        color: #374151;
+    }
 
-.filter-tab.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    &.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
 }
 
 .new-task-btn {
@@ -231,14 +238,15 @@
     align-items: center;
     gap: 6px;
     transition: all 0.2s;
-}
+    white-space: nowrap;
 
-.new-task-btn:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-}
+    &:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
 
-.new-task-btn .material-icons {
-    font-size: 18px;
+    .material-icons {
+        font-size: 18px;
+    }
 }
 
 /* TASK TABLE */
@@ -254,11 +262,11 @@
     align-items: center;
     border-bottom: 1px solid #f3f4f6;
     transition: background 0.2s;
-}
 
-.table-row:not(.table-head):hover {
-    background: #f9fafb;
-    cursor: pointer;
+    &:not(.table-head):hover {
+        background: #f9fafb;
+        cursor: pointer;
+    }
 }
 
 .table-head {
@@ -271,16 +279,6 @@
     cursor: default;
 }
 
-.table-head:hover {
-    background: #f8fafc;
-}
-
-.col-check {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .task-check {
     width: 20px;
     height: 20px;
@@ -291,24 +289,20 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-}
 
-.task-check:hover {
-    border-color: #9ca3af;
-}
+    &:hover {
+        border-color: #9ca3af;
+    }
 
-.task-check.checked {
-    background: #10b981;
-    border-color: #10b981;
-}
+    &.checked {
+        background: #10b981;
+        border-color: #10b981;
+    }
 
-.task-check .material-icons {
-    font-size: 16px;
-    color: white;
-}
-
-.col-title {
-    min-width: 0;
+    .material-icons {
+        font-size: 16px;
+        color: white;
+    }
 }
 
 .task-title {
@@ -318,11 +312,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
 
-.task-title.done {
-    text-decoration: line-through;
-    color: #9ca3af;
+    &.done {
+        text-decoration: line-through;
+        color: #9ca3af;
+    }
 }
 
 .task-desc {
@@ -356,21 +350,21 @@
     border-radius: 6px;
     text-transform: uppercase;
     display: inline-block;
-}
 
-.priority-badge.high {
-    background: #fee2e2;
-    color: #dc2626;
-}
+    &.high {
+        background: #fee2e2;
+        color: #dc2626;
+    }
 
-.priority-badge.medium {
-    background: #fef3c7;
-    color: #d97706;
-}
+    &.medium {
+        background: #fef3c7;
+        color: #d97706;
+    }
 
-.priority-badge.low {
-    background: #dbeafe;
-    color: #2563eb;
+    &.low {
+        background: #dbeafe;
+        color: #2563eb;
+    }
 }
 
 .status-badge {
@@ -379,31 +373,26 @@
     padding: 6px 12px;
     border-radius: 6px;
     display: inline-block;
-}
 
-.status-badge.todo {
-    background: #dbeafe;
-    color: #2563eb;
-}
+    &.todo {
+        background: #dbeafe;
+        color: #2563eb;
+    }
 
-.status-badge.in_progress {
-    background: #d1fae5;
-    color: #059669;
-}
+    &.in_progress {
+        background: #d1fae5;
+        color: #059669;
+    }
 
-.status-badge.done {
-    background: #fef3c7;
-    color: #d97706;
-}
+    &.done {
+        background: #fef3c7;
+        color: #d97706;
+    }
 
-.status-badge.archived {
-    background: #f3f4f6;
-    color: #6b7280;
-}
-
-.col-actions {
-    display: flex;
-    justify-content: center;
+    &.archived {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
 }
 
 .btn-delete {
@@ -414,40 +403,91 @@
     padding: 6px;
     border-radius: 6px;
     transition: all 0.2s;
+
+    &:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .material-icons {
+        font-size: 20px;
+    }
 }
 
-.btn-delete:hover {
-    background: #fee2e2;
-    color: #dc2626;
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.btn-delete .material-icons {
-    font-size: 20px;
+@media (max-width: 768px) {
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+
+        .header-left {
+            flex-direction: column;
+            align-items: stretch;
+            min-width: 0;
+        }
+
+        .header-right {
+            justify-content: space-between;
+        }
+
+        .search-bar {
+            max-width: none;
+        }
+    }
+
+    .table-head {
+        display: none;
+    }
+
+    .table-row {
+        grid-template-columns: 50px 1fr 100px;
+        grid-template-areas:
+            "check title actions"
+            ". meta meta";
+        padding: 16px;
+        gap: 8px;
+
+        .col-check {
+            grid-area: check;
+        }
+
+        .col-title {
+            grid-area: title;
+        }
+
+        .col-actions {
+            grid-area: actions;
+            justify-content: flex-end;
+        }
+
+        .col-priority,
+        .col-status {
+            display: none;
+        }
+
+        /* Inline meta for mobile */
+        &::after {
+            content: "";
+            grid-area: meta;
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+    }
 }
 
-/* EMPTY STATE */
-.empty-state {
-    text-align: center;
-    padding: 80px 20px;
-}
+@media (max-width: 480px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
 
-.empty-state .material-icons {
-    font-size: 64px;
-    color: #d1d5db;
-    margin-bottom: 16px;
-}
-
-.empty-state p {
-    color: #6b7280;
-    margin-bottom: 16px;
-}
-
-.create-first-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
+    .stat-card {
+        padding: 16px;
+    }
 }

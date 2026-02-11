@@ -4,16 +4,26 @@
     height: calc(100vh - 250px);
     overflow-x: auto;
     padding: 0.5rem;
+    scroll-snap-type: x mandatory;
+
+    &::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
 }
 
 .kanban-column {
-    flex: 1;
-    min-width: 300px;
+    flex: 0 0 350px;
     background: rgba(248, 250, 252, 0.5);
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
     border: 1px solid #e2e8f0;
+    scroll-snap-align: start;
 }
 
 .column-header {
@@ -140,7 +150,7 @@
     }
 }
 
-/* CDK Drag & Drop Styles */
+/* ===== CDV Drag & Drop Styles ===== */
 .cdk-drag-preview {
     box-sizing: border-box;
     border-radius: 0.75rem;
@@ -157,4 +167,17 @@
 
 .task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .kanban-container {
+        height: calc(100vh - 280px);
+        gap: 1rem;
+    }
+
+    .kanban-column {
+        flex: 0 0 85vw;
+        min-width: 300px;
+    }
 }

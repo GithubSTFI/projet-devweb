@@ -29,15 +29,15 @@
 /* ===== WELCOME CARD ===== */
 .welcome-card {
     background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    border-radius: 12px;
-    padding: 12px 28px;
+    border-radius: 20px;
+    padding: 24px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 32px;
 }
 
 .welcome-card::after {
@@ -56,11 +56,11 @@
     z-index: 2;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
 }
 
 .welcome-content h1 {
-    font-size: 1.4rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: white;
     margin: 0;
@@ -73,10 +73,10 @@
     gap: 8px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    padding: 6px 16px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -112,9 +112,10 @@
     right: 30px;
 }
 
+/* ===== GRID SYSTEM ===== */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 24px;
     align-items: start;
 }
@@ -124,16 +125,14 @@
     background: white;
     border-radius: 20px;
     padding: 28px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border: 1px solid #f1f5f9;
-    height: 100%;
 }
 
 .chart-container {
     position: relative;
     height: 250px;
     width: 100%;
-    margin-top: 10px;
 }
 
 .summary-header {
@@ -159,8 +158,8 @@
     font-weight: 700;
     font-size: 0.9rem;
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
     background: #f5f3ff;
     transition: all 0.2s;
 }
@@ -174,17 +173,22 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 }
 
 .stat-item {
-    padding: 16px;
-    border-radius: 16px;
+    padding: 20px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 8px;
+    gap: 12px;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: scale(1.02);
+    }
 }
 
 .stat-item.todo {
@@ -204,9 +208,9 @@
 }
 
 .stat-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,46 +236,33 @@
     color: white;
 }
 
-.stat-icon .material-icons {
-    font-size: 22px;
-}
-
 .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: #0f172a;
     line-height: 1;
 }
 
 .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #64748b;
-    margin-top: 2px;
 }
 
 .recent-tasks-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .task-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px;
+    padding: 16px;
     border: 1px solid #f1f5f9;
-    border-radius: 12px;
-}
-
-.task-check .material-icons {
-    font-size: 20px;
-    color: #94a3b8;
-}
-
-.task-check .material-icons.check_circle {
-    color: #10b981;
+    border-radius: 16px;
+    cursor: pointer;
 }
 
 .task-title {
@@ -279,12 +270,6 @@
     color: #1e293b;
     font-size: 0.95rem;
     margin-bottom: 4px;
-}
-
-.task-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .priority-badge {
@@ -310,8 +295,41 @@
     color: #2563eb;
 }
 
-.status-text {
-    font-size: 0.75rem;
-    color: #64748b;
-    font-weight: 500;
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .welcome-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+
+        .welcome-content {
+            flex-direction: column;
+            gap: 16px;
+        }
+    }
+
+    .welcome-content h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card,
+    .chart-card {
+        padding: 24px 16px;
+    }
 }

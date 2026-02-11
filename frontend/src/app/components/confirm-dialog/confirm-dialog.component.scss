@@ -13,6 +13,87 @@
     animation: fadeIn 0.2s;
 }
 
+.dialog-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+}
+
+.dialog-icon {
+    font-size: 24px;
+    color: #ef4444;
+}
+
+.dialog-message {
+    color: #64748b;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancel,
+.btn-confirm {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.btn-confirm {
+    background: #ef4444;
+    color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .dialog-card {
+        padding: 20px;
+    }
+
+    .dialog-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    .btn-cancel,
+    .btn-confirm {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -21,16 +102,6 @@
     to {
         opacity: 1;
     }
-}
-
-.dialog-card {
-    background: white;
-    border-radius: 16px;
-    padding: 28px;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    animation: slideUp 0.3s;
 }
 
 @keyframes slideUp {
@@ -43,65 +114,4 @@
         transform: translateY(0);
         opacity: 1;
     }
-}
-
-.dialog-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.dialog-icon {
-    font-size: 28px;
-    color: #ef4444;
-}
-
-.dialog-header h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.dialog-message {
-    color: #6b7280;
-    margin: 0 0 24px 0;
-    line-height: 1.5;
-}
-
-.dialog-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-}
-
-.btn-cancel,
-.btn-confirm {
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-}
-
-.btn-cancel {
-    background: #f3f4f6;
-    color: #6b7280;
-}
-
-.btn-cancel:hover {
-    background: #e5e7eb;
-    color: #374151;
-}
-
-.btn-confirm {
-    background: #ef4444;
-    color: white;
-}
-
-.btn-confirm:hover {
-    background: #dc2626;
 }

@@ -1,4 +1,6 @@
-<div class="dashboard-layout">
+<div class="dashboard-layout" [class.sidebar-open]="sidebarOpen()">
+    <!-- OVERLAY FOR MOBILE -->
+    <div class="sidebar-overlay" (click)="toggleSidebar()"></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
@@ -45,7 +47,12 @@
         <div class="scrollable-content">
             <!-- TOP BAR -->
             <header class="top-header">
-                <h2>Tableau de bord</h2>
+                <div class="header-left">
+                    <button class="mobile-toggle" (click)="toggleSidebar()">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    <h2>Tableau de bord</h2>
+                </div>
                 <div class="header-actions">
                     <div class="search-box">
                         <span class="material-icons">search</span>
