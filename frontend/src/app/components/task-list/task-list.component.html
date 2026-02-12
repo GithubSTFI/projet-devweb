@@ -33,11 +33,10 @@
 
             <div class="header-right">
                 <div class="view-toggle">
-                    <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="Vue Liste">
+                    <button [class.active]="viewMode() === 'list'" (click)="setViewMode('list')" title="Vue Liste">
                         <span class="material-icons">format_list_bulleted</span>
                     </button>
-                    <button [class.active]="viewMode() === 'kanban'" (click)="viewMode.set('kanban')"
-                        title="Vue Kanban">
+                    <button [class.active]="viewMode() === 'kanban'" (click)="setViewMode('kanban')" title="Vue Kanban">
                         <span class="material-icons">view_kanban</span>
                     </button>
                 </div>

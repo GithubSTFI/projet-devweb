@@ -67,14 +67,24 @@ export class TaskListComponent implements OnInit {
         { label: 'Basse', value: 'LOW' }
     ];
 
-    // Effect déclenché par tout changement de filtre ou recherche
+    // Effect déclenché par tout changement de filtre, recherche, pagination ou vue
     effectRef = effect(() => {
-        const query = this.searchQuery();
-        // Debounce simple via timeout si nécessaire, mais ici on réagit direct
+        // Nous accédons explicitement aux signaux pour garantir le tracking
+        this.filter();
+        this.priorityFilter();
+        this.searchQuery();
+        this.page();
+        this.viewMode();
+
         this.loadTasks();
     });
 
     ngOnInit() { }
+
+    setViewMode(mode: 'list' | 'kanban') {
+        this.page.set(1);
+        this.viewMode.set(mode);
+    }
 
     setFilter(status: string) {
         this.page.set(1);
@@ -93,12 +103,16 @@ export class TaskListComponent implements OnInit {
 
     loadTasks() {
         this.isLoading.set(true);
+        // En mode Kanban, on charge "tout" (ex: 1000 items) pour avoir une vue complète
+        // En mode Liste, on utilise la pagination standard
+        const limit = this.viewMode() === 'kanban' ? 1000 : this.limit();
+
         this.api.getTasks(
             this.filter(),
             this.priorityFilter(),
             this.searchQuery(),
             this.page(),
-            this.limit()
+            limit
         ).subscribe({
             next: (res: any) => {
                 this.tasks.set(res.data);

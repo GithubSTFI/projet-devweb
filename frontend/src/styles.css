@@ -1,4 +1,6 @@
-/* ===== GLOBAL RESET & MATERIAL ICONS ===== */
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -7,14 +9,55 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: #0f172a;
+  color: #f8fafc;
+  overflow-x: hidden;
 }
 
-/* Material Icons Helper */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Utility Classes */
+.custom-scroll {
+  overflow-y: auto;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.text-muted {
+  color: #94a3b8;
+}
+
+/* Material Icons */
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -27,255 +70,6 @@ body {
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  vertical-align: middle;
   -webkit-font-feature-settings: 'liga';
-  font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
-}
-
-/* Header */
-.header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 30px;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: #1a202c;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-}
-
-.header p {
-  color: #718096;
-  margin: 8px 0 0;
-  font-size: 1rem;
-}
-
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
-}
-
-/* Modern Cards */
-.card {
-  background: white;
-  border: none;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-.card h2 {
-  font-size: 1.25rem;
-  margin-top: 0;
-  margin-bottom: 25px;
-  color: #2d3748;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 15px;
-  font-weight: 600;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* Inputs & Forms */
-.form-group {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 25px;
-}
-
-.input {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #cbd5e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 24px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: #3182ce;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2b6cb0;
-}
-
-.btn-success {
-  background: #38a169;
-  color: white;
-}
-
-.btn-success:hover {
-  background: #2f855a;
-}
-
-.btn-danger {
-  background: #e53e3e;
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #c53030;
-}
-
-.btn-warning {
-  background: #edf2f7;
-  color: #2d3748;
-}
-
-.btn-warning:hover {
-  background: #e2e8f0;
-}
-
-.btn-sm {
-  padding: 6px 12px;
-  font-size: 0.875rem;
-}
-
-/* Drag & Drop Upload */
-.drop-zone {
-  border: 2px dashed #cbd5e0;
-  border-radius: 12px;
-  padding: 30px;
-  text-align: center;
-  color: #718096;
-  transition: all 0.2s;
-  background: #f7fafc;
-  cursor: pointer;
-}
-
-.drop-zone.dragover {
-  border-color: #4299e1;
-  background: #ebf8ff;
-  color: #2b6cb0;
-}
-
-.drop-zone p {
-  margin: 0;
-  font-weight: 500;
-}
-
-/* Tables */
-.task-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.task-table th {
-  text-align: left;
-  padding: 15px;
-  color: #718096;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.task-table td {
-  padding: 15px;
-  border-bottom: 1px solid #edf2f7;
-  vertical-align: middle;
-}
-
-.task-table tr:hover td {
-  background-color: #f7fafc;
-}
-
-/* Status Badges */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.status-done {
-  background-color: #c6f6d5;
-  color: #22543d;
-}
-
-.status-pending {
-  background-color: #feebc8;
-  color: #744210;
-}
-
-.text-muted {
-  color: #a0aec0;
-}
-
-/* Global Theme Updates for Auth */
-:root {
-  --primary: #4F46E5;
-  --primary-hover: #4338ca;
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }

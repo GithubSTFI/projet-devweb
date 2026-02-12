@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $primary: #6366f1;
 $primary-light: #818cf8;
 $secondary: #8b5cf6;
@@ -14,7 +16,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 20000; // Très haut
+    z-index: 20000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,12 +25,12 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .modal-content {
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(15, 23, 42, 0.98); // Fond un peu plus opaque
     backdrop-filter: blur(20px);
-    width: 600px;
-    max-width: 95%;
-    max-height: 90vh;
-    border-radius: 24px;
+    width: 500px; // Réduit
+    max-width: 90%;
+    max-height: 85vh;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -38,7 +40,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .modal-header {
-    padding: 18px 24px;
+    padding: 16px 20px;
     border-bottom: 1px solid $glass-border;
     display: flex;
     justify-content: space-between;
@@ -50,21 +52,21 @@ $glass-border: rgba(255, 255, 255, 0.08);
     font-size: 1.1rem;
     color: white;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .btn-icon-mode {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid $glass-border;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,10 +87,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
     cursor: pointer;
     color: #f43f5e;
     padding: 4px;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.3s;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,10 +103,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .modal-body {
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     overflow-y: auto;
 
     &::-webkit-scrollbar {
@@ -119,43 +121,43 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
 /* VIEW MODE STYLES */
 .task-title-view {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 800;
     color: white;
-    margin: 0 0 12px 0;
-    line-height: 1.2;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
     letter-spacing: -0.02em;
 }
 
 .badges-row {
     display: flex;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .badge {
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
     &.priority.high {
         background: rgba($danger, 0.15);
-        color: #fda4af;
+        color: color.mix(white, $danger, 40%);
         border: 1px solid rgba($danger, 0.2);
     }
 
     &.priority.medium {
         background: rgba($warning, 0.15);
-        color: #fcd34d;
+        color: color.mix(white, $warning, 40%);
         border: 1px solid rgba($warning, 0.2);
     }
 
     &.priority.low {
         background: rgba($success, 0.15);
-        color: #6ee7b7;
+        color: color.mix(white, $success, 40%);
         border: 1px solid rgba($success, 0.2);
     }
 
@@ -169,29 +171,29 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 16px;
     border-top: 1px solid $glass-border;
     border-bottom: 1px solid $glass-border;
-    padding: 24px 0;
+    padding: 16px 0;
 }
 
 .detail-item {
     label {
         display: block;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         font-weight: 700;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.5);
         text-transform: uppercase;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
 
     span {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.95);
         font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 }
 
@@ -201,98 +203,126 @@ $glass-border: rgba(255, 255, 255, 0.08);
     gap: 6px;
     background: rgba($primary, 0.15);
     color: $primary-light;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    margin-top: 4px;
+    margin-top: 2px;
 
     .material-icons {
-        font-size: 16px;
+        font-size: 14px;
     }
 }
 
 .description-text {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.7;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
     margin: 0;
     white-space: pre-wrap;
     background: rgba(0, 0, 0, 0.2);
-    padding: 16px;
-    border-radius: 12px;
+    padding: 14px;
+    border-radius: 10px;
 }
 
 /* FORM STYLES */
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 
     label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 700;
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.5);
         text-transform: uppercase;
-        padding-left: 4px;
+        padding-left: 2px;
     }
 }
 
 .form-row {
     display: flex;
-    gap: 20px;
+    gap: 16px;
+
+    .half {
+        flex: 1;
+        min-width: 0;
+    }
 }
 
 .input-main,
 .input-select,
 .input-desc {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 14px;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid $glass-border;
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
     font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: all 0.3s;
 
     &:focus {
         border-color: rgba($primary, 0.5);
         background: rgba(0, 0, 0, 0.4);
-        box-shadow: 0 0 0 4px rgba($primary, 0.1);
+        box-shadow: 0 0 0 3px rgba($primary, 0.1);
         outline: none;
     }
 }
 
+/* CUSTOM SELECT */
+.input-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+    padding-right: 30px;
+    cursor: pointer;
+
+    option {
+        background-color: #1e293b;
+        color: white;
+        padding: 8px;
+    }
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.35);
+    }
+}
+
 .input-desc {
-    min-height: 120px;
+    min-height: 100px;
     resize: vertical;
 }
 
 /* FILES SECTION */
 .files-section {
     background: rgba(255, 255, 255, 0.03);
-    padding: 20px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 12px;
     border: 1px solid $glass-border;
 
     .section-title-with-icon {
         display: flex;
         align-items: center;
-        gap: 10px;
-        color: rgba(255, 255, 255, 0.5);
-        margin-bottom: 16px;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 12px;
 
         h3 {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .material-icons {
-            font-size: 18px;
+            font-size: 16px;
         }
     }
 }
@@ -300,19 +330,20 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .file-list-compact {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 12px;
 }
 
 .file-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.05);
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.2s;
+    font-size: 0.85rem;
 
     &:hover {
         background: rgba(255, 255, 255, 0.08);
@@ -324,7 +355,6 @@ $glass-border: rgba(255, 255, 255, 0.08);
     color: $primary-light;
     font-weight: 600;
     flex: 1;
-    font-size: 0.85rem;
     text-decoration: none;
 
     &:hover {
@@ -336,14 +366,14 @@ $glass-border: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px dashed rgba(255, 255, 255, 0.1);
-    padding: 14px;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    padding: 12px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
     width: 100%;
     transition: all 0.3s;
@@ -356,22 +386,22 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .modal-footer {
-    padding: 16px 24px;
+    padding: 16px 20px;
     border-top: 1px solid $glass-border;
     display: flex;
     justify-content: flex-end;
     background: rgba(0, 0, 0, 0.2);
-    gap: 16px;
+    gap: 12px;
 }
 
 .btn-save {
     background: linear-gradient(135deg, $primary, $secondary);
     color: white;
     border: none;
-    padding: 12px 28px;
-    border-radius: 12px;
+    padding: 10px 24px;
+    border-radius: 10px;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     transition: all 0.3s;
@@ -386,10 +416,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.7);
     border: 1px solid $glass-border;
-    padding: 12px 24px;
-    border-radius: 12px;
+    padding: 10px 20px;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition: all 0.3s;
 
     &:hover {
@@ -398,7 +428,19 @@ $glass-border: rgba(255, 255, 255, 0.08);
     }
 }
 
-/* ===== RESPONSIVE ===== */
+.alert-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba($primary, 0.1);
+    color: $primary-light;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba($primary, 0.2);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
 @media (max-width: 640px) {
     .modal-content {
         width: 100%;
@@ -409,16 +451,16 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
     .form-row {
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
     }
 
     .detail-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 12px;
     }
 
     .task-title-view {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
     }
 }
 

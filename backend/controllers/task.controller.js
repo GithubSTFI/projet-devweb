@@ -77,21 +77,29 @@ exports.createTask = async (req, res) => {
         await logActivity('CREATE_TASK', 'TASK', task.id, userId);
 
         // Internal Notification to assigned user
-        if (assignedUserId && assignedUserId !== userId) {
+        if (assignedUserId && parseInt(assignedUserId) !== userId) {
+            console.log(`[TASK] Assignation détectée pour la tâche ${task.id} à l'utilisateur ${assignedUserId}`);
             await Notification.create({
                 userId: assignedUserId,
                 message: `Une nouvelle tâche vous a été assignée : ${title}`
             });
 
             // Email Notification (Async)
-            const recipient = await User.findByPk(assignedUserId);
-            if (recipient) {
-                sendEmail(
-                    recipient.email,
-                    'Nouvelle tâche assignée',
-                    `Bonjour, la tâche "${title}" vous a été assignée.`,
-                    `<h1>Nouvelle assignation</h1><p>La tâche <strong>${title}</strong> vous a été assignée par ${req.user.username}.</p>`
-                );
+            try {
+                const recipient = await User.findByPk(assignedUserId);
+                if (recipient) {
+                    console.log(`[EMAIL] Envoi mail à ${recipient.email}...`);
+                    sendEmail(
+                        recipient.email,
+                        'Nouvelle tâche assignée',
+                        `Bonjour, la tâche "${title}" vous a été assignée.`,
+                        `<h1>Nouvelle assignation</h1><p>La tâche <strong>${title}</strong> vous a été assignée par ${req.user.username}.</p>`
+                    );
+                } else {
+                    console.warn(`[EMAIL] Utilisateur assigné ${assignedUserId} non trouvé.`);
+                }
+            } catch (emailErr) {
+                console.error('[EMAIL] Erreur lors de la récupération du destinataire:', emailErr);
             }
         }
 
@@ -136,19 +144,28 @@ exports.updateTask = async (req, res) => {
             }
 
             // If assignment changed
-            if (updates.assignedUserId && updates.assignedUserId !== oldAssignedId) {
+            if (updates.assignedUserId && parseInt(updates.assignedUserId) !== oldAssignedId) {
+                console.log(`[TASK] Réassignation détectée pour la tâche ${id} vers l'utilisateur ${updates.assignedUserId}`);
                 await Notification.create({
                     userId: updates.assignedUserId,
                     message: `La tâche "${taskToCheck.title}" vous a été assignée.`
                 });
 
-                const recipient = await User.findByPk(updates.assignedUserId);
-                if (recipient) {
-                    sendEmail(
-                        recipient.email,
-                        'Assignation de tâche',
-                        `La tâche "${taskToCheck.title}" vous a été assignée.`
-                    );
+                try {
+                    const recipient = await User.findByPk(updates.assignedUserId);
+                    if (recipient) {
+                        console.log(`[EMAIL] Envoi mail de réassignation à ${recipient.email}...`);
+                        sendEmail(
+                            recipient.email,
+                            'Assignation de tâche',
+                            `La tâche "${taskToCheck.title}" vous a été assignée.`,
+                            `<h1>Nouvelle assignation</h1><p>La tâche <strong>${taskToCheck.title}</strong> vous a été assignée.</p>`
+                        );
+                    } else {
+                        console.warn(`[EMAIL] Utilisateur assigné ${updates.assignedUserId} non trouvé.`);
+                    }
+                } catch (emailErr) {
+                    console.error('[EMAIL] Erreur lors de la récupération du destinataire:', emailErr);
                 }
             }
         }

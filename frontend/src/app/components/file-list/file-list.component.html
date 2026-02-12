@@ -1,26 +1,55 @@
-<div class="file-page">
-    <div class="header">
-        <h1>Mes Fichiers</h1>
-        <p class="subtitle">Tous les documents liés à vos tâches</p>
+<div class="file-page fade-in">
+    <!-- HEADER -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">Mes Fichiers</h1>
+            <p class="stats-text">
+                <span class="highlight">{{ files().length }}</span> documents stockés
+                <span class="separator">•</span>
+                <span>Accessibles à tout moment</span>
+            </p>
+        </div>
+        <div class="header-decoration"></div>
     </div>
 
+    <!-- CONTENT GRID -->
     <div class="file-grid" *ngIf="files().length > 0">
         <div *ngFor="let file of files()" class="file-card">
-            <div class="file-info">
-                <span class="material-icons icon">insert_drive_file</span>
-                <div class="details">
-                    <span class="name">{{ file.originalName }}</span>
-                    <span class="size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+            <!-- File Icon Block -->
+            <div class="card-icon-area">
+                <div class="icon-wrapper">
+                    <span class="material-icons">{{ getFileIcon(file.filename) }}</span>
                 </div>
             </div>
-            <a [href]="getDownloadUrl(file.filename)" target="_blank" class="download-btn">
-                <span class="material-icons">download</span>
-            </a>
+
+            <!-- File Details -->
+            <div class="card-details">
+                <h3 class="file-name" [title]="file.originalName">{{ file.originalName }}</h3>
+                <div class="file-meta">
+                    <span class="size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+                    <span class="separator">•</span>
+                    <span class="ext">{{ getFileExtension(file.filename) }}</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card-actions">
+                <a [href]="getDownloadUrl(file.filename)" target="_blank" class="btn-action" title="Télécharger">
+                    <span class="material-icons">download</span>
+                </a>
+                <button class="btn-action secondary" title="Aperçu (non dispo)">
+                    <span class="material-icons">visibility</span>
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- EMPTY STATE -->
     <div class="empty-state" *ngIf="files().length === 0">
-        <span class="material-icons">folder_off</span>
-        <p>Aucun fichier trouvé. Ajoutez des fichiers dans vos tâches.</p>
+        <div class="empty-icon-wrapper">
+            <span class="material-icons">folder_open</span>
+        </div>
+        <h3>Aucun fichier</h3>
+        <p>Les fichiers attachés à vos tâches apparaîtront ici.</p>
     </div>
 </div>

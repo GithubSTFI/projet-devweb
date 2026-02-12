@@ -23,4 +23,20 @@ export class FileListComponent implements OnInit {
     getDownloadUrl(filename: string) {
         return 'http://localhost:3000/api/download/' + filename;
     }
+
+    getFileIcon(filename: string): string {
+        const ext = filename.split('.').pop()?.toLowerCase();
+        switch (ext) {
+            case 'pdf': return 'picture_as_pdf';
+            case 'jpg': case 'jpeg': case 'png': case 'gif': return 'image';
+            case 'doc': case 'docx': return 'description';
+            case 'xls': case 'xlsx': return 'table_view';
+            case 'zip': case 'rar': return 'folder_zip';
+            default: return 'insert_drive_file';
+        }
+    }
+
+    getFileExtension(filename: string): string {
+        return filename.split('.').pop()?.toUpperCase() || '-';
+    }
 }
