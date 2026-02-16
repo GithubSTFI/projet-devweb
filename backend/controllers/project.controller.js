@@ -8,13 +8,19 @@ exports.getMyProjects = async (req, res) => {
         const userId = req.user.id;
         // Projects where user is owner OR member
         const projects = await Project.findAll({
+            where: {
+                [require('sequelize').Op.or]: [
+                    { ownerId: userId },
+                    { '$members.id$': userId }
+                ]
+            },
             include: [
                 {
                     model: User,
                     as: 'members',
-                    where: { id: userId },
+                    attributes: ['id', 'username'],
                     required: false,
-                    attributes: ['id', 'username']
+                    through: { attributes: [] }
                 },
                 {
                     model: User,
@@ -24,20 +30,16 @@ exports.getMyProjects = async (req, res) => {
                 {
                     model: Task,
                     as: 'tasks',
-                    attributes: ['id', 'title', 'status', 'priority', 'dueDate', 'updatedAt']
+                    attributes: ['id', 'title', 'status', 'priority', 'dueDate', 'updatedAt', 'projectId']
                 }
             ],
-            where: {
-                [require('sequelize').Op.or]: [
-                    { ownerId: userId },
-                    { '$members.id$': userId }
-                ]
-            },
-            order: [
-                ['updatedAt', 'DESC'],
-                [{ model: Task, as: 'tasks' }, 'updatedAt', 'DESC']
-            ]
+            order: [['updatedAt', 'DESC']],
+            distinct: true
         });
+        console.log(`[PROJECTS] User ${userId} found ${projects.length} projects`);
+        if (projects.length > 0) {
+            console.log(`[PROJECTS] First project tasks count: ${projects[0].tasks?.length || 0}`);
+        }
         res.json({ data: projects });
     } catch (error) {
         res.status(500).json({ error: error.message });

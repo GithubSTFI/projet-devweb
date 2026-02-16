@@ -64,16 +64,18 @@ export class DashboardOverviewComponent implements OnInit, AfterViewInit {
 
         this.projectService.getMyProjects().subscribe({
             next: (res) => {
+                console.log('DEBUG DASHBOARD PROJECTS:', res.data);
                 this.projects.set(res.data);
             },
             error: (err) => console.error(err)
         });
     }
 
-    getTaskStats(project: Project): string {
-        if (!project.tasks || project.tasks.length === 0) return '0/0';
-        const done = project.tasks.filter(t => t.status === 'DONE').length;
-        return `${done}/${project.tasks.length}`;
+    getTaskStats(project: any): string {
+        const tasks = project.tasks || project.Tasks || [];
+        if (tasks.length === 0) return '0/0';
+        const done = tasks.filter((t: any) => t.status === 'DONE').length;
+        return `${done}/${tasks.length}`;
     }
 
     initChart() {
@@ -91,22 +93,37 @@ export class DashboardOverviewComponent implements OnInit, AfterViewInit {
                     data: [s.todo || 0, s.inProgress || 0, s.done || 0],
                     backgroundColor: ['#f59e0b', '#6366f1', '#10b981'],
                     borderWidth: 0,
-                    hoverOffset: 8
+                    hoverOffset: 12,
+                    borderRadius: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '70%',
+                cutout: '75%',
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
                             usePointStyle: true,
-                            padding: 15,
-                            font: { family: 'Inter', size: 11, weight: 'bold' },
+                            padding: 20,
+                            font: { family: 'Inter', size: 12, weight: 'bold' },
                             color: '#94a3b8'
                         }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { family: 'Inter', size: 13 },
+                        bodyFont: { family: 'Inter', size: 13 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: true
                     }
                 }
             }

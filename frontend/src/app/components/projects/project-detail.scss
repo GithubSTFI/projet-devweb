@@ -349,8 +349,8 @@ $text-muted: #94a3b8;
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -362,6 +362,7 @@ $text-muted: #94a3b8;
     border-radius: 20px;
     padding: 32px;
     width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 
     &.task-modal {
         max-width: 800px;
@@ -369,31 +370,161 @@ $text-muted: #94a3b8;
         padding: 0;
         overflow: hidden;
     }
+}
+
+/* INVITE MODAL PREMIUM */
+.invite-modal-premium {
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+
+    .modal-header-icon {
+        width: 64px;
+        height: 64px;
+        background: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+
+        .material-icons {
+            font-size: 32px;
+        }
+    }
 
     h2 {
         color: white;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
+        font-size: 1.5rem;
     }
 
     p {
         color: $text-muted;
         margin-bottom: 24px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .invite-form-modern {
+        margin-bottom: 30px;
+        text-align: left;
+
+        .input-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px 16px;
+            transition: all 0.2s;
+
+            .material-icons {
+                font-size: 20px;
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            input {
+                background: none;
+                border: none;
+                color: white;
+                padding: 12px 0;
+                width: 100%;
+                font-size: 0.95rem;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+
+            &:focus-within {
+                border-color: #6366f1;
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            &.invalid {
+                border-color: #f43f5e;
+                animation: shake 0.4s ease-in-out;
+            }
+        }
+
+        .validation-msg {
+            color: #f43f5e;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            padding-left: 48px;
+        }
+    }
+
+    .modal-actions-premium {
+        display: flex;
+        gap: 12px;
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: $text-muted;
+            border: none;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+        }
+
+        .btn-send {
+            background: #6366f1;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            &:hover:not(:disabled) {
+                background: #818cf8;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .material-icons {
+                font-size: 18px;
+            }
+        }
     }
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-}
+@keyframes shake {
 
-.btn-secondary {
-    background: none;
-    border: none;
-    color: $text-muted;
-    cursor: pointer;
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
 }
 
 @media (max-width: 1024px) {

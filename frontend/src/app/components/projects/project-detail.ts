@@ -39,6 +39,11 @@ export class ProjectDetailComponent implements OnInit {
     showInviteModal = signal(false);
     inviteEmail = signal('');
     inviteRole = signal('MEMBER');
+    isEmailValid = computed(() => {
+        const email = this.inviteEmail();
+        const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return re.test(email);
+    });
 
     // Task Management
     showTaskModal = signal(false);
@@ -79,7 +84,10 @@ export class ProjectDetailComponent implements OnInit {
     }
 
     sendInvite() {
-        if (!this.inviteEmail()) return;
+        if (!this.isEmailValid()) {
+            this.toast.show('Veuillez entrer une adresse email valide', 'info');
+            return;
+        }
         this.projectService.inviteMember(this.projectId, this.inviteEmail(), this.inviteRole()).subscribe({
             next: () => {
                 this.toast.show('Invitation envoyée !', 'success');

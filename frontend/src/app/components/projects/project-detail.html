@@ -124,22 +124,32 @@
         </section>
     </div>
 
-    <!-- MODAL INVITE -->
+    <!-- MODAL INVITE (PREMIUM) -->
     <div class="modal-overlay" *ngIf="showInviteModal()" (click)="showInviteModal.set(false)" [@fadeSlide]>
-        <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-content invite-modal-premium" (click)="$event.stopPropagation()">
+            <div class="modal-header-icon">
+                <span class="material-icons">send</span>
+            </div>
             <h2>Inviter un membre</h2>
-            <p>Envoyez une invitation par email pour rejoindre "{{ project()?.name }}".</p>
+            <p>Envoyez une invitation par email pour rejoindre <strong>"{{ project()?.name }}"</strong>.</p>
 
-            <div class="form-group">
-                <label>Adresse Email</label>
-                <input type="email" [ngModel]="inviteEmail()" (ngModelChange)="inviteEmail.set($event)"
-                    placeholder="collegue@exemple.com">
+            <div class="invite-form-modern">
+                <div class="input-with-icon" [class.invalid]="inviteEmail().length > 0 && !isEmailValid()">
+                    <span class="material-icons">alternate_email</span>
+                    <input type="email" [ngModel]="inviteEmail()" (ngModelChange)="inviteEmail.set($event)"
+                        placeholder="collegue@exemple.com" autofocus>
+                </div>
+                <div class="validation-msg" *ngIf="inviteEmail().length > 0 && !isEmailValid()">
+                    Adresse email invalide
+                </div>
             </div>
 
-            <div class="modal-actions">
-                <button class="btn-secondary" (click)="showInviteModal.set(false)">Fermer</button>
-                <button class="btn-primary" (click)="sendInvite()" [disabled]="!inviteEmail()">Envoyer
-                    l'invitation</button>
+            <div class="modal-actions-premium">
+                <button class="btn-cancel" (click)="showInviteModal.set(false)">Annuler</button>
+                <button class="btn-send" (click)="sendInvite()" [disabled]="!isEmailValid()">
+                    <span>Envoyer l'invitation</span>
+                    <span class="material-icons">arrow_forward</span>
+                </button>
             </div>
         </div>
     </div>

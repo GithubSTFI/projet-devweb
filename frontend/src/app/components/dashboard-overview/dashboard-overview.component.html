@@ -99,7 +99,10 @@
                     </div>
 
                     <div class="pg-footer" [routerLink]="['/dashboard/projects', p.id]">
-                        <span>{{ p.tasks?.length || 0 }} tâches au total</span>
+                        <span class="pg-stats-text">
+                            <span class="material-icons">task_alt</span>
+                            {{ getTaskStats(p) }} tâches
+                        </span>
                         <span class="view-more">Détails <span class="material-icons">arrow_forward</span></span>
                     </div>
                 </div>
