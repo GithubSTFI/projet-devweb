@@ -25,6 +25,10 @@
                 <span class="material-icons">task_alt</span>
                 <span class="nav-text">Mes tâches</span>
             </a>
+            <a routerLink="/dashboard/projects" routerLinkActive="active" class="nav-item" (click)="closeMobileMenu()">
+                <span class="material-icons">work_outline</span>
+                <span class="nav-text">Mes Projets</span>
+            </a>
             <a routerLink="/dashboard/files" routerLinkActive="active" class="nav-item" (click)="closeMobileMenu()">
                 <span class="material-icons">folder</span>
                 <span class="nav-text">Fichiers</span>
@@ -52,15 +56,16 @@
         </nav>
 
         <!-- User Section at Bottom -->
-        <div class="user-sidebar">
+        <div class="user-sidebar" routerLink="/dashboard/profile" title="Voir mon profil">
             <div class="avatar">
-                {{ (user()?.username || 'U')[0].toUpperCase() }}
+                <img *ngIf="user()?.avatarUrl" [src]="getAvatarUrl(user()?.avatarUrl)" alt="User avatar">
+                <span *ngIf="!user()?.avatarUrl">{{ (user()?.username || 'U')[0].toUpperCase() }}</span>
             </div>
             <div class="user-info">
                 <span class="user-name">{{ user()?.username }}</span>
                 <span class="user-role">{{ user()?.role || 'User' }}</span>
             </div>
-            <span class="material-icons logout-btn" (click)="logout()" title="Déconnexion">
+            <span class="material-icons logout-btn" (click)="logout(); $event.stopPropagation()" title="Déconnexion">
                 logout
             </span>
         </div>
@@ -92,8 +97,8 @@
                         <span class="count">{{ unreadCount() }} non lues</span>
                     </div>
                     <div class="dropdown-body">
-                        <div *ngFor="let n of notifications()" class="notification-item" [class.unread]="!n.isRead"
-                            (click)="markAsRead(n.id)">
+                        <div *ngFor="let n of notifications().slice(0, 4)" class="notification-item"
+                            [class.unread]="!n.isRead" (click)="markAsRead(n.id)">
                             <div class="n-dot" *ngIf="!n.isRead"></div>
                             <div class="n-content">
                                 <p class="n-message">{{ n.message }}</p>
@@ -104,6 +109,11 @@
                             <span class="material-icons">notifications_off</span>
                             <p>Aucune notification</p>
                         </div>
+                    </div>
+                    <div class="dropdown-footer" *ngIf="notifications().length > 0">
+                        <a routerLink="/dashboard/notifications" (click)="showNotifications.set(false)">
+                            Voir toutes les notifications
+                        </a>
                     </div>
                 </div>
             </div>

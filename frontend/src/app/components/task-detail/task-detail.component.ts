@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, Simp
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
+import { ProjectService } from '../../project.service';
 
 @Component({
     selector: 'app-task-detail',
@@ -13,10 +14,12 @@ import { ApiService, Task } from '../../api.service';
 export class TaskDetailComponent implements OnChanges {
     @Input() task: Partial<Task> = {};
     @Input() isNew = false;
+    @Input() projectId?: number;
     @Output() closeEvent = new EventEmitter<void>();
     @Output() updateEvent = new EventEmitter<void>();
 
     private api = inject(ApiService);
+    private projectService = inject(ProjectService);
     files = signal<any[]>([]);
     users = signal<any[]>([]);
     isUploading = false;
@@ -26,7 +29,7 @@ export class TaskDetailComponent implements OnChanges {
     mode = signal<'VIEW' | 'EDIT'>('VIEW');
 
     ngOnInit() {
-        this.loadUsers();
+        this.loadAssignableUsers();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -41,15 +44,27 @@ export class TaskDetailComponent implements OnChanges {
                 this.editTask.priority = this.editTask.priority || 'MEDIUM';
                 this.editTask.status = 'TODO';
                 this.editTask.assignedUserId = null;
+
+                // Set default dueDate to tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                this.editTask.dueDate = tomorrow.toISOString().split('T')[0];
             }
         }
     }
 
-    loadUsers() {
-        this.api.listUsers().subscribe({
-            next: (res: any) => this.users.set(res.data),
-            error: (err) => console.error(err)
-        });
+    loadAssignableUsers() {
+        if (this.projectId) {
+            this.projectService.getProjectDetails(this.projectId).subscribe({
+                next: (res: any) => this.users.set(res.data.members),
+                error: (err: any) => console.error(err)
+            });
+        } else {
+            this.api.listUsers().subscribe({
+                next: (res: any) => this.users.set(res.data),
+                error: (err: any) => console.error(err)
+            });
+        }
     }
 
     setMode(newMode: 'VIEW' | 'EDIT') {
@@ -69,7 +84,8 @@ export class TaskDetailComponent implements OnChanges {
             priority: this.editTask.priority,
             status: this.editTask.status,
             dueDate: this.editTask.dueDate,
-            assignedUserId: this.editTask.assignedUserId
+            assignedUserId: this.editTask.assignedUserId,
+            projectId: this.projectId || this.editTask.projectId
         };
 
         if (this.isNew) {

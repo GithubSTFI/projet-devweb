@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { ApiService } from '../../api.service';
+import { NotificationService } from '../../notification.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 
 @Component({
@@ -30,6 +31,7 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
 export class DashboardComponent implements OnInit {
     authService = inject(AuthService);
     apiService = inject(ApiService);
+    notificationService = inject(NotificationService);
     router = inject(Router);
 
     user = this.authService.currentUser;
@@ -37,10 +39,10 @@ export class DashboardComponent implements OnInit {
     isMobileMenuOpen = signal(false);
     isMobile = signal(false);
 
-    // Notifications
-    notifications = signal<any[]>([]);
+    // Use notification service signals
+    notifications = this.notificationService.notifications;
     showNotifications = signal(false);
-    unreadCount = computed(() => this.notifications().filter(n => !n.isRead).length);
+    unreadCount = this.notificationService.unreadCount;
 
     constructor() {
         this.checkScreenSize();
@@ -50,26 +52,20 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.loadNotifications();
-    }
-
-    loadNotifications() {
-        this.apiService.getNotifications().subscribe({
-            next: (res: any) => this.notifications.set(res.data),
-            error: (err) => console.error('Notifications error:', err)
-        });
+        this.notificationService.loadNotifications().subscribe();
     }
 
     markAsRead(id: number) {
-        this.apiService.markAsRead(id).subscribe(() => {
-            this.notifications.update(list =>
-                list.map(n => n.id === id ? { ...n, isRead: true } : n)
-            );
-        });
+        this.notificationService.markAsRead(id).subscribe();
     }
 
     toggleNotifications() {
         this.showNotifications.update(v => !v);
+    }
+
+    getAvatarUrl(url: string | undefined): string {
+        if (!url) return '';
+        return url.startsWith('http') ? url : `http://localhost:3000${url}`;
     }
 
     checkScreenSize() {

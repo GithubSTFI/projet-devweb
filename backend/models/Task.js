@@ -30,9 +30,14 @@ const Task = sequelize.define('Task', {
     },
     dueDate: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     assignedUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    projectId: {
         type: DataTypes.INTEGER,
         allowNull: true
     }

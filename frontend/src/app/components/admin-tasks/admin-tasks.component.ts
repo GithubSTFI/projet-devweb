@@ -176,7 +176,7 @@ export class AdminTasksComponent implements OnInit {
 
     loadTasks() {
         this.isLoading.set(true);
-        this.api.getTasks(this.statusFilter, 'all', this.searchQuery, this.page(), this.limit).subscribe({
+        this.api.getTasks(this.statusFilter, 'all', this.searchQuery, this.page(), this.limit, undefined, true).subscribe({
             next: (res: any) => {
                 this.tasks.set(res.data);
                 this.totalTasks.set(res.pagination.total);

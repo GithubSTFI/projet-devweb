@@ -1,0 +1,133 @@
+<div class="profile-container fade-in">
+    <!-- NAVIGATION & HEADER COMPACT -->
+    <div class="page-header-compact">
+        <div class="header-top">
+            <a routerLink="/dashboard" class="btn-back">
+                <span class="material-icons">arrow_back</span>
+                Retour au tableau de bord
+            </a>
+        </div>
+    </div>
+
+    <!-- BANNER & HEADER -->
+    <div class="profile-header">
+        <div class="avatar-container">
+            <div class="avatar-large" *ngIf="!user()?.avatarUrl">
+                {{ getInitials(user()?.username) }}
+            </div>
+            <img [src]="getAvatarUrl(user()?.avatarUrl)" class="avatar-img" *ngIf="user()?.avatarUrl"
+                alt="Photo de profil">
+
+            <label class="avatar-upload-btn" [class.loading]="isUploading()">
+                <span class="material-icons">{{ isUploading() ? 'sync' : 'camera_alt' }}</span>
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input">
+            </label>
+        </div>
+
+        <div class="user-details">
+            <h1>{{ user()?.username }}</h1>
+            <span class="role-badge">{{ user()?.role }}</span>
+            <div class="email-row">
+                <span class="material-icons">email</span>
+                {{ user()?.email }}
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-bubble">
+                    <span class="value">{{ stats.tasksCreated }}</span>
+                    <span class="label">Tâches</span>
+                </div>
+                <div class="stat-bubble">
+                    <span class="value">{{ stats.tasksCompleted }}</span>
+                    <span class="label">Succès</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO & SETTINGS GRID -->
+    <div class="info-grid">
+        <!-- Card 1: Informations Personnelles -->
+        <div class="info-card">
+            <h3>
+                <span class="material-icons">manage_accounts</span>
+                Informations Personnelles
+            </h3>
+
+            <div class="form-layout" *ngIf="!isEditing()">
+                <div class="info-row">
+                    <label>Nom d'utilisateur</label>
+                    <div class="value">{{ user()?.username }}</div>
+                </div>
+                <div class="info-row">
+                    <label>Email</label>
+                    <div class="value">{{ user()?.email }}</div>
+                </div>
+                <div class="info-row">
+                    <label>Rôle</label>
+                    <div class="value highlight">{{ user()?.role }}</div>
+                </div>
+                <div class="info-row">
+                    <label>Membre depuis</label>
+                    <div class="value">{{ user()?.createdAt | date:'longDate' }}</div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" (click)="toggleEdit()">
+                        Modifier le profil
+                    </button>
+                    <button class="btn btn-logout" (click)="logout()">
+                        <span class="material-icons">logout</span>
+                        Déconnexion
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mode Édition (Placeholder) -->
+            <div class="form-layout edit-mode" *ngIf="isEditing()">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" [value]="user()?.username" disabled title="Contactez l'admin pour changer">
+                    <small>Non modifiable</small>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" [value]="user()?.email" disabled>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" (click)="toggleEdit()">Annuler</button>
+                    <button class="btn btn-primary" (click)="saveProfile()" disabled>Enregistrer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Préférences & Sécurité -->
+        <div class="info-card">
+            <h3>
+                <span class="material-icons">settings</span>
+                Préférences & Sécurité
+            </h3>
+
+            <div class="preference-list">
+                <div class="pref-item">
+                    <div class="pref-text">
+                        <h4>Notifications Email</h4>
+                        <p>Recevoir un email pour chaque tâche assignée</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="security-actions">
+                    <button class="btn-link danger">Changer de mot de passe</button>
+                    <button class="btn-link danger" (click)="logout()">Déconnexion de tous les appareils</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

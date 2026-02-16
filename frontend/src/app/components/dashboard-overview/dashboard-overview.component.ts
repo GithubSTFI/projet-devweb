@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../auth.service';
+import { ProjectService, Project } from '../../project.service';
 import { LoaderComponent } from '../loader/loader.component';
 import { Chart, registerables } from 'chart.js';
 
@@ -18,11 +19,13 @@ Chart.register(...registerables);
 export class DashboardOverviewComponent implements OnInit, AfterViewInit {
     private api = inject(ApiService);
     private authService = inject(AuthService);
+    private projectService = inject(ProjectService);
 
     user = this.authService.currentUser;
     stats = signal<any>(null);
     recentTasks = signal<any[]>([]);
     recentActivities = signal<any[]>([]);
+    projects = signal<Project[]>([]);
     role = signal<'ADMIN' | 'USER' | null>(null);
     isLoading = signal<boolean>(false);
     chart: any;
@@ -58,6 +61,19 @@ export class DashboardOverviewComponent implements OnInit, AfterViewInit {
                 this.isLoading.set(false);
             }
         });
+
+        this.projectService.getMyProjects().subscribe({
+            next: (res) => {
+                this.projects.set(res.data);
+            },
+            error: (err) => console.error(err)
+        });
+    }
+
+    getTaskStats(project: Project): string {
+        if (!project.tasks || project.tasks.length === 0) return '0/0';
+        const done = project.tasks.filter(t => t.status === 'DONE').length;
+        return `${done}/${project.tasks.length}`;
     }
 
     initChart() {

@@ -3,10 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
-export interface User {
+export interface AuthUser {
     id?: number;
     username: string;
     role: 'USER' | 'ADMIN';
+    email?: string;
+    avatarUrl?: string; // Ajout photo de profil
+    createdAt?: string;
 }
 
 @Injectable({
@@ -20,10 +23,10 @@ export class AuthService {
     private userKey = 'auth_user';
 
     // Signals to track state
-    currentUser = signal<User | null>(this.loadUser());
-    isLoggedIn = signal<boolean>(!!localStorage.getItem(this.tokenKey));
+    currentUser = signal<AuthUser | null>(this.loadUser());
+    isLoggedIn = signal<boolean>(!!localStorage.getItem('auth_token'));
 
-    private loadUser(): User | null {
+    private loadUser(): AuthUser | null {
         const userStr = localStorage.getItem(this.userKey);
         if (!userStr) return null;
         try {
@@ -40,10 +43,13 @@ export class AuthService {
     login(credentials: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
             tap((res: any) => {
-                const user: User = {
+                const user: AuthUser = {
                     id: res.id,
                     username: res.username,
-                    role: res.role || 'USER'
+                    role: res.role || 'USER',
+                    email: res.email,
+                    avatarUrl: res.avatarUrl,
+                    createdAt: res.createdAt
                 };
                 this.saveSession(res.token, user);
                 this.router.navigate(['/dashboard']);
@@ -63,9 +69,18 @@ export class AuthService {
         return localStorage.getItem(this.tokenKey);
     }
 
-    private saveSession(token: string, user: User) {
-        localStorage.setItem(this.tokenKey, token);
+    updateCurrentUser(user: AuthUser) {
+        this.currentUser.set(user);
+        this.saveUser(user);
+    }
+
+    private saveUser(user: AuthUser) {
         localStorage.setItem(this.userKey, JSON.stringify(user));
+    }
+
+    private saveSession(token: string, user: AuthUser) {
+        localStorage.setItem(this.tokenKey, token);
+        this.saveUser(user);
         this.currentUser.set(user);
         this.isLoggedIn.set(true);
     }

@@ -8,17 +8,28 @@ exports.getTasks = async (req, res) => {
     try {
         const userId = req.user.id;
         const role = req.user.role;
-        const { status, priority, q, page = 1, limit = 10 } = req.query;
+        const { status, priority, q, projectId, all, page = 1, limit = 10 } = req.query;
 
-        // Logic for ADMIN vs USER
-        // ADMIN can see everything
-        // USER can see their own tasks OR tasks assigned to them
-        const where = role === 'ADMIN' ? {} : {
-            [Op.or]: [
-                { userId },
-                { assignedUserId: userId }
-            ]
-        };
+        // Logic for decentralization:
+        // 1. If projectId is provided, show project tasks
+        // 2. If 'all' is true and user is ADMIN, show all tasks (used for Global Admin View)
+        // 3. Otherwise, show user's own tasks (created or assigned)
+        let where = {};
+
+        if (projectId) {
+            where.projectId = projectId;
+        } else if (all === 'true' && role === 'ADMIN') {
+            // No user filter for global admin view
+            where = {};
+        } else {
+            // "Mes tâches" behavior
+            where = {
+                [Op.or]: [
+                    { userId },
+                    { assignedUserId: userId }
+                ]
+            };
+        }
 
         // Filters
         if (status && status !== 'all') where.status = status;
@@ -60,7 +71,7 @@ exports.getTasks = async (req, res) => {
 // CREATE TASK
 exports.createTask = async (req, res) => {
     try {
-        const { title, description, priority, dueDate, assignedUserId } = req.body;
+        const { title, description, priority, dueDate, assignedUserId, projectId } = req.body;
         const userId = req.user.id;
 
         const task = await Task.create({
@@ -70,6 +81,7 @@ exports.createTask = async (req, res) => {
             dueDate,
             userId,
             assignedUserId,
+            projectId,
             status: 'TODO'
         });
 

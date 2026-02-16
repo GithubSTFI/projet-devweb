@@ -11,6 +11,11 @@ import { FileListComponent } from './components/file-list/file-list.component';
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
 import { AdminLogsComponent } from './components/admin-logs/admin-logs.component';
 import { AdminTasksComponent } from './components/admin-tasks/admin-tasks.component';
+import { NotificationsPage } from './components/notifications-page/notifications-page';
+import { UserProfile } from './components/user-profile/user-profile';
+import { ProjectsListComponent } from './components/projects/projects-list';
+import { ProjectDetailComponent } from './components/projects/project-detail';
+import { AcceptInvitationComponent } from './accept-invitation.component';
 
 // Guard as a function
 export const authGuard = () => {
@@ -58,10 +63,19 @@ export const routes: Routes = [
             { path: '', component: DashboardOverviewComponent },
             { path: 'tasks', component: TaskListComponent },
             { path: 'files', component: FileListComponent },
+            { path: 'notifications', component: NotificationsPage },
+            { path: 'profile', component: UserProfile },
+            { path: 'projects', component: ProjectsListComponent },
+            { path: 'projects/:id', component: ProjectDetailComponent },
             { path: 'admin/users', component: AdminUsersComponent, canActivate: [adminGuard] },
             { path: 'admin/tasks', component: AdminTasksComponent, canActivate: [adminGuard] },
             { path: 'admin/logs', component: AdminLogsComponent, canActivate: [adminGuard] }
         ]
+    },
+    {
+        path: 'accept-invitation',
+        component: AcceptInvitationComponent,
+        canActivate: [authGuard]
     },
     { path: '**', redirectTo: 'auth' }
 ];

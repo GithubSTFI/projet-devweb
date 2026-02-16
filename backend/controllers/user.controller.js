@@ -110,3 +110,31 @@ exports.updateUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// UPDATE AVATAR
+exports.updateAvatar = async (req, res) => {
+    try {
+        console.log('[USER] Mise à jour avatar demandée par:', req.user.id);
+        if (!req.file) {
+            console.error('[USER] Erreur: Aucun fichier reçu dans req.file');
+            return res.status(400).json({ error: 'Aucun fichier téléchargé' });
+        }
+
+        const userId = req.user.id;
+        const user = await User.findByPk(userId);
+        if (!user) {
+            console.error('[USER] Erreur: Utilisateur non trouvé pour ID', userId);
+            return res.status(404).json({ error: 'Utilisateur introuvable' });
+        }
+
+        const avatarUrl = `/uploads/${req.file.filename}`;
+        console.log('[USER] Nouvel avatar URL:', avatarUrl);
+        await user.update({ avatarUrl });
+        console.log('[USER] Avatar mis à jour avec succès en base de données');
+
+        res.json({ message: 'Photo de profil mise à jour', avatarUrl });
+    } catch (error) {
+        console.error('[USER] ERREUR UPDATE AVATAR:', error);
+        res.status(500).json({ error: error.message });
+    }
+};

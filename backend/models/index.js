@@ -2,11 +2,60 @@ const sequelize = require('../config/database');
 const User = require('./User');
 const Task = require('./Task');
 const File = require('./File');
-
 const Notification = require('./Notification');
 const ActivityLog = require('./ActivityLog');
+const Project = require('./Project');
+const ProjectMember = require('./ProjectMember');
+const ProjectInvitation = require('./ProjectInvitation');
 
 // --- ASSOCIATIONS ---
+
+// 1 User -> Many Projects (Owner)
+User.hasMany(Project, {
+    foreignKey: 'ownerId',
+    as: 'ownedProjects',
+    onDelete: 'CASCADE'
+});
+Project.belongsTo(User, {
+    foreignKey: 'ownerId',
+    as: 'owner'
+});
+
+// Projects <-> Users (Many-to-Many via ProjectMember)
+Project.belongsToMany(User, {
+    through: ProjectMember,
+    foreignKey: 'projectId',
+    otherKey: 'userId',
+    as: 'members'
+});
+User.belongsToMany(Project, {
+    through: ProjectMember,
+    foreignKey: 'userId',
+    otherKey: 'projectId',
+    as: 'projects'
+});
+
+// 1 Project -> Many Tasks
+Project.hasMany(Task, {
+    foreignKey: 'projectId',
+    as: 'tasks',
+    onDelete: 'CASCADE'
+});
+Task.belongsTo(Project, {
+    foreignKey: 'projectId',
+    as: 'project'
+});
+
+// 1 Project -> Many Invitations
+Project.hasMany(ProjectInvitation, {
+    foreignKey: 'projectId',
+    as: 'invitations',
+    onDelete: 'CASCADE'
+});
+ProjectInvitation.belongsTo(Project, {
+    foreignKey: 'projectId',
+    as: 'project'
+});
 
 // 1 User -> Many Tasks (Owner)
 User.hasMany(Task, {
@@ -78,5 +127,8 @@ module.exports = {
     Task,
     File,
     Notification,
-    ActivityLog
+    ActivityLog,
+    Project,
+    ProjectMember,
+    ProjectInvitation
 };

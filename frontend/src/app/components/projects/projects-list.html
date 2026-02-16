@@ -1,0 +1,96 @@
+<div class="projects-container fade-in">
+    <div class="page-header">
+        <div class="title-section">
+            <h1>Mes Projets</h1>
+            <p>Gérez vos espaces de travail décentralisés</p>
+        </div>
+        <button class="btn-primary" (click)="showModal.set(true)">
+            <span class="material-icons">add</span>
+            Nouveau Projet
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loader-container" *ngIf="isLoading()">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Project Grid -->
+    <div class="project-grid" [@listAnimation]="projects().length" *ngIf="!isLoading() && projects().length > 0">
+        <div *ngFor="let project of projects()" class="project-card" [routerLink]="['/dashboard/projects', project.id]">
+            <div class="card-glow" [style.background]="project.color"></div>
+            <div class="card-header">
+                <div class="project-icon" [style.background]="project.color">
+                    {{ getInitials(project.name) }}
+                </div>
+                <div class="menu-btn" (click)="$event.stopPropagation();">
+                    <span class="material-icons">more_vert</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ project.name }}</h3>
+                <p>{{ project.description || 'Pas de description' }}</p>
+            </div>
+            <div class="card-footer">
+                <div class="members-preview">
+                    <div class="member-dot" *ngFor="let m of project.members?.slice(0, 3)" [title]="m.username">
+                        {{ m.username[0].toUpperCase() }}
+                    </div>
+                    <div class="more-count" *ngIf="project.members && project.members.length > 3">
+                        +{{ project.members.length - 3 }}
+                    </div>
+                </div>
+                <div class="stats">
+                    <span class="material-icons">task_alt</span>
+                    <span>{{ getTaskStats(project) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading() && projects().length === 0">
+        <div class="empty-icon">
+            <span class="material-icons">folder_open</span>
+        </div>
+        <h2>Aucun projet actif</h2>
+        <p>Commencez par créer votre premier espace de travail pour organiser vos tâches.</p>
+        <button class="btn-outline" (click)="showModal.set(true)">Créer un projet</button>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal-overlay" *ngIf="showModal()" (click)="showModal.set(false)" [@listAnimation]>
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Nouveau Projet</h2>
+                <button class="close-btn" (click)="showModal.set(false)">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nom du projet</label>
+                    <input type="text" [(ngModel)]="newProject.name" placeholder="Ex: Refonte Site Web">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea [(ngModel)]="newProject.description" placeholder="Objectifs, contexte..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Couleur du thème</label>
+                    <div class="color-picker">
+                        <div *ngFor="let c of colors" class="color-dot" [style.background]="c"
+                            [class.active]="newProject.color === c" (click)="newProject.color = c">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-text" (click)="showModal.set(false)">Annuler</button>
+                <button class="btn-primary" (click)="createProject()" [disabled]="!newProject.name">
+                    Créer le projet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

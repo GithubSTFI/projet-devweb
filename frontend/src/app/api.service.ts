@@ -14,6 +14,7 @@ export interface Task {
     updatedAt?: string;
     userId: number;
     assignedUserId?: number | null;
+    projectId?: number | null;
     owner?: { id: number; username: string };
     assignedUser?: { id: number; username: string };
 }
@@ -26,10 +27,11 @@ export interface User {
     createdAt: string;
 }
 
-export interface Notification {
+export interface AppNotification {
     id: number;
     message: string;
     isRead: boolean;
+    type?: string;
     createdAt: string;
 }
 
@@ -59,7 +61,7 @@ export class ApiService {
 
     // --- TASKS ---
 
-    getTasks(status: string = 'all', priority: string = 'all', q: string = '', page: number = 1, limit: number = 10): Observable<any> {
+    getTasks(status: string = 'all', priority: string = 'all', q: string = '', page: number = 1, limit: number = 10, projectId?: number, all?: boolean): Observable<any> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('limit', limit.toString());
@@ -67,6 +69,8 @@ export class ApiService {
         if (status && status !== 'all') params = params.set('status', status);
         if (priority && priority !== 'all') params = params.set('priority', priority);
         if (q) params = params.set('q', q);
+        if (projectId) params = params.set('projectId', projectId.toString());
+        if (all) params = params.set('all', 'true');
 
         return this.http.get(`${this.apiUrl}/tasks`, { headers: this.getHeaders(), params });
     }
@@ -119,6 +123,21 @@ export class ApiService {
 
     markAllAsRead(): Observable<any> {
         return this.http.put(`${this.apiUrl}/notifications/read-all`, {}, { headers: this.getHeaders() });
+    }
+
+    deleteNotification(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/notifications/${id}`, { headers: this.getHeaders() });
+    }
+
+    deleteMultipleNotifications(ids: number[]): Observable<any> {
+        return this.http.post(`${this.apiUrl}/notifications/delete-multiple`, { ids }, { headers: this.getHeaders() });
+    }
+
+    // --- USERS ---
+    updateAvatar(file: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        return this.http.post(`${this.apiUrl}/profile/avatar`, formData, { headers: this.getHeaders() });
     }
 
     // --- ADMIN ---

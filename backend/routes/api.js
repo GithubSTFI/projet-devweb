@@ -9,6 +9,7 @@ const taskController = require('../controllers/task.controller');
 const fileController = require('../controllers/file.controller');
 const userController = require('../controllers/user.controller');
 const notificationController = require('../controllers/notification.controller');
+const projectController = require('../controllers/project.controller');
 
 // Middlewares
 const { authenticateToken } = require('../middlewares/auth.middleware');
@@ -41,7 +42,15 @@ router.use(authenticateToken); // Protect all routes below
 
 // User Profile & Listing
 router.get('/profile', userController.getProfile);
+router.post('/profile/avatar', upload.single('avatar'), userController.updateAvatar);
 router.get('/users', userController.listUsers);
+
+// Projects
+router.get('/projects', projectController.getMyProjects);
+router.post('/projects', projectController.createProject);
+router.get('/projects/:id', projectController.getProjectDetails);
+router.post('/projects/:id/invite', projectController.inviteMember);
+router.post('/projects/accept-invitation', projectController.acceptInvitation);
 
 // Tasks
 router.get('/tasks', taskController.getTasks);
@@ -59,6 +68,8 @@ router.get('/download/:filename', fileController.downloadFile);
 router.get('/notifications', notificationController.getNotifications);
 router.put('/notifications/:id/read', notificationController.markAsRead);
 router.put('/notifications/read-all', notificationController.markAllAsRead);
+router.delete('/notifications/:id', notificationController.deleteNotification);
+router.post('/notifications/delete-multiple', notificationController.deleteMultipleNotifications);
 
 // --- ADMIN ONLY ROUTES ---
 router.get('/admin/users', checkRole(['ADMIN']), userController.getAllUsers);

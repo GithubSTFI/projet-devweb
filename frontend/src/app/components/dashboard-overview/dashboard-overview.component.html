@@ -61,16 +61,67 @@
     </div>
 
     <!-- Main Dashboard Body -->
-    <div class="dashboard-grid">
-        <!-- USER VIEW: Recent Tasks & Chart -->
-        <ng-container *ngIf="role() === 'USER'">
+    <div class="dashboard-grid full-width-grid">
+        <!-- TOP: PROJECTS SNIPPET -->
+        <div class="project-groups-container full-width">
+            <div class="group-header">
+                <div class="left-h">
+                    <h2><span class="material-icons">folder_special</span> Vue par Projet</h2>
+                    <p>Vos projets récents</p>
+                </div>
+                <a routerLink="/dashboard/projects" class="view-all-link">Voir tous les projets <span
+                        class="material-icons">east</span></a>
+            </div>
+
+            <div class="projects-kanban-preview">
+                <!-- Card for each project (Limit to 3) -->
+                <div class="project-group-card" *ngFor="let p of projects().slice(0, 3)"
+                    [style.border-top-color]="p.color">
+                    <div class="pg-header" [routerLink]="['/dashboard/projects', p.id]">
+                        <div class="pg-title">
+                            <span class="pg-dot" [style.background]="p.color"></span>
+                            <h3>{{ p.name }}</h3>
+                        </div>
+                        <span class="material-icons">open_in_new</span>
+                    </div>
+
+                    <div class="pg-tasks">
+                        <div class="pg-task-item" *ngFor="let t of (p.tasks || []).slice(0, 3)"
+                            [routerLink]="['/dashboard/projects', p.id]">
+                            <span class="t-status" [class]="t.status"></span>
+                            <div class="t-content">
+                                <span class="t-title">{{ t.title }}</span>
+                            </div>
+                        </div>
+                        <div *ngIf="!p.tasks?.length" class="empty-pg">
+                            Aucune tâche pour le moment
+                        </div>
+                    </div>
+
+                    <div class="pg-footer" [routerLink]="['/dashboard/projects', p.id]">
+                        <span>{{ p.tasks?.length || 0 }} tâches au total</span>
+                        <span class="view-more">Détails <span class="material-icons">arrow_forward</span></span>
+                    </div>
+                </div>
+
+                <!-- Simple Add CTA if less than 1 project -->
+                <div class="project-group-card add-project-cta mini" *ngIf="projects().length === 0"
+                    routerLink="/dashboard/projects">
+                    <span class="material-icons">add</span>
+                    <h3>Nouveau Projet</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- BELOW: TWO COLUMNS (TASKS | CHART) -->
+        <div class="tasks-column">
             <div class="card-premium">
                 <div class="card-header">
                     <h2><span class="material-icons">event_note</span> Tâches récentes</h2>
                     <a routerLink="/dashboard/tasks" class="view-all">Voir tout →</a>
                 </div>
                 <div class="task-mini-list">
-                    <div class="task-mini-item" *ngFor="let task of recentTasks()">
+                    <div class="task-mini-item" *ngFor="let task of recentTasks().slice(0, 6)">
                         <span class="status-dot" [class]="'status-' + task.status"></span>
                         <div class="task-details">
                             <span class="task-title">{{ task.title }}</span>
@@ -79,9 +130,14 @@
                         </div>
                         <span class="task-time">{{ formatDate(task.createdAt) }}</span>
                     </div>
+                    <div *ngIf="recentTasks().length === 0" class="empty-state">
+                        <p>Aucune tâche récente</p>
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <div class="admin-activity-column">
             <div class="card-premium">
                 <div class="card-header">
                     <h2><span class="material-icons">pie_chart</span> Répartition</h2>
@@ -90,34 +146,22 @@
                     <canvas #taskChart></canvas>
                 </div>
             </div>
-        </ng-container>
 
-        <!-- ADMIN VIEW: Activity Logs & Chart -->
-        <ng-container *ngIf="role() === 'ADMIN'">
-            <div class="card-premium">
+            <!-- ADMIN Only Activity below the chart if needed, or separate row -->
+            <div class="card-premium compact-act" *ngIf="role() === 'ADMIN'">
                 <div class="card-header">
-                    <h2><span class="material-icons">history</span> Journal d'activité</h2>
-                    <a routerLink="/dashboard/admin/logs" class="view-all">Détails →</a>
+                    <h2><span class="material-icons">history</span> Activité</h2>
                 </div>
-                <div class="activity-list">
-                    <div class="activity-item" *ngFor="let log of recentActivities()">
-                        <div class="act-left">
-                            <span class="activity-user">{{ log.user?.username }}</span>
-                            <span class="activity-action">{{ log.action }}</span>
+                <div class="activity-list-compact">
+                    <div class="activity-item" *ngFor="let log of recentActivities().slice(0, 4)">
+                        <div class="act-details">
+                            <span class="act-user">{{ log.user?.username }}</span>
+                            <span class="act-text">{{ log.action }}</span>
                         </div>
-                        <span class="activity-time">{{ formatDate(log.createdAt) }}</span>
+                        <span class="act-time">{{ formatDate(log.createdAt) }}</span>
                     </div>
                 </div>
             </div>
-
-            <div class="card-premium">
-                <div class="card-header">
-                    <h2><span class="material-icons">pie_chart</span> États Globaux</h2>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas #taskChart></canvas>
-                </div>
-            </div>
-        </ng-container>
+        </div>
     </div>
 </div>

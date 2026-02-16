@@ -1,0 +1,155 @@
+<div class="project-detail-container fade-in" *ngIf="project()">
+    <!-- Header with Background & Info -->
+    <div class="project-header">
+        <div class="header-overlay" [style.background]="project()?.color"></div>
+        <div class="header-content">
+            <div class="left-box">
+                <a routerLink="/dashboard/projects" class="btn-back">
+                    <span class="material-icons">arrow_back</span>
+                </a>
+                <div class="icon-circle" [style.background]="project()?.color">
+                    {{ getInitials(project()?.name) }}
+                </div>
+                <div class="info">
+                    <h1>{{ project()?.name }}</h1>
+                    <p>{{ project()?.description }}</p>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn-invite" (click)="showInviteModal.set(true)">
+                    <span class="material-icons">person_add</span>
+                    Inviter
+                </button>
+                <div class="project-members-stack">
+                    <div class="m-avatar" *ngFor="let m of project()?.members" [title]="m.username">
+                        {{ m.username[0].toUpperCase() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="detail-grid">
+        <!-- Sidebar / Members -->
+        <aside class="side-panel">
+            <div class="panel-card">
+                <h3>Membres de l'équipe</h3>
+                <div class="member-list">
+                    <div class="member-item" *ngFor="let m of project()?.members">
+                        <div class="m-icon">{{ m.username[0].toUpperCase() }}</div>
+                        <div class="m-info">
+                            <span class="m-name">{{ m.username }}</span>
+                            <span class="m-role">Admin</span> <!-- For now -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <h3>Invitations en attente</h3>
+                <div class="invitation-list">
+                    <div class="invite-item" *ngFor="let inv of project()?.invitations">
+                        <span class="material-icons">mail</span>
+                        <span class="email-text">{{ inv.email }}</span>
+                        <span class="badge-pending">{{ inv.status }}</span>
+                    </div>
+                    <div *ngIf="project()?.invitations?.length === 0" class="empty-invites">
+                        Aucune invitation en cours.
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Tasks Content -->
+        <section class="main-panel">
+            <div class="panel-header">
+                <h2>Tâches du projet</h2>
+                <button class="btn-add-task" (click)="openAddTask()">
+                    <span class="material-icons">add_task</span>
+                    Nouvelle tâche
+                </button>
+            </div>
+
+            <div class="task-board">
+                <div class="task-column">
+                    <div class="column-header">
+                        <span class="dot todo"></span>
+                        À FAIRE ({{ (tasks() | filterStatus:'TODO').length }})
+                    </div>
+                    <div class="task-list-modern">
+                        <div class="task-card-modern" *ngFor="let t of tasks() | filterStatus:'TODO'" [@fadeSlide]
+                            (click)="openEditTask(t)">
+                            <h4>{{ t.title }}</h4>
+                            <p>{{ t.description }}</p>
+                            <div class="card-meta">
+                                <span class="priority" [class]="t.priority">{{ t.priority }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-column">
+                    <div class="column-header">
+                        <span class="dot progress"></span>
+                        EN COURS ({{ (tasks() | filterStatus:'IN_PROGRESS').length }})
+                    </div>
+                    <div class="task-list-modern">
+                        <div class="task-card-modern" *ngFor="let t of tasks() | filterStatus:'IN_PROGRESS'"
+                            [@fadeSlide] (click)="openEditTask(t)">
+                            <h4>{{ t.title }}</h4>
+                            <div class="card-meta">
+                                <span class="priority" [class]="t.priority">{{ t.priority }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-column">
+                    <div class="column-header">
+                        <span class="dot done"></span>
+                        TERMINÉ ({{ (tasks() | filterStatus:'DONE').length }})
+                    </div>
+                    <div class="task-list-modern">
+                        <div class="task-card-modern" *ngFor="let t of tasks() | filterStatus:'DONE'" [@fadeSlide]
+                            (click)="openEditTask(t)">
+                            <h4>{{ t.title }}</h4>
+                            <div class="card-meta">
+                                <span class="priority done">Terminée</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL INVITE -->
+    <div class="modal-overlay" *ngIf="showInviteModal()" (click)="showInviteModal.set(false)" [@fadeSlide]>
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h2>Inviter un membre</h2>
+            <p>Envoyez une invitation par email pour rejoindre "{{ project()?.name }}".</p>
+
+            <div class="form-group">
+                <label>Adresse Email</label>
+                <input type="email" [ngModel]="inviteEmail()" (ngModelChange)="inviteEmail.set($event)"
+                    placeholder="collegue@exemple.com">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" (click)="showInviteModal.set(false)">Fermer</button>
+                <button class="btn-primary" (click)="sendInvite()" [disabled]="!inviteEmail()">Envoyer
+                    l'invitation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASK DETAIL MODAL -->
+    <div class="modal-overlay" *ngIf="showTaskModal()" (click)="closeTaskModal()" [@fadeSlide]>
+        <div class="modal-content task-modal" (click)="$event.stopPropagation()">
+            <app-task-detail [task]="selectedTask()" [isNew]="isNewTask()" [projectId]="projectId"
+                (closeEvent)="closeTaskModal()" (updateEvent)="onTaskUpdated()">
+            </app-task-detail>
+        </div>
+    </div>
+</div>

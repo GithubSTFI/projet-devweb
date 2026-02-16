@@ -1,0 +1,111 @@
+<div class="notifications-page fade-in">
+    <!-- NAVIGATION & HEADER COMPACT -->
+    <div class="page-header-compact">
+        <div class="header-top">
+            <a routerLink="/dashboard" class="btn-back">
+                <span class="material-icons">arrow_back</span>
+                Retour au tableau de bord
+            </a>
+        </div>
+
+        <div class="header-main">
+            <div class="title-group">
+                <h1>Notifications</h1>
+                <span class="badge-count" *ngIf="unreadCount() > 0">{{ unreadCount() }} non lues</span>
+            </div>
+
+            <div class="header-controls">
+                <div class="filter-tabs">
+                    <button class="tab" [class.active]="filter() === 'all'" (click)="setFilter('all')">Toutes</button>
+                    <button class="tab" [class.active]="filter() === 'unread'" (click)="setFilter('unread')">Non
+                        lues</button>
+                </div>
+
+                <div class="main-actions">
+                    <button class="btn-text" (click)="markAllRead()" *ngIf="unreadCount() > 0">
+                        <span class="material-icons">done_all</span>
+                        Tout marquer comme lu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BATCH ACTIONS BAR -->
+        <div class="selection-bar" *ngIf="isSelectionMode()" [@selectionAnimation]>
+            <div class="selection-info">
+                <label class="checkbox-container">
+                    <input type="checkbox"
+                        [checked]="filteredNotifications().length > 0 && selectedIds().size === filteredNotifications().length"
+                        (change)="toggleSelectAll()">
+                    <span class="checkmark"></span>
+                </label>
+                <span class="selection-count">{{ selectedIds().size }} sélectionnée(s)</span>
+            </div>
+            <div class="selection-actions">
+                <button class="btn-action danger" (click)="deleteSelected()">
+                    <span class="material-icons">delete</span>
+                    Supprimer
+                </button>
+                <button class="btn-close" (click)="clearSelection()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LISTE DENSE -->
+    <div class="notifications-list" [class.selection-active]="isSelectionMode()"
+        *ngIf="filteredNotifications().length > 0; else emptyState">
+        <div *ngFor="let n of filteredNotifications()" class="notification-row" [class.unread]="!n.isRead"
+            [class.selected]="isSelected(n.id)" (click)="isSelectionMode() ? toggleSelection(n.id) : null">
+
+            <!-- Checkbox for selection -->
+            <div class="selection-indicator">
+                <label class="checkbox-container" (click)="$event.stopPropagation()">
+                    <input type="checkbox" [checked]="isSelected(n.id)" (change)="toggleSelection(n.id)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Icon Indicator -->
+            <div class="status-indicator">
+                <div class="icon-box" [ngClass]="n.type === 'SYSTEM' ? 'system' : 'alert'">
+                    <span class="material-icons">{{ n.type === 'SYSTEM' ? 'info' : 'notifications' }}</span>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="row-content">
+                <div class="row-header">
+                    <span class="row-title">{{ n.type === 'SYSTEM' ? 'Système' : 'Activité' }}</span>
+                    <span class="row-time">{{ n.createdAt | date:'medium' }}</span>
+                </div>
+                <p class="row-message">{{ n.message }}</p>
+            </div>
+
+            <!-- Actions (Visibles au hover si pas en selection mode) -->
+            <div class="row-actions" *ngIf="!isSelectionMode()">
+                <button class="action-btn check" *ngIf="!n.isRead" (click)="markAsRead(n.id); $event.stopPropagation()"
+                    title="Marquer comme lu">
+                    <span class="material-icons">check_circle_outline</span>
+                </button>
+                <button class="action-btn delete" (click)="deleteNotification(n.id); $event.stopPropagation()"
+                    title="Supprimer">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <ng-template #emptyState>
+        <div class="empty-state-compact">
+            <div class="icon-circle">
+                <span class="material-icons">{{ filter() === 'all' ? 'notifications_none' : 'done' }}</span>
+            </div>
+            <h3>{{ filter() === 'all' ? 'Rien à signaler' : 'Toutes les notifications sont lues' }}</h3>
+            <p>{{ filter() === 'all' ? 'Vous êtes à jour dans vos notifications.' : 'Revenez plus tard pour de nouvelles
+                activités.' }}</p>
+        </div>
+    </ng-template>
+</div>
