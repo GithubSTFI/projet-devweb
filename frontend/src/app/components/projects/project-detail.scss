@@ -168,34 +168,105 @@ $text-muted: #94a3b8;
         display: block;
         color: $text-muted;
         font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .role-editor {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .role-select-compact {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 2px 6px;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        &:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        option {
+            background: #1e293b;
+            color: white;
+            padding: 10px;
+        }
     }
 }
 
 .invite-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: $text-muted;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.2);
+    }
 
     .material-icons {
-        font-size: 18px;
+        font-size: 20px;
+        color: rgba(99, 102, 241, 0.5);
     }
 
-    .email-text {
+    .invite-details {
         flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+
+        .email-text {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .invite-role {
+            font-size: 0.7rem;
+            color: $text-muted;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     }
 
-    .badge-pending {
-        background: rgba(245, 158, 11, 0.1);
-        color: #f59e0b;
-        padding: 2px 8px;
+    .badge-status {
+        padding: 4px 8px;
         border-radius: 8px;
-        font-size: 0.65rem;
-        font-weight: 600;
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+
+        &.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        &.accepted {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
     }
 }
 
@@ -456,6 +527,55 @@ $text-muted: #94a3b8;
             font-size: 0.75rem;
             margin-top: 6px;
             padding-left: 48px;
+        }
+    }
+
+    .input-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.4);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
+    .role-selector-modern {
+        display: flex;
+        gap: 12px;
+
+        button {
+            flex: 1;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: $text-muted;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            .material-icons {
+                font-size: 18px;
+            }
+
+            span {
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: white;
+            }
+
+            &.active {
+                background: rgba(99, 102, 241, 0.15);
+                border-color: #6366f1;
+                color: #818cf8;
+            }
         }
     }
 

@@ -54,6 +54,7 @@ router.get('/projects/:id', projectController.getProjectDetails);
 router.delete('/projects/:id', projectController.deleteProject);
 router.post('/projects/:id/invite', projectController.inviteMember);
 router.post('/projects/accept-invitation', projectController.acceptInvitation);
+router.put('/projects/:id/members/:userId/role', projectController.updateMemberRole);
 
 // Tasks
 router.get('/tasks', taskController.getTasks);

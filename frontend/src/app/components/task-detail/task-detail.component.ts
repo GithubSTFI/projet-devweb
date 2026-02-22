@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
 import { ProjectService } from '../../project.service';
+import { ToastService } from '../toast/toast.component';
 
 @Component({
     selector: 'app-task-detail',
@@ -15,11 +16,14 @@ export class TaskDetailComponent implements OnChanges {
     @Input() task: Partial<Task> = {};
     @Input() isNew = false;
     @Input() projectId?: number;
+    @Input() ownerId?: number;
+    @Input() userRole: string = 'MEMBER';
     @Output() closeEvent = new EventEmitter<void>();
     @Output() updateEvent = new EventEmitter<void>();
 
     private api = inject(ApiService);
     private projectService = inject(ProjectService);
+    private toast = inject(ToastService);
     files = signal<any[]>([]);
     users = signal<any[]>([]);
     isUploading = false;
@@ -91,16 +95,24 @@ export class TaskDetailComponent implements OnChanges {
         if (this.isNew) {
             this.api.createTask(payload).subscribe({
                 next: () => {
+                    this.toast.show('Tâche créée avec succès', 'success');
                     this.updateEvent.emit();
                     this.close();
+                },
+                error: (err) => {
+                    this.toast.show(err.error?.error || 'Erreur lors de la création', 'error');
                 }
             });
         } else {
             if (!this.task.id) return;
             this.api.updateTask(this.task.id, payload).subscribe({
                 next: () => {
+                    this.toast.show('Tâche mise à jour', 'success');
                     this.updateEvent.emit();
                     this.close();
+                },
+                error: (err) => {
+                    this.toast.show(err.error?.error || 'Erreur lors de la mise à jour', 'error');
                 }
             });
         }

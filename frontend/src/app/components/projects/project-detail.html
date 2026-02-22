@@ -16,7 +16,8 @@
                 </div>
             </div>
             <div class="actions">
-                <button class="btn-invite" (click)="showInviteModal.set(true)">
+                <button class="btn-invite" (click)="showInviteModal.set(true)"
+                    *ngIf="currentUserRole() === 'OWNER' || currentUserRole() === 'ADMIN'">
                     <span class="material-icons">person_add</span>
                     Inviter
                 </button>
@@ -40,19 +41,32 @@
                         <div class="m-icon">{{ m.username[0].toUpperCase() }}</div>
                         <div class="m-info">
                             <span class="m-name">{{ m.username }}</span>
-                            <span class="m-role">Admin</span> <!-- For now -->
+                            <span class="m-role" *ngIf="m.id === project()?.ownerId">Propriétaire</span>
+                            <div class="role-editor" *ngIf="m.id !== project()?.ownerId">
+                                <span class="m-role" *ngIf="currentUserRole() !== 'OWNER'">
+                                    {{ m.ProjectMember?.role === 'ADMIN' ? 'Admin' : 'Membre' }}
+                                </span>
+                                <select *ngIf="currentUserRole() === 'OWNER'" [ngModel]="m.ProjectMember?.role"
+                                    (ngModelChange)="changeMemberRole(m.id, $event)" class="role-select-compact">
+                                    <option value="MEMBER">Membre</option>
+                                    <option value="ADMIN">Admin</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel-card">
-                <h3>Invitations en attente</h3>
+            <div class="panel-card" *ngIf="currentUserRole() !== 'MEMBER'">
+                <h3>Invitations du projet</h3>
                 <div class="invitation-list">
                     <div class="invite-item" *ngFor="let inv of project()?.invitations">
                         <span class="material-icons">mail</span>
-                        <span class="email-text">{{ inv.email }}</span>
-                        <span class="badge-pending">{{ inv.status }}</span>
+                        <div class="invite-details">
+                            <span class="email-text">{{ inv.email }}</span>
+                            <span class="invite-role">{{ inv.role }}</span>
+                        </div>
+                        <span class="badge-status" [class]="inv.status.toLowerCase()">{{ inv.status }}</span>
                     </div>
                     <div *ngIf="project()?.invitations?.length === 0" class="empty-invites">
                         Aucune invitation en cours.
@@ -65,7 +79,8 @@
         <section class="main-panel">
             <div class="panel-header">
                 <h2>Tâches du projet</h2>
-                <button class="btn-add-task" (click)="openAddTask()">
+                <button class="btn-add-task" (click)="openAddTask()"
+                    *ngIf="currentUserRole() === 'OWNER' || currentUserRole() === 'ADMIN'">
                     <span class="material-icons">add_task</span>
                     Nouvelle tâche
                 </button>
@@ -134,6 +149,7 @@
             <p>Envoyez une invitation par email pour rejoindre <strong>"{{ project()?.name }}"</strong>.</p>
 
             <div class="invite-form-modern">
+                <div class="input-label">Email du collaborateur</div>
                 <div class="input-with-icon" [class.invalid]="inviteEmail().length > 0 && !isEmailValid()">
                     <span class="material-icons">alternate_email</span>
                     <input type="email" [ngModel]="inviteEmail()" (ngModelChange)="inviteEmail.set($event)"
@@ -141,6 +157,18 @@
                 </div>
                 <div class="validation-msg" *ngIf="inviteEmail().length > 0 && !isEmailValid()">
                     Adresse email invalide
+                </div>
+
+                <div class="input-label" style="margin-top: 20px;">Rôle dans le projet</div>
+                <div class="role-selector-modern">
+                    <button [class.active]="inviteRole() === 'MEMBER'" (click)="inviteRole.set('MEMBER')">
+                        <span class="material-icons">person_outline</span>
+                        <span>Membre</span>
+                    </button>
+                    <button [class.active]="inviteRole() === 'ADMIN'" (click)="inviteRole.set('ADMIN')">
+                        <span class="material-icons">verified_user</span>
+                        <span>Admin</span>
+                    </button>
                 </div>
             </div>
 
@@ -158,7 +186,8 @@
     <div class="modal-overlay" *ngIf="showTaskModal()" (click)="closeTaskModal()" [@fadeSlide]>
         <div class="modal-content task-modal" (click)="$event.stopPropagation()">
             <app-task-detail [task]="selectedTask()" [isNew]="isNewTask()" [projectId]="projectId"
-                (closeEvent)="closeTaskModal()" (updateEvent)="onTaskUpdated()">
+                [ownerId]="project()?.ownerId" [userRole]="currentUserRole()" (closeEvent)="closeTaskModal()"
+                (updateEvent)="onTaskUpdated()">
             </app-task-detail>
         </div>
     </div>

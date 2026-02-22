@@ -50,6 +50,7 @@ export class ProjectDetailComponent implements OnInit {
     isNewTask = signal(false);
     selectedTask = signal<Partial<Task>>({});
 
+    currentUserRole = signal<string>('LOADING');
     projectId = 0;
 
     ngOnInit() {
@@ -64,7 +65,10 @@ export class ProjectDetailComponent implements OnInit {
 
     loadProject() {
         this.projectService.getProjectDetails(this.projectId).subscribe({
-            next: (res) => this.project.set(res.data),
+            next: (res) => {
+                this.project.set(res.data);
+                this.currentUserRole.set(res.currentUserRole || 'MEMBER');
+            },
             error: () => this.router.navigate(['/dashboard/projects'])
         });
     }
@@ -138,5 +142,18 @@ export class ProjectDetailComponent implements OnInit {
             case 'DONE': return '#10b981';
             default: return '#94a3b8';
         }
+    }
+
+    changeMemberRole(userId: number, newRole: string) {
+        this.projectService.updateMemberRole(this.projectId, userId, newRole).subscribe({
+            next: () => {
+                this.toast.show('Rôle mis à jour', 'success');
+                this.loadProject(); // Refresh labels
+            },
+            error: (err) => {
+                this.toast.show(err.error?.error || 'Erreur lors de la mise à jour', 'error');
+                this.loadProject(); // Revert UI
+            }
+        });
     }
 }

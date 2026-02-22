@@ -56,4 +56,8 @@ export class ProjectService {
     deleteProject(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }
+
+    updateMemberRole(projectId: number, userId: number, role: string): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${projectId}/members/${userId}/role`, { role }, { headers: this.getHeaders() });
+    }
 }

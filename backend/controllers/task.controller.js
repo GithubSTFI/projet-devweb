@@ -1,4 +1,4 @@
-const { Task, User, Notification, ActivityLog } = require('../models');
+const { Task, User, Notification, ActivityLog, Project, ProjectMember } = require('../models');
 const { Op } = require('sequelize');
 const { logActivity } = require('../services/audit.service');
 const { sendEmail, getPremiumTemplate } = require('../services/email.service');
@@ -80,6 +80,22 @@ exports.createTask = async (req, res) => {
         const { title, description, priority, dueDate, assignedUserId, projectId } = req.body;
         const userId = req.user.id;
 
+        // Restriction: Only Project OWNER or Project ADMIN can assign tasks to others
+        if (projectId && assignedUserId && parseInt(assignedUserId) !== userId) {
+            const project = await Project.findByPk(projectId);
+            if (project) {
+                const isOwner = project.ownerId == userId;
+                const membership = await ProjectMember.findOne({
+                    where: { projectId, userId }
+                });
+                const isAdmin = membership && membership.role == 'ADMIN';
+
+                if (!isOwner && !isAdmin) {
+                    return res.status(403).json({ error: 'Seuls les administrateurs du projet peuvent assigner des tâches à d\'autres membres.' });
+                }
+            }
+        }
+
         const task = await Task.create({
             title,
             description,
@@ -143,21 +159,55 @@ exports.updateTask = async (req, res) => {
         const role = req.user.role;
         const updates = req.body;
 
-        // Check ownership or admin
         const taskToCheck = await Task.findByPk(id);
-        if (!taskToCheck) return res.status(404).json({ error: 'Tâche introuvable' });
+        if (!taskToCheck) {
+            return res.status(404).json({ error: 'Tâche introuvable' });
+        }
 
-        if (role !== 'ADMIN' && taskToCheck.userId !== userId && taskToCheck.assignedUserId !== userId) {
-            return res.status(403).json({ error: 'Droits insuffisants' });
+        // Check global ownership, assignee status, or global ADMIN role
+        const isGlobalAdmin = role == 'ADMIN';
+        const isTaskOwner = taskToCheck.userId == userId;
+        const isTaskAssignee = taskToCheck.assignedUserId == userId;
+
+        // Check Project Role (Owner or Admin)
+        const project = await Project.findByPk(taskToCheck.projectId);
+        const isProjectOwner = project && project.ownerId == userId;
+        const membership = await ProjectMember.findOne({
+            where: { projectId: taskToCheck.projectId, userId }
+        });
+        const isProjectAdmin = membership && membership.role == 'ADMIN';
+
+        if (!isGlobalAdmin && !isTaskOwner && !isTaskAssignee && !isProjectOwner && !isProjectAdmin) {
+            return res.status(403).json({ error: 'Droits insuffisants pour modifier cette tâche' });
         }
 
         const oldAssignedId = taskToCheck.assignedUserId;
 
-        const [updated] = await Task.update(updates, {
+        // Restriction: Only Project OWNER or ADMIN can assign to someone else
+        // Use loose equality (!=) to handle null/number type differences
+        if (updates.assignedUserId && parseInt(updates.assignedUserId) != oldAssignedId && parseInt(updates.assignedUserId) != userId) {
+            const projectId = taskToCheck.projectId;
+            if (projectId) {
+                const project = await Project.findByPk(projectId);
+                if (project) {
+                    const isOwnerR = project.ownerId == userId;
+                    const membershipR = await ProjectMember.findOne({
+                        where: { projectId, userId }
+                    });
+                    const isAdminR = membershipR && membershipR.role == 'ADMIN';
+
+                    if (!isOwnerR && !isAdminR) {
+                        return res.status(403).json({ error: 'Seuls les administrateurs du projet peuvent assigner des tâches.' });
+                    }
+                }
+            }
+        }
+
+        const [updatedRowsCount] = await Task.update(updates, {
             where: { id }
         });
 
-        if (updated) {
+        if (updatedRowsCount > 0) {
             // Audit Log
             await logActivity('UPDATE_TASK', 'TASK', id, userId);
 
@@ -221,9 +271,19 @@ exports.deleteTask = async (req, res) => {
         const taskToDelete = await Task.findByPk(id);
         if (!taskToDelete) return res.status(404).json({ error: 'Tâche introuvable' });
 
-        // ADMIN can delete any task, USER only their own
-        if (role !== 'ADMIN' && taskToDelete.userId !== userId) {
-            return res.status(403).json({ error: 'Seul le propriétaire ou un ADMIN peut supprimer cette tâche' });
+        // Permission check: Global Admin, Task Creator, Project Owner or Project Admin
+        const isGlobalAdmin = role == 'ADMIN';
+        const isTaskOwner = taskToDelete.userId == userId;
+
+        const project = await Project.findByPk(taskToDelete.projectId);
+        const isProjectOwner = project && project.ownerId == userId;
+        const membership = await ProjectMember.findOne({
+            where: { projectId: taskToDelete.projectId, userId }
+        });
+        const isProjectAdmin = membership && membership.role == 'ADMIN';
+
+        if (!isGlobalAdmin && !isTaskOwner && !isProjectOwner && !isProjectAdmin) {
+            return res.status(403).json({ error: 'Seuls les administrateurs du projet ou le créateur peuvent supprimer cette tâche' });
         }
 
         await taskToDelete.destroy();

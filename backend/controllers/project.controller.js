@@ -77,7 +77,12 @@ exports.getProjectDetails = async (req, res) => {
         const { id } = req.params;
         const project = await Project.findByPk(id, {
             include: [
-                { model: User, as: 'members', attributes: ['id', 'username', 'email', 'avatarUrl'] },
+                {
+                    model: User,
+                    as: 'members',
+                    attributes: ['id', 'username', 'email', 'avatarUrl'],
+                    through: { attributes: ['role'] }
+                },
                 { model: User, as: 'owner', attributes: ['id', 'username'] },
                 { model: ProjectInvitation, as: 'invitations' }
             ]
@@ -85,7 +90,49 @@ exports.getProjectDetails = async (req, res) => {
 
         if (!project) return res.status(404).json({ error: 'Projet introuvable' });
 
-        res.json({ data: project });
+        // Get current user's role in this project
+        let currentUserRole = 'MEMBER';
+        if (project.ownerId == req.user.id) {
+            currentUserRole = 'OWNER';
+        } else {
+            const membership = await ProjectMember.findOne({
+                where: { projectId: id, userId: req.user.id }
+            });
+            if (membership) currentUserRole = membership.role;
+        }
+
+        res.json({ data: project, currentUserRole });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// UPDATE MEMBER ROLE
+exports.updateMemberRole = async (req, res) => {
+    try {
+        const { id, userId } = req.params;
+        const { role } = req.body; // 'ADMIN' or 'MEMBER'
+
+        const project = await Project.findByPk(id);
+        if (!project) return res.status(404).json({ error: 'Projet introuvable' });
+
+        // Only OWNER can change roles
+        if (project.ownerId != req.user.id) {
+            return res.status(403).json({ error: 'Seul le propriétaire peut changer les rôles des membres' });
+        }
+
+        // Check if target user is not the owner
+        if (parseInt(userId) === project.ownerId) {
+            return res.status(400).json({ error: 'Le rôle du propriétaire ne peut pas être modifié' });
+        }
+
+        const membership = await ProjectMember.findOne({ where: { projectId: id, userId } });
+        if (!membership) return res.status(404).json({ error: 'Membre introuvable dans ce projet' });
+
+        membership.role = role;
+        await membership.save();
+
+        res.json({ message: 'Rôle mis à jour avec succès' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -99,6 +146,17 @@ exports.inviteMember = async (req, res) => {
 
         const project = await Project.findByPk(id);
         if (!project) return res.status(404).json({ error: 'Projet introuvable' });
+
+        // Check permissions: Only OWNER or Project ADMIN can invite
+        const isOwner = project.ownerId === req.user.id;
+        const membership = await ProjectMember.findOne({
+            where: { projectId: id, userId: req.user.id }
+        });
+        const isAdmin = membership && membership.role === 'ADMIN';
+
+        if (!isOwner && !isAdmin) {
+            return res.status(403).json({ error: 'Vous n\'avez pas les droits pour inviter des membres à ce projet' });
+        }
 
         // Check if user already exists
         const existingUser = await User.findOne({ where: { email } });
