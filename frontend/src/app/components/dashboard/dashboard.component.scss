@@ -611,4 +611,12 @@ $info: #0ea5e9;
     .search-bar {
         display: none;
     }
+
+    .notifications-dropdown {
+        position: fixed;
+        top: 60px;
+        left: 8px;
+        right: 8px;
+        width: auto;
+    }
 }

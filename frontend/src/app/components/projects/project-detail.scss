@@ -41,6 +41,7 @@ $text-muted: #94a3b8;
     display: flex;
     align-items: center;
     gap: 24px;
+    flex-wrap: wrap;
 
     .btn-back {
         width: 40px;
@@ -53,6 +54,7 @@ $text-muted: #94a3b8;
         color: white;
         text-decoration: none;
         transition: background 0.2s;
+        flex-shrink: 0;
 
         &:hover {
             background: rgba(255, 255, 255, 0.2);
@@ -70,13 +72,18 @@ $text-muted: #94a3b8;
         font-weight: 800;
         font-size: 1.5rem;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
     }
 
     .info {
+        min-width: 0;
+
         h1 {
             margin: 0;
             font-size: 1.8rem;
             color: white;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         p {
@@ -654,5 +661,107 @@ $text-muted: #94a3b8;
 
     .task-board {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .project-header {
+        height: auto;
+        min-height: 140px;
+        padding: 20px 16px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+
+    .left-box {
+        gap: 12px;
+
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+
+        .info h1 {
+            font-size: 1.3rem;
+        }
+
+        .info p {
+            font-size: 0.85rem;
+        }
+    }
+
+    .project-members-stack {
+        display: none; // simplify header on mobile
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .panel-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .task-board {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    // Task modal becomes full screen on mobile
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 20px 20px 0 0 !important;
+        max-height: 92vh;
+        overflow-y: auto;
+    }
+
+    .modal-content.task-modal {
+        width: 100% !important;
+        max-height: 95vh;
+        border-radius: 20px 20px 0 0 !important;
+    }
+
+    // Invite modal
+    .invite-modal-premium {
+        width: calc(100% - 32px);
+        max-width: 100%;
+        border-radius: 20px;
+        padding: 24px 20px;
+
+        .role-selector-modern {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .modal-actions-premium {
+            flex-direction: column-reverse;
+            gap: 8px;
+
+            button {
+                width: 100%;
+            }
+        }
     }
 }

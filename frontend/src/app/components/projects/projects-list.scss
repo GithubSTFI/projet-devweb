@@ -11,6 +11,10 @@ $border: rgba(255, 255, 255, 0.08);
     padding: 32px;
     max-width: 1200px;
     margin: 0 auto;
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
 }
 
 .page-header {
@@ -184,6 +188,8 @@ $border: rgba(255, 255, 255, 0.08);
         font-size: 1.2rem;
         font-weight: 700;
         margin-bottom: 8px;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     p {
@@ -448,10 +454,53 @@ $border: rgba(255, 255, 255, 0.08);
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .page-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 20px;
+        gap: 16px;
+        margin-bottom: 24px;
+
+        .title-section h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .project-card {
+        border-radius: 16px;
+        padding: 18px;
+
+        // Disable 3D hover effects on touch devices
+        &:hover {
+            transform: none;
+        }
+    }
+
+    .card-footer {
+        margin-top: 16px;
+        padding-top: 12px;
+    }
+
+    // Modal responsive
+    .modal-content {
+        width: calc(100% - 32px);
+        max-width: 100%;
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 8px;
+
+        button {
+            width: 100%;
+            justify-content: center;
+        }
     }
 }
