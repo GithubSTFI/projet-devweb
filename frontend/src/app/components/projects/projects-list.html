@@ -23,8 +23,14 @@
                 <div class="project-icon" [style.background]="project.color">
                     {{ getInitials(project.name) }}
                 </div>
-                <div class="menu-btn" (click)="$event.stopPropagation();">
+                <div class="menu-btn" (click)="$event.stopPropagation(); toggleMenu(project.id)">
                     <span class="material-icons">more_vert</span>
+                    <div class="project-dropdown" *ngIf="activeProjectMenu() === project.id">
+                        <button class="dropdown-item danger" (click)="deleteProject(project.id)">
+                            <span class="material-icons">delete</span>
+                            Supprimer
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

@@ -4,12 +4,13 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../auth.service';
+import { RouterModule } from '@angular/router';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 
 @Component({
     selector: 'app-auth-layout',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+    imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterModule],
     templateUrl: './auth-layout.component.html',
     styleUrls: ['./auth-layout.component.scss'],
     animations: [
@@ -46,6 +47,9 @@ export class AuthLayoutComponent implements OnInit {
     isSignUpMode = false;
     loginError = '';
     registerError = '';
+    showPassword = false;
+    showRegisterPassword = false;
+    showConfirmPassword = false;
 
     constructor(
         private fb: FormBuilder,

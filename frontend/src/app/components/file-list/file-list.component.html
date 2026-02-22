@@ -37,7 +37,7 @@
                 <a [href]="getDownloadUrl(file.filename)" target="_blank" class="btn-action" title="Télécharger">
                     <span class="material-icons">download</span>
                 </a>
-                <button class="btn-action secondary" title="Aperçu (non dispo)">
+                <button class="btn-action secondary" (click)="previewFile(file.filename)" title="Aperçu">
                     <span class="material-icons">visibility</span>
                 </button>
             </div>

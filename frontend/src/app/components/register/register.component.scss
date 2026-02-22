@@ -57,10 +57,30 @@
 }
 
 .input-modern:focus {
-    border-color: #48bb78;
+    border-color: #667eea;
     background: white;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+
+    .toggle-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        cursor: pointer;
+        padding: 4px;
+        user-select: none;
+
+        &:hover {
+            color: #718096;
+        }
+    }
 }
 
 .error-border {
@@ -73,7 +93,7 @@
     padding: 14px;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -83,12 +103,17 @@
 }
 
 .btn-gradient:hover {
-    box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+    box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
     transform: translateY(-1px);
 }
 
 .btn-gradient:active {
     transform: translateY(1px);
+}
+
+.btn-gradient:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .error-banner {

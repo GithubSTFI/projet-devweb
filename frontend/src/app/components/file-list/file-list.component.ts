@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../api.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
     selector: 'app-file-list',
@@ -11,6 +12,7 @@ import { ApiService } from '../../api.service';
 })
 export class FileListComponent implements OnInit {
     private api = inject(ApiService);
+    private auth = inject(AuthService);
     files = signal<any[]>([]);
 
     ngOnInit() {
@@ -21,7 +23,14 @@ export class FileListComponent implements OnInit {
     }
 
     getDownloadUrl(filename: string) {
-        return 'http://localhost:3000/api/download/' + filename;
+        const token = this.auth.getToken();
+        return `http://localhost:3000/api/download/${encodeURIComponent(filename)}?token=${token}`;
+    }
+
+    previewFile(filename: string) {
+        const token = this.auth.getToken();
+        const url = `http://localhost:3000/api/files/preview/${encodeURIComponent(filename)}?token=${token}`;
+        window.open(url, '_blank');
     }
 
     getFileIcon(filename: string): string {

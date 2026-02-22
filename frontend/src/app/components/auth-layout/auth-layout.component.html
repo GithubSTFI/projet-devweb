@@ -41,8 +41,12 @@
                     <div class="input-icon">
                         <span class="material-icons">lock_outline</span>
                     </div>
-                    <input type="password" formControlName="password" placeholder="Mot de passe"
-                        [class.error]="fLog['password'].touched && fLog['password'].invalid" class="premium-input">
+                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                        placeholder="Mot de passe" [class.error]="fLog['password'].touched && fLog['password'].invalid"
+                        class="premium-input">
+                    <span class="material-icons toggle-icon" (click)="showPassword = !showPassword">
+                        {{ showPassword ? 'visibility_off' : 'visibility' }}
+                    </span>
                     <div class="input-line"></div>
                 </div>
                 <div class="error-text" *ngIf="fLog['password'].touched && fLog['password'].errors">
@@ -54,7 +58,7 @@
                         <input type="checkbox">
                         <span>Se souvenir</span>
                     </label>
-                    <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                    <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
                 </div>
 
                 <button type="submit" [disabled]="loginForm.invalid" class="premium-btn">
@@ -92,7 +96,6 @@
             </div>
 
             <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
-                <!-- ... inputs ... -->
                 <div class="input-wrapper">
                     <div class="input-icon"><span class="material-icons">person_outline</span></div>
                     <input type="text" formControlName="username" placeholder="Identifiant" class="premium-input">
@@ -103,12 +106,19 @@
                 </div>
                 <div class="input-wrapper">
                     <div class="input-icon"><span class="material-icons">lock_outline</span></div>
-                    <input type="password" formControlName="password" placeholder="Mot de passe" class="premium-input">
+                    <input [type]="showRegisterPassword ? 'text' : 'password'" formControlName="password"
+                        placeholder="Mot de passe" class="premium-input">
+                    <span class="material-icons toggle-icon" (click)="showRegisterPassword = !showRegisterPassword">
+                        {{ showRegisterPassword ? 'visibility_off' : 'visibility' }}
+                    </span>
                 </div>
                 <div class="input-wrapper">
                     <div class="input-icon"><span class="material-icons">verified_user</span></div>
-                    <input type="password" formControlName="confirmPassword" placeholder="Confirmer"
-                        class="premium-input">
+                    <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+                        placeholder="Confirmer" class="premium-input">
+                    <span class="material-icons toggle-icon" (click)="showConfirmPassword = !showConfirmPassword">
+                        {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+                    </span>
                 </div>
 
                 <button type="submit" [disabled]="registerForm.invalid" class="premium-btn">
@@ -129,11 +139,5 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <!-- Bottom Badge -->
-    <div class="bottom-badge">
-        <span class="material-icons">verified</span>
-        <span>Sécurisé par TaskFlow</span>
     </div>
 </div>

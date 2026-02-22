@@ -15,6 +15,8 @@ import { NotificationsPage } from './components/notifications-page/notifications
 import { UserProfile } from './components/user-profile/user-profile';
 import { ProjectsListComponent } from './components/projects/projects-list';
 import { ProjectDetailComponent } from './components/projects/project-detail';
+import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
 import { AcceptInvitationComponent } from './accept-invitation.component';
 
 // Guard as a function
@@ -55,6 +57,8 @@ export const routes: Routes = [
         component: AuthLayoutComponent,
         canActivate: [guestGuard]
     },
+    { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
+    { path: 'reset-password/:token', component: ResetPasswordComponent, canActivate: [guestGuard] },
     {
         path: 'dashboard',
         component: DashboardComponent,

@@ -86,14 +86,14 @@
                     </div>
 
                     <div class="pg-tasks">
-                        <div class="pg-task-item" *ngFor="let t of (p.tasks || []).slice(0, 3)"
+                        <div class="pg-task-item" *ngFor="let t of getProjectsTasks(p).slice(0, 3)"
                             [routerLink]="['/dashboard/projects', p.id]">
                             <span class="t-status" [class]="t.status"></span>
                             <div class="t-content">
                                 <span class="t-title">{{ t.title }}</span>
                             </div>
                         </div>
-                        <div *ngIf="!p.tasks?.length" class="empty-pg">
+                        <div *ngIf="getProjectsTasks(p).length === 0" class="empty-pg">
                             Aucune tâche pour le moment
                         </div>
                     </div>
@@ -121,7 +121,9 @@
             <div class="card-premium">
                 <div class="card-header">
                     <h2><span class="material-icons">event_note</span> Tâches récentes</h2>
-                    <a routerLink="/dashboard/tasks" class="view-all">Voir tout →</a>
+                    <a routerLink="/dashboard/tasks" class="view-all">
+                        Voir tout <span class="material-icons">east</span>
+                    </a>
                 </div>
                 <div class="task-mini-list">
                     <div class="task-mini-item" *ngFor="let task of recentTasks().slice(0, 6)">

@@ -1,7 +1,7 @@
-const { Task, User, Notification } = require('../models');
+const { Task, User, Notification, ActivityLog } = require('../models');
 const { Op } = require('sequelize');
 const { logActivity } = require('../services/audit.service');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, getPremiumTemplate } = require('../services/email.service');
 
 // GET TASKS (With Filters, Search & Pagination)
 exports.getTasks = async (req, res) => {
@@ -37,11 +37,17 @@ exports.getTasks = async (req, res) => {
 
         // Search by keyword
         if (q) {
-            where[Op.or] = [
-                ...(where[Op.or] || []),
-                { title: { [Op.iLike]: `%${q}%` } },
-                { description: { [Op.iLike]: `%${q}%` } }
-            ];
+            const searchQuery = {
+                [Op.or]: [
+                    { title: { [Op.iLike]: `%${q}%` } },
+                    { description: { [Op.iLike]: `%${q}%` } }
+                ]
+            };
+            if (where[Op.and]) {
+                where[Op.and].push(searchQuery);
+            } else {
+                where[Op.and] = [searchQuery];
+            }
         }
 
         const tasks = await Task.findAndCountAll({
@@ -101,11 +107,19 @@ exports.createTask = async (req, res) => {
                 const recipient = await User.findByPk(assignedUserId);
                 if (recipient) {
                     console.log(`[EMAIL] Envoi mail à ${recipient.email}...`);
+                    const assignmentHtml = getPremiumTemplate(
+                        'Nouvelle tâche assignée',
+                        `<p>L'utilisateur <strong>${req.user.username}</strong> vous a assigné une nouvelle tâche : <strong>"${title}"</strong>.</p>
+                         <p>Connectez-vous pour commencer à travailler dessus.</p>`,
+                        'Voir la tâche',
+                        'http://localhost:4200/tasks'
+                    );
+
                     sendEmail(
                         recipient.email,
                         'Nouvelle tâche assignée',
                         `Bonjour, la tâche "${title}" vous a été assignée.`,
-                        `<h1>Nouvelle assignation</h1><p>La tâche <strong>${title}</strong> vous a été assignée par ${req.user.username}.</p>`
+                        assignmentHtml
                     );
                 } else {
                     console.warn(`[EMAIL] Utilisateur assigné ${assignedUserId} non trouvé.`);
@@ -166,12 +180,19 @@ exports.updateTask = async (req, res) => {
                 try {
                     const recipient = await User.findByPk(updates.assignedUserId);
                     if (recipient) {
-                        console.log(`[EMAIL] Envoi mail de réassignation à ${recipient.email}...`);
+                        const reassignmentHtml = getPremiumTemplate(
+                            'Assignation de tâche',
+                            `<p>La tâche <strong>"${taskToCheck.title}"</strong> vous a été réassignée.</p>
+                             <p>Consultez votre liste de tâches pour voir les détails.</p>`,
+                            'Voir mes tâches',
+                            'http://localhost:4200/tasks'
+                        );
+
                         sendEmail(
                             recipient.email,
                             'Assignation de tâche',
                             `La tâche "${taskToCheck.title}" vous a été assignée.`,
-                            `<h1>Nouvelle assignation</h1><p>La tâche <strong>${taskToCheck.title}</strong> vous a été assignée.</p>`
+                            reassignmentHtml
                         );
                     } else {
                         console.warn(`[EMAIL] Utilisateur assigné ${updates.assignedUserId} non trouvé.`);

@@ -34,11 +34,11 @@
 
             <div class="quick-stats">
                 <div class="stat-bubble">
-                    <span class="value">{{ stats.tasksCreated }}</span>
+                    <span class="value">{{ isLoading() ? '-' : stats().tasksCreated }}</span>
                     <span class="label">Tâches</span>
                 </div>
                 <div class="stat-bubble">
-                    <span class="value">{{ stats.tasksCompleted }}</span>
+                    <span class="value">{{ isLoading() ? '-' : stats().tasksCompleted }}</span>
                     <span class="label">Succès</span>
                 </div>
             </div>

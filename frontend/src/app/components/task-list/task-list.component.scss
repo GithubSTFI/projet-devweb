@@ -493,12 +493,54 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .empty-state {
     padding: 80px 20px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    margin: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.05);
 
     .material-icons {
-        font-size: 56px;
-        margin-bottom: 16px;
-        color: rgba(255, 255, 255, 0.05);
+        font-size: 64px;
+        background: linear-gradient(135deg, rgba($primary, 0.1), rgba($secondary, 0.1));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 8px;
+        filter: drop-shadow(0 0 10px rgba($primary, 0.2));
+    }
+
+    p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.4);
+        margin: 0;
+    }
+
+    .create-first-btn {
+        margin-top: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid $glass-border;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+            background: linear-gradient(135deg, $primary, $secondary);
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
     }
 }
 

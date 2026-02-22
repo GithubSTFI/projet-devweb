@@ -64,9 +64,37 @@ exports.downloadFile = async (req, res) => {
             return res.status(404).json({ error: 'Fichier introuvable ou accès refusé.' });
         }
 
-        const absolutePath = path.resolve(fileRecord.path);
+        const absolutePath = path.join(__dirname, '..', fileRecord.path);
+
+        if (!fs.existsSync(absolutePath)) {
+            console.error(`[DOWNLOAD] File not found on disk: ${absolutePath}`);
+            return res.status(404).json({ error: 'Fichier physique introuvable.' });
+        }
+
         res.download(absolutePath, fileRecord.originalName);
 
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// PREVIEW FILE (Inline)
+exports.previewFile = async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const fileRecord = await File.findOne({
+            where: { filename, userId: req.user.id }
+        });
+
+        if (!fileRecord) return res.status(404).json({ error: 'Fichier introuvable.' });
+
+        const absolutePath = path.join(__dirname, '..', fileRecord.path);
+
+        if (!fs.existsSync(absolutePath)) {
+            return res.status(404).json({ error: 'Fichier physique introuvable.' });
+        }
+
+        res.sendFile(absolutePath);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

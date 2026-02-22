@@ -1,4 +1,4 @@
-import { Component, inject, signal, Signal } from '@angular/core';
+import { Component, inject, signal, Signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService, AuthUser } from '../../auth.service';
 import { ApiService } from '../../api.service';
@@ -12,7 +12,7 @@ import { ToastService } from '../toast/toast.component';
   templateUrl: './user-profile.html',
   styleUrls: ['./user-profile.scss']
 })
-export class UserProfile {
+export class UserProfile implements OnInit {
   private auth = inject(AuthService);
   private api = inject(ApiService);
   private router = inject(Router);
@@ -21,13 +21,40 @@ export class UserProfile {
   user: Signal<AuthUser | null> = this.auth.currentUser;
   isEditing = signal(false);
   isUploading = signal(false);
+  isLoading = signal(true);
 
-  // Stats fictives pour l'UI
-  stats = {
-    tasksCreated: 12,
-    tasksCompleted: 8,
-    efficiency: '85%'
-  };
+  // Stats signal pour l'UI
+  stats = signal({
+    tasksCreated: 0,
+    tasksCompleted: 0,
+    efficiency: '0%'
+  });
+
+  ngOnInit() {
+    this.loadStats();
+  }
+
+  loadStats() {
+    this.isLoading.set(true);
+    this.api.getStats().subscribe({
+      next: (res: any) => {
+        if (res && res.stats) {
+          const total = res.stats.total || 0;
+          const done = res.stats.done || 0;
+          this.stats.set({
+            tasksCreated: total,
+            tasksCompleted: done,
+            efficiency: total > 0 ? Math.round((done / total) * 100) + '%' : '0%'
+          });
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading stats:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   getInitials(name: string | undefined): string {
     return name ? name.substring(0, 2).toUpperCase() : 'U';

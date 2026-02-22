@@ -1,6 +1,6 @@
 const { Project, ProjectMember, ProjectInvitation, User, Task } = require('../models');
 const crypto = require('crypto');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, getPremiumTemplate } = require('../services/email.service');
 
 // GET ALL PROJECTS FOR CURRENT USER
 exports.getMyProjects = async (req, res) => {
@@ -122,10 +122,20 @@ exports.inviteMember = async (req, res) => {
 
         // Send Email
         const inviteLink = `http://localhost:4200/accept-invitation?token=${token}`;
+
+        const inviteHtml = getPremiumTemplate(
+            `Nouvelle invitation`,
+            `<p>Vous avez été invité à collaborer sur le projet <strong>"${project.name}"</strong> sur TaskFlow.</p>
+             <p>Rejoignez votre équipe et commencez à travailler sur les tâches dès maintenant.</p>`,
+            'Accepter l\'invitation',
+            inviteLink
+        );
+
         await sendEmail(
             email,
             `Invitation au projet ${project.name}`,
-            `Vous avez été invité à rejoindre le projet "${project.name}" sur TaskFlow.\n\nCliquez ici pour accepter : ${inviteLink}`
+            `Vous avez été invité à rejoindre le projet "${project.name}" sur TaskFlow. Cliquez ici pour accepter : ${inviteLink}`,
+            inviteHtml
         );
 
         res.json({ message: 'Invitation envoyée', data: invitation });
@@ -154,6 +164,28 @@ exports.acceptInvitation = async (req, res) => {
         await invitation.update({ status: 'ACCEPTED' });
 
         res.json({ message: 'Invitation acceptée avec succès' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// DELETE PROJECT
+exports.deleteProject = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+        const role = req.user.role;
+
+        const project = await Project.findByPk(id);
+        if (!project) return res.status(404).json({ error: 'Projet introuvable' });
+
+        // Only owner or site ADMIN can delete
+        if (project.ownerId !== userId && role !== 'ADMIN') {
+            return res.status(403).json({ error: 'Seul le propriétaire peut supprimer ce projet' });
+        }
+
+        await project.destroy();
+        res.json({ message: 'Projet supprimé avec succès' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

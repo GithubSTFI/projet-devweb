@@ -29,6 +29,8 @@ const upload = multer({ storage: storage });
 // --- PUBLIC ROUTES ---
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
+router.post('/auth/forgot-password', authController.forgotPassword);
+router.post('/auth/reset-password', authController.resetPassword);
 
 router.get('/test-email', (req, res) => {
     const { sendEmail } = require('../services/email.service');
@@ -49,6 +51,7 @@ router.get('/users', userController.listUsers);
 router.get('/projects', projectController.getMyProjects);
 router.post('/projects', projectController.createProject);
 router.get('/projects/:id', projectController.getProjectDetails);
+router.delete('/projects/:id', projectController.deleteProject);
 router.post('/projects/:id/invite', projectController.inviteMember);
 router.post('/projects/accept-invitation', projectController.acceptInvitation);
 
@@ -63,6 +66,7 @@ router.delete('/tasks/:id', taskController.deleteTask);
 router.post('/upload', upload.single('file'), fileController.uploadFile);
 router.get('/files', fileController.getFiles);
 router.get('/download/:filename', fileController.downloadFile);
+router.get('/files/preview/:filename', fileController.previewFile);
 
 // Notifications
 router.get('/notifications', notificationController.getNotifications);

@@ -30,6 +30,7 @@ export class ProjectsListComponent implements OnInit {
     projects = signal<Project[]>([]);
     isLoading = signal(true);
     showModal = signal(false);
+    activeProjectMenu = signal<number | null>(null);
 
     newProject = {
         name: '',
@@ -76,5 +77,25 @@ export class ProjectsListComponent implements OnInit {
         if (!project.tasks || project.tasks.length === 0) return '0/0';
         const done = project.tasks.filter(t => t.status === 'DONE').length;
         return `${done}/${project.tasks.length}`;
+    }
+
+    toggleMenu(projectId: number) {
+        if (this.activeProjectMenu() === projectId) {
+            this.activeProjectMenu.set(null);
+        } else {
+            this.activeProjectMenu.set(projectId);
+        }
+    }
+
+    deleteProject(id: number) {
+        if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
+            this.projectService.deleteProject(id).subscribe({
+                next: () => {
+                    this.toast.show('Projet supprimé', 'success');
+                    this.loadProjects();
+                },
+                error: (err) => this.toast.show(err.error?.error || 'Erreur', 'error')
+            });
+        }
     }
 }

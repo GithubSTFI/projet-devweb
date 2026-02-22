@@ -72,10 +72,14 @@ export class DashboardOverviewComponent implements OnInit, AfterViewInit {
     }
 
     getTaskStats(project: any): string {
-        const tasks = project.tasks || project.Tasks || [];
+        const tasks = this.getProjectsTasks(project);
         if (tasks.length === 0) return '0/0';
         const done = tasks.filter((t: any) => t.status === 'DONE').length;
         return `${done}/${tasks.length}`;
+    }
+
+    getProjectsTasks(project: any): any[] {
+        return project.tasks || project.Tasks || [];
     }
 
     initChart() {

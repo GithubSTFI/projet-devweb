@@ -52,4 +52,8 @@ export class ProjectService {
     acceptInvitation(token: string): Observable<any> {
         return this.http.post(`${this.apiUrl}/accept-invitation`, { token }, { headers: this.getHeaders() });
     }
+
+    deleteProject(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    }
 }
