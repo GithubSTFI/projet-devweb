@@ -504,3 +504,33 @@ $border: rgba(255, 255, 255, 0.08);
         }
     }
 }
+
+@media (max-width: 480px) {
+    .projects-container {
+        padding: 12px;
+    }
+
+    .page-header {
+        .title-section h1 {
+            font-size: 1.25rem;
+        }
+
+        .title-section p {
+            font-size: 0.8rem;
+        }
+    }
+
+    .project-card {
+        padding: 16px;
+
+        .card-header .project-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .card-body h3 {
+            font-size: 1rem;
+        }
+    }
+}

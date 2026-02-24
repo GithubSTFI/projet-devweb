@@ -267,6 +267,58 @@ $warning: #f59e0b;
     display: flex;
     flex-direction: column;
     gap: 20px;
+
+    &.edit-mode {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 8px;
+
+            label {
+                color: $text-muted;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                padding-left: 4px;
+            }
+
+            input {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid $border-color;
+                border-radius: 14px;
+                padding: 14px 18px;
+                color: $text-main;
+                font-size: 0.95rem;
+                outline: none;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+                &:focus {
+                    border-color: $primary;
+                    background: rgba(0, 0, 0, 0.4);
+                    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    background: rgba(255, 255, 255, 0.02);
+                    border-style: dashed;
+                }
+            }
+
+            small {
+                color: $warning;
+                font-size: 0.7rem;
+                font-weight: 500;
+                padding-left: 4px;
+                opacity: 0.8;
+            }
+        }
+    }
 }
 
 .info-row {

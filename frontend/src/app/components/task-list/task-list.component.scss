@@ -601,30 +601,103 @@ $glass-border: rgba(255, 255, 255, 0.08);
 @media (max-width: 480px) {
     .task-page {
         padding: 8px;
+        gap: 12px;
     }
 
     .stats-row {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
+
+        .stat-card {
+            padding: 10px 8px;
+            gap: 8px;
+
+            .stat-icon {
+                width: 28px;
+                height: 28px;
+
+                .material-icons {
+                    font-size: 16px;
+                }
+            }
+
+            .stat-content .stat-value {
+                font-size: 0.95rem;
+            }
+        }
     }
 
-    .stat-card {
-        padding: 10px;
+    .table-header {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .header-left {
+        width: 100%;
+        gap: 12px;
+
+        // Stack filter groups for ultra-small screens
+        .filter-group {
+            width: 100%;
+        }
+
+        .filter-tabs {
+            width: 100%;
+            overflow-x: auto;
+            justify-content: flex-start;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+
+            .filter-tab {
+                flex: 1;
+                text-align: center;
+                padding: 6px 8px;
+                font-size: 0.65rem;
+            }
+        }
+    }
+
+    .search-bar {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 4px;
     }
 
     .table-row {
         grid-template-columns: 32px 1fr 32px !important;
+        padding: 10px 12px;
 
+        .col-priority,
         .col-assignee {
             display: none;
         }
+
+        .task-title-text {
+            font-size: 0.85rem;
+        }
     }
 
-    .filters-bar {
+    .pagination-premium {
+        padding: 16px;
+        gap: 12px;
 
-        select,
-        .filter-select-wrapper {
-            flex: 1 1 100%;
+        .page-info {
+            font-size: 0.75rem;
+
+            strong {
+                padding: 3px 6px;
+            }
         }
     }
 }
