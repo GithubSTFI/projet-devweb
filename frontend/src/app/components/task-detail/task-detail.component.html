@@ -74,8 +74,9 @@
             <div *ngIf="mode() === 'EDIT'" class="edit-view">
                 <!-- TITLE -->
                 <div class="form-group">
-                    <label>Titre</label>
-                    <input [(ngModel)]="editTask.title" class="input-main" placeholder="Ex: Rédiger le rapport...">
+                    <label>Titre <span class="required">*</span></label>
+                    <input [(ngModel)]="editTask.title" [class.error]="isSubmitted() && !editTask.title" class="input-main" placeholder="Ex: Rédiger le rapport...">
+                    <span class="error-msg" *ngIf="isSubmitted() && !editTask.title">Ce champ est obligatoire</span>
                 </div>
 
                 <!-- META ROW -->
@@ -102,7 +103,7 @@
                 <div class="form-row">
                     <div class="form-group half">
                         <label>Date d'échéance</label>
-                        <input type="date" [(ngModel)]="editTask.dueDate" class="input-main">
+                        <input type="date" [(ngModel)]="editTask.dueDate" [min]="today" class="input-main">
                     </div>
                     <div class="form-group half">
                         <label>Assigner à</label>
@@ -135,9 +136,14 @@
                 <div class="file-list-compact" *ngIf="files().length > 0">
                     <div *ngFor="let file of files()" class="file-item">
                         <span class="material-icons file-icon">insert_drive_file</span>
-                        <a [href]="getDownloadUrl(file.filename)" target="_blank" class="file-name">{{ file.originalName
-                            }}</a>
-                        <span class="file-size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+                        <div class="file-info-row">
+                            <a [href]="getDownloadUrl(file.filename)" target="_blank" class="file-name">{{ file.originalName
+                                }}</a>
+                            <span class="file-size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+                        </div>
+                        <button class="btn-delete-file" (click)="deleteFile(file.id)" title="Supprimer le fichier">
+                            <span class="material-icons">close</span>
+                        </button>
                     </div>
                 </div>
                 <p *ngIf="files().length === 0" class="text-muted">Aucun fichier lié.</p>
@@ -147,6 +153,7 @@
                         <span class="material-icons">{{ isUploading() ? 'sync' : 'cloud_upload' }}</span>
                         {{ isUploading() ? 'Envoi...' : 'Ajouter un fichier' }}
                     </label>
+                    <p class="upload-hint">Formats : PDF, Word, Image (Max 5Mo)</p>
                     <input id="file-upload" type="file" (change)="uploadFile($event)" [disabled]="isUploading()"
                         style="display:none">
                 </div>
@@ -160,10 +167,9 @@
 
         <!-- FOOTER ACTIONS -->
         <div class="modal-footer">
-            <button *ngIf="mode() === 'EDIT'" (click)="save()" class="btn-save" [disabled]="isSaving()">
-                <span class="material-icons" *ngIf="isSaving()">sync</span>
-                {{ isSaving() ? (isNew ? 'Création...' : 'Enregistrement...') : (isNew ? 'Créer' : 'Enregistrer les
-                modifications') }}
+            <button *ngIf="mode() === 'EDIT'" (click)="save()" class="btn-save" [disabled]="isSaving() || (isSubmitted() && !editTask.title)">
+                <span class="spinner-small" *ngIf="isSaving()"></span>
+                {{ isSaving() ? (isNew ? 'Création...' : 'Enregistrement...') : (isNew ? 'Créer' : 'Enregistrer les modifications') }}
             </button>
             <button *ngIf="mode() === 'VIEW' && !isNew" (click)="setMode('EDIT')" class="btn-save">
                 Modifier
@@ -172,4 +178,10 @@
         </div>
 
     </div>
+
+    <!-- Confirmation Dialog -->
+    <app-confirm-dialog *ngIf="showConfirmDelete()" title="Supprimer le fichier"
+        message="Voulez-vous vraiment supprimer ce document définitivement ?" confirmText="Supprimer" icon="delete"
+        (confirm)="confirmDeleteFile()" (cancel)="cancelDelete()">
+    </app-confirm-dialog>
 </div>

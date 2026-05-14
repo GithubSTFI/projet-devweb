@@ -389,21 +389,23 @@ exports.checkOverdueTasks = async () => {
         });
 
         for (const task of overdueTasks) {
-            // Check if alert notification already exists to avoid spamming
-            const exists = await Notification.findOne({
-                where: {
-                    userId: task.userId,
-                    message: { [Op.like]: `%${task.title}%retard%` }
-                }
-            });
-
-            if (!exists) {
-                await Notification.create({
-                    userId: task.userId,
-                    message: `ALERTE: La tâche "${task.title}" est passée de date !`,
-                    type: 'SYSTEM'
+            const usersToNotify = [task.userId, task.assignedUserId].filter(id => id != null);
+            
+            for (const userId of [...new Set(usersToNotify)]) {
+                const exists = await Notification.findOne({
+                    where: {
+                        userId,
+                        message: { [Op.like]: `%${task.title}%retard%` }
+                    }
                 });
-                console.log(`[ALERTE] Notification envoyée pour la tâche #${task.id}`);
+
+                if (!exists) {
+                    await Notification.create({
+                        userId,
+                        message: `Relance : La tâche "${task.title}" est en retard !`,
+                        type: 'SYSTEM'
+                    });
+                }
             }
         }
     } catch (error) {

@@ -7,11 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../toast/toast.component';
 import { LoaderComponent } from '../loader/loader.component';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-projects-list',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
+    imports: [CommonModule, RouterModule, FormsModule, LoaderComponent, ConfirmDialogComponent],
     templateUrl: './projects-list.html',
     styleUrls: ['./projects-list.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +35,14 @@ export class ProjectsListComponent implements OnInit {
     isLoading = signal(true);
     showModal = signal(false);
     activeProjectMenu = signal<number | null>(null);
+
+    // Form logic
+    isSavingProject = signal(false);
+    isSubmitted = signal(false);
+
+    // Confirmation logic
+    showConfirm = signal(false);
+    projectToDeleteId = signal<number | null>(null);
 
     newProject = {
         name: '',
@@ -59,16 +68,23 @@ export class ProjectsListComponent implements OnInit {
     }
 
     createProject() {
+        this.isSubmitted.set(true);
         if (!this.newProject.name) return;
 
+        this.isSavingProject.set(true);
         this.projectService.createProject(this.newProject).subscribe({
             next: () => {
                 this.toast.show('Projet créé avec succès', 'success');
                 this.showModal.set(false);
+                this.isSavingProject.set(false);
+                this.isSubmitted.set(false);
                 this.loadProjects();
                 this.newProject = { name: '', description: '', color: '#6366f1' };
             },
-            error: (err) => this.toast.show(err.error?.error || 'Erreur lors de la création', 'error')
+            error: (err) => {
+                this.isSavingProject.set(false);
+                this.toast.show(err.error?.error || 'Erreur lors de la création', 'error');
+            }
         });
     }
 
@@ -91,14 +107,29 @@ export class ProjectsListComponent implements OnInit {
     }
 
     deleteProject(id: number) {
-        if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
-            this.projectService.deleteProject(id).subscribe({
-                next: () => {
-                    this.toast.show('Projet supprimé', 'success');
-                    this.loadProjects();
-                },
-                error: (err) => this.toast.show(err.error?.error || 'Erreur', 'error')
-            });
-        }
+        this.projectToDeleteId.set(id);
+        this.showConfirm.set(true);
+    }
+
+    confirmDelete() {
+        const id = this.projectToDeleteId();
+        if (!id) return;
+
+        this.projectService.deleteProject(id).subscribe({
+            next: () => {
+                this.toast.show('Projet supprimé', 'success');
+                this.showConfirm.set(false);
+                this.loadProjects();
+            },
+            error: (err) => {
+                this.showConfirm.set(false);
+                this.toast.show(err.error?.error || 'Erreur', 'error');
+            }
+        });
+    }
+
+    cancelDelete() {
+        this.showConfirm.set(false);
+        this.projectToDeleteId.set(null);
     }
 }

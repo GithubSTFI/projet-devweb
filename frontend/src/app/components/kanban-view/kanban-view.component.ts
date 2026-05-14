@@ -19,6 +19,7 @@ export class KanbanViewComponent {
         this.distributeTasks();
     }
 
+    @Input() currentFilter: string = 'all';
     @Output() taskUpdated = new EventEmitter<void>();
 
     allTasks = signal<Task[]>([]);

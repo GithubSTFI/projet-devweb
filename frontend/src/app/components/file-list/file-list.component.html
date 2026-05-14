@@ -40,6 +40,9 @@
                 <button class="btn-action secondary" (click)="previewFile(file.filename)" title="Aperçu">
                     <span class="material-icons">visibility</span>
                 </button>
+                <button class="btn-action danger" (click)="deleteFile(file.id)" title="Supprimer">
+                    <span class="material-icons">delete</span>
+                </button>
             </div>
         </div>
     </div>
@@ -52,4 +55,11 @@
         <h3>Aucun fichier</h3>
         <p>Les fichiers attachés à vos tâches apparaîtront ici.</p>
     </div>
+
+    <!-- Confirmation Dialog -->
+    <app-confirm-dialog *ngIf="showConfirm()" title="Supprimer le fichier"
+        message="Voulez-vous vraiment supprimer ce document de manière permanente ? Cette action est irréversible."
+        confirmText="Supprimer définitivement" icon="delete_forever" (confirm)="confirmDelete()"
+        (cancel)="cancelDelete()">
+    </app-confirm-dialog>
 </div>

@@ -208,6 +208,18 @@ $border-color: rgba(255, 255, 255, 0.08);
         }
     }
 
+    &.danger {
+        background: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+        border: 1px solid rgba(244, 63, 94, 0.2);
+
+        &:hover {
+            background: #f43f5e;
+            color: white;
+            transform: scale(1.05);
+        }
+    }
+
     .material-icons {
         font-size: 18px;
     }

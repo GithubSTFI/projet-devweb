@@ -104,6 +104,10 @@ export class ApiService {
         return this.http.get(`${this.apiUrl}/files`, { headers: this.getHeaders(), params });
     }
 
+    deleteFile(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/files/delete/${id}`, { headers: this.getHeaders() });
+    }
+
     getStats(): Observable<any> {
         return this.http.get(`${this.apiUrl}/tasks/stats`, { headers: this.getHeaders() });
     }

@@ -160,3 +160,127 @@ body {
   font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
+
+/* Style de base pour les Select (Restauration) */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  border-radius: 10px;
+  padding: 10px 50px 10px 16px; 
+  min-width: 140px; 
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-position 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, background-color 0.3s;
+  
+  /* Icône SVG Premium */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 14px !important;
+}
+
+/* L'effet demandé : la flèche disparaît vers la droite au survol */
+select:hover {
+  border-color: #6366f1 !important; /* Surbillance violette indigo */
+  background-color: rgba(99, 102, 241, 0.08) !important; /* Fond teinté indigo */
+  background-position: right -40px center !important; 
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); /* Lueur violette (glow) */
+}
+
+select:focus {
+  outline: none;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  padding: 10px;
+}
+
+/* Empêche le texte de coller à l'icône */
+select {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Validation & Feedback */
+.required {
+  color: #f43f5e;
+  margin-left: 2px;
+}
+
+.error-msg {
+  color: #f43f5e;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+input.error {
+  border-color: #f43f5e !important;
+  background: rgba(244, 63, 94, 0.05) !important;
+}
+
+/* Modern Spinner inside buttons */
+.spinner-small {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Amélioration visuelle des boutons de suppression */
+.upload-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 8px;
+  text-align: center;
+  font-style: italic;
+}
+
+.btn-delete-premium {
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-delete-premium:hover {
+  background: #f43f5e;
+  color: white;
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+}
+
+/* Fix visibilité Icônes */
+.material-icons {
+  vertical-align: middle;
+  opacity: 0.85;
+}
+
+.text-danger .material-icons {
+  color: #f43f5e;
+}
+
+/* Désactivation sélection dates passées (visuel) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}

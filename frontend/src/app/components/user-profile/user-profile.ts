@@ -53,7 +53,7 @@ export class UserProfile implements OnInit {
     this.api.getStats().subscribe({
       next: (res: any) => {
         if (res?.stats) {
-          const total = res.stats.total || 0;
+          const total = res.stats.total ?? res.stats.totalTasks ?? 0;
           const done = res.stats.done || 0;
           this.stats.set({
             tasksCreated: total,

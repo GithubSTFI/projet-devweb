@@ -2,11 +2,12 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../auth.service';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-file-list',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ConfirmDialogComponent],
     templateUrl: './file-list.component.html',
     styleUrls: ['./file-list.component.scss']
 })
@@ -14,6 +15,8 @@ export class FileListComponent implements OnInit {
     private api = inject(ApiService);
     private auth = inject(AuthService);
     files = signal<any[]>([]);
+    showConfirm = signal(false);
+    fileToDeleteId = signal<number | null>(null);
 
     ngOnInit() {
         this.api.getFiles().subscribe({
@@ -47,5 +50,31 @@ export class FileListComponent implements OnInit {
 
     getFileExtension(filename: string): string {
         return filename.split('.').pop()?.toUpperCase() || '-';
+    }
+
+    deleteFile(id: number) {
+        this.fileToDeleteId.set(id);
+        this.showConfirm.set(true);
+    }
+
+    confirmDelete() {
+        const id = this.fileToDeleteId();
+        if (!id) return;
+
+        this.api.deleteFile(id).subscribe({
+            next: () => {
+                this.files.set(this.files().filter(f => f.id !== id));
+                this.showConfirm.set(false);
+            },
+            error: (err) => {
+                console.error(err);
+                this.showConfirm.set(false);
+            }
+        });
+    }
+
+    cancelDelete() {
+        this.showConfirm.set(false);
+        this.fileToDeleteId.set(null);
     }
 }

@@ -31,10 +31,14 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + '-' + Math.random().toString(36).slice(2) + ext);
     }
 });
-const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp',
+const allowedMimeTypes = [
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
     'application/pdf', 'text/plain',
+    'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+];
 const upload = multer({
     storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB max
@@ -82,6 +86,7 @@ router.put('/tasks/:id', taskController.updateTask);
 router.delete('/tasks/:id', taskController.deleteTask);
 
 // Files
+router.delete('/files/delete/:id', fileController.deleteFile); // Route explicite
 router.post('/upload', upload.single('file'), fileController.uploadFile);
 router.get('/files', fileController.getFiles);
 router.get('/download/:filename', fileController.downloadFile);

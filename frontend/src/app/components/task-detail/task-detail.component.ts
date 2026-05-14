@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
 import { ProjectService } from '../../project.service';
 import { ToastService } from '../toast/toast.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-task-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ConfirmDialogComponent],
     templateUrl: './task-detail.component.html',
     styleUrls: ['./task-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,7 +30,11 @@ export class TaskDetailComponent implements OnInit, OnChanges {
     users = signal<any[]>([]);
     isUploading = signal(false);
     isSaving = signal(false);
+    isSubmitted = signal(false);
+    showConfirmDelete = signal(false);
+    fileToDeleteId = signal<number | null>(null);
     editTask: Partial<Task> = {};
+    today = new Date().toISOString().split('T')[0];
 
     // Mode Management
     mode = signal<'VIEW' | 'EDIT'>('VIEW');
@@ -82,8 +87,12 @@ export class TaskDetailComponent implements OnInit, OnChanges {
     }
 
     save() {
+        this.isSubmitted.set(true);
         const task = this.editTask;
-        if (!task.title) return;
+        if (!task.title) {
+            this.toast.show('Le titre est obligatoire', 'error');
+            return;
+        }
 
         this.isSaving.set(true);
         const payload = {
@@ -151,6 +160,33 @@ export class TaskDetailComponent implements OnInit, OnChanges {
 
     getDownloadUrl(filename: string) {
         return `http://localhost:3000/api/download/${filename}`;
+    }
+
+    deleteFile(fileId: number) {
+        this.fileToDeleteId.set(fileId);
+        this.showConfirmDelete.set(true);
+    }
+
+    confirmDeleteFile() {
+        const fileId = this.fileToDeleteId();
+        if (!fileId) return;
+
+        this.api.deleteFile(fileId).subscribe({
+            next: () => {
+                this.toast.show('Fichier supprimé', 'success');
+                this.loadFiles();
+                this.showConfirmDelete.set(false);
+            },
+            error: (err) => {
+                this.toast.show('Erreur lors de la suppression', 'error');
+                this.showConfirmDelete.set(false);
+            }
+        });
+    }
+
+    cancelDelete() {
+        this.showConfirmDelete.set(false);
+        this.fileToDeleteId.set(null);
     }
 
     getStatusLabel(status: string): string {

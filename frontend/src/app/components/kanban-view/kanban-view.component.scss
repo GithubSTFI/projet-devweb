@@ -8,7 +8,8 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
 .kanban-container {
     display: flex;
-    gap: 0.75rem;
+    gap: 1.5rem;
+    justify-content: flex-start;
     height: calc(100vh - 220px);
     overflow-x: auto;
     padding: 10px;
@@ -35,16 +36,18 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .kanban-column {
-    flex: 1;
-    min-width: 0; // Allow shrinking
+    flex: 1 1 300px;
+    min-width: 300px;
+    max-width: 100%;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     border: 1px solid $glass-border;
     scroll-snap-align: start;
     max-height: 100%;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .column-header {

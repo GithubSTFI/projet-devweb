@@ -115,7 +115,9 @@
             </div>
 
             <!-- KANBAN VIEW -->
-            <app-kanban-view *ngIf="viewMode() === 'kanban' && !isLoading()" [tasks]="tasks()"
+            <app-kanban-view *ngIf="viewMode() === 'kanban' && !isLoading()" 
+                [tasks]="tasks()"
+                [currentFilter]="filter()"
                 (taskUpdated)="loadTasks()">
             </app-kanban-view>
 

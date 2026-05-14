@@ -6,10 +6,12 @@ const { sendEmail, getPremiumTemplate } = require('../services/email.service');
 exports.getMyProjects = async (req, res) => {
     try {
         const userId = req.user.id;
+        const { Op } = require('sequelize');
+
         // Projects where user is owner OR member
         const projects = await Project.findAll({
             where: {
-                [require('sequelize').Op.or]: [
+                [Op.or]: [
                     { ownerId: userId },
                     { '$members.id$': userId }
                 ]
@@ -20,26 +22,18 @@ exports.getMyProjects = async (req, res) => {
                     as: 'members',
                     attributes: ['id', 'username'],
                     required: false,
-                    through: { attributes: [] }
+                    through: { attributes: ['role'] }
                 },
                 {
                     model: User,
                     as: 'owner',
                     attributes: ['id', 'username']
-                },
-                {
-                    model: Task,
-                    as: 'tasks',
-                    attributes: ['id', 'title', 'status', 'priority', 'dueDate', 'updatedAt', 'projectId']
                 }
             ],
             order: [['updatedAt', 'DESC']],
-            distinct: true
+            subQuery: false // Important pour les jointures complexes avec limit/offset
         });
-        console.log(`[PROJECTS] User ${userId} found ${projects.length} projects`);
-        if (projects.length > 0) {
-            console.log(`[PROJECTS] First project tasks count: ${projects[0].tasks?.length || 0}`);
-        }
+
         res.json({ data: projects });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -206,21 +200,25 @@ exports.inviteMember = async (req, res) => {
 exports.acceptInvitation = async (req, res) => {
     try {
         const { token } = req.body;
-        const invitation = await ProjectInvitation.findOne({ where: { token, status: 'PENDING' } });
+        const loggedUserId = req.user.id;
 
+        const invitation = await ProjectInvitation.findOne({ where: { token, status: 'PENDING' } });
         if (!invitation) return res.status(404).json({ error: 'Invitation invalide ou expirée' });
 
-        const user = await User.findOne({ where: { email: invitation.email } });
-        if (!user) return res.status(400).json({ error: 'Vous devez créer un compte avec cet email avant d\'accepter l\'invitation' });
-
-        await ProjectMember.create({
-            projectId: invitation.projectId,
-            userId: user.id,
-            role: invitation.role
+        // On vérifie si l'utilisateur est déjà membre
+        const existingMember = await ProjectMember.findOne({
+            where: { projectId: invitation.projectId, userId: loggedUserId }
         });
 
-        await invitation.update({ status: 'ACCEPTED' });
+        if (!existingMember) {
+            await ProjectMember.create({
+                projectId: invitation.projectId,
+                userId: loggedUserId,
+                role: invitation.role
+            });
+        }
 
+        await invitation.update({ status: 'ACCEPTED' });
         res.json({ message: 'Invitation acceptée avec succès' });
     } catch (error) {
         res.status(500).json({ error: error.message });

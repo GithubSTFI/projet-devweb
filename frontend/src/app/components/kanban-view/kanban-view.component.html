@@ -1,6 +1,6 @@
 <div class="kanban-container" cdkDropListGroup>
     <!-- TODO COLUMN -->
-    <div class="kanban-column">
+    <div class="kanban-column" *ngIf="currentFilter === 'all' || currentFilter === 'TODO'">
         <div class="column-header">
             <div class="header-content">
                 <span class="dot todo"></span>
@@ -28,7 +28,7 @@
     </div>
 
     <!-- IN PROGRESS COLUMN -->
-    <div class="kanban-column">
+    <div class="kanban-column" *ngIf="currentFilter === 'all' || currentFilter === 'IN_PROGRESS'">
         <div class="column-header">
             <div class="header-content">
                 <span class="dot in-progress"></span>
@@ -57,7 +57,7 @@
     </div>
 
     <!-- DONE COLUMN -->
-    <div class="kanban-column">
+    <div class="kanban-column" *ngIf="currentFilter === 'all' || currentFilter === 'DONE'">
         <div class="column-header">
             <div class="header-content">
                 <span class="dot done"></span>
@@ -85,7 +85,7 @@
     </div>
 
     <!-- ARCHIVED COLUMN -->
-    <div class="kanban-column">
+    <div class="kanban-column" *ngIf="currentFilter === 'all' || currentFilter === 'ARCHIVED'">
         <div class="column-header">
             <div class="header-content">
                 <span class="dot archived"></span>

@@ -351,6 +351,38 @@ $glass-border: rgba(255, 255, 255, 0.08);
     }
 }
 
+.file-info-row {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.btn-delete-file {
+    background: rgba(244, 63, 94, 0.1);
+    color: #f43f5e;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.6;
+
+    &:hover {
+        background: #f43f5e;
+        color: white;
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .material-icons {
+        font-size: 14px;
+    }
+}
+
 .file-name {
     color: $primary-light;
     font-weight: 600;
