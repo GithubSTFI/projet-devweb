@@ -1,0 +1,215 @@
+{
+  "users": [
+    {
+      "id": 2,
+      "username": "Fortune",
+      "email": "siewefortune87@gmail.com",
+      "password": "$2b$10$JT8kKFu4DL4zyoo.SQIsX.W02LKBYxaXFPh3.Mbg31E.WFHKVgmtS",
+      "role": "USER",
+      "avatarUrl": null,
+      "resetPasswordToken": null,
+      "resetPasswordExpires": null,
+      "createdAt": "2026-05-14T09:18:34.876Z",
+      "updatedAt": "2026-05-14T09:18:34.876Z"
+    },
+    {
+      "id": 3,
+      "username": "Fortdev",
+      "email": "fortdev21@gmail.com",
+      "password": "$2b$10$zUCn7.fVtEEelfhSBX1el.vNrLF7KAsxLg0Wh6qYEPOMNNnao5YTe",
+      "role": "USER",
+      "avatarUrl": null,
+      "resetPasswordToken": null,
+      "resetPasswordExpires": null,
+      "createdAt": "2026-05-14T09:25:16.606Z",
+      "updatedAt": "2026-05-14T09:25:16.606Z"
+    },
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@taskflow.dev",
+      "password": "$2b$10$yd.gaA08w.eC2xdMYJhqXeXs/nKW4fe1Wms7H1HFi6bhhAk/.2192",
+      "role": "ADMIN",
+      "avatarUrl": "/uploads/1778774495813-ttj6kqpw3h.jpeg",
+      "resetPasswordToken": null,
+      "resetPasswordExpires": null,
+      "createdAt": "2026-05-14T08:47:15.839Z",
+      "updatedAt": "2026-05-14T16:01:36.097Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "Updated Test Project",
+      "description": "A project to test CRUD",
+      "ownerId": 1,
+      "color": "#6366f1",
+      "createdAt": "2026-05-14T08:59:57.230Z",
+      "updatedAt": "2026-05-14T08:59:57.276Z"
+    }
+  ],
+  "projectMembers": [
+    {
+      "id": 1,
+      "projectId": 1,
+      "userId": 3,
+      "role": "MEMBER",
+      "createdAt": "2026-05-14T15:25:50.359Z",
+      "updatedAt": "2026-05-14T15:25:50.359Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "GIVFCDX",
+      "description": null,
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "dueDate": "2026-05-15T00:00:00.000Z",
+      "assignedUserId": null,
+      "projectId": null,
+      "createdAt": "2026-05-14T09:19:27.186Z",
+      "updatedAt": "2026-05-14T16:12:43.690Z",
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "title": "Redaction du cahier de charge",
+      "description": "Point d'entrée de la solution",
+      "status": "DONE",
+      "priority": "MEDIUM",
+      "dueDate": "2026-05-16T00:00:00.000Z",
+      "assignedUserId": 3,
+      "projectId": 1,
+      "createdAt": "2026-05-14T15:29:30.686Z",
+      "updatedAt": "2026-05-14T18:41:15.021Z",
+      "userId": 1
+    }
+  ],
+  "files": [
+    {
+      "id": 2,
+      "filename": "1778775015725-mbmybce41s.pdf",
+      "originalName": "LÃ©gislation du travail chap1 & 2.PDF",
+      "mimeType": "application/pdf",
+      "size": 571513,
+      "path": "uploads\\1778775015725-mbmybce41s.pdf",
+      "userId": 1,
+      "createdAt": "2026-05-14T16:10:15.752Z",
+      "updatedAt": "2026-05-14T16:10:15.752Z",
+      "taskId": 2
+    },
+    {
+      "id": 3,
+      "filename": "1778775157945-bijua1c88p.pdf",
+      "originalName": "rapport_journalier_05mai.pdf",
+      "mimeType": "application/pdf",
+      "size": 99713,
+      "path": "uploads\\1778775157945-bijua1c88p.pdf",
+      "userId": 1,
+      "createdAt": "2026-05-14T16:12:37.956Z",
+      "updatedAt": "2026-05-14T16:12:37.956Z",
+      "taskId": 1
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "message": "La tâche \"Redaction du cahier de charge\" vous a été assignée.",
+      "isRead": false,
+      "userId": 3,
+      "createdAt": "2026-05-14T15:31:09.483Z",
+      "updatedAt": "2026-05-14T15:31:09.483Z"
+    },
+    {
+      "id": 2,
+      "message": "La tâche \"Redaction du cahier de charge\" est désormais terminée.",
+      "isRead": false,
+      "userId": 1,
+      "createdAt": "2026-05-14T18:41:15.277Z",
+      "updatedAt": "2026-05-14T18:41:15.277Z"
+    }
+  ],
+  "activityLogs": [
+    {
+      "id": 1,
+      "action": "CREATE_TASK",
+      "entityType": "TASK",
+      "entityId": 1,
+      "userId": 1,
+      "createdAt": "2026-05-14T09:19:27.605Z"
+    },
+    {
+      "id": 2,
+      "action": "CREATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 1,
+      "createdAt": "2026-05-14T15:29:30.911Z"
+    },
+    {
+      "id": 3,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 1,
+      "createdAt": "2026-05-14T15:31:09.480Z"
+    },
+    {
+      "id": 4,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 3,
+      "createdAt": "2026-05-14T15:31:56.716Z"
+    },
+    {
+      "id": 5,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 1,
+      "createdAt": "2026-05-14T15:38:40.460Z"
+    },
+    {
+      "id": 6,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 1,
+      "userId": 1,
+      "createdAt": "2026-05-14T15:42:34.218Z"
+    },
+    {
+      "id": 7,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 1,
+      "createdAt": "2026-05-14T16:09:31.311Z"
+    },
+    {
+      "id": 8,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 1,
+      "createdAt": "2026-05-14T16:10:26.913Z"
+    },
+    {
+      "id": 9,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 1,
+      "userId": 1,
+      "createdAt": "2026-05-14T16:12:43.695Z"
+    },
+    {
+      "id": 10,
+      "action": "UPDATE_TASK",
+      "entityType": "TASK",
+      "entityId": 2,
+      "userId": 3,
+      "createdAt": "2026-05-14T18:41:15.249Z"
+    }
+  ]
+}

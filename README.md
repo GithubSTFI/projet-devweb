@@ -1,65 +1,82 @@
-# Student Web Project
+#  TaskFlow - Gestion de Projets Collaborative
 
-A full-stack web application built with **Angular** (Frontend) and **Node.js/Express** (Backend).
+Bienvenue sur **TaskFlow**, une plateforme moderne pour organiser vos projets, assigner des tâches et collaborer en temps réel avec votre équipe.
 
-## Features
-- **Data Persistence**: Uses SQLite to store items.
-- **CRUD Operations**: Create, Read, Delete items.
-- **File Handling**: Upload and Download files.
-- **Async Processing**: Simulated background task processing.
-- **Security**: Demonstration of SQL Injection vulnerability vs Secured endpoints.
+---
 
-## Prerequisites
-- Node.js installed.
-- Angular CLI (globally installed or via `npx`).
+##  Fonctionnalités Clés
 
-## Setup & Running
+- **Tableau Kanban Dynamique** : Visualisez l'état de vos tâches (À faire, En cours, Terminé).
+- **Gestion de Projets** : Créez des projets et invitez des collaborateurs.
+- **Collaboration sur Fichiers** : Joignez des documents (PDF, Word, Images) à vos tâches et partagez-les avec votre équipe.
+- **Système de Notifications** : Restez informé des changements importants.
+- **Interface Premium** : Design sombre élégant avec effets de transparence (Glassmorphism).
 
-### 1. Backend
-Navigate to the `backend` folder and install dependencies:
+---
+
+##  Installation et Démarrage 
+
+### 1. Prérequis
+- **Node.js** installé.
+- **PostgreSQL** installé et en cours d'exécution.
+
+### 2. Configuration de la Base de Données
+1. Créez une base de données vide nommée `projet_web` dans votre PostgreSQL.
+2. Dans le dossier `backend`, créez un fichier `.env` (utilisez `.env.example` comme modèle) :
+   ```env
+   DB_NAME=projet_web
+   DB_USER=votre_utilisateur
+   DB_PASS=votre_mot_de_passe
+   JWT_SECRET=votre_cle_secrete
+   ```
+
+### 3. Synchronisation de la Base de Données
+Si vous avez récupéré des mises à jour qui modifient la structure de la base de données, vous pouvez synchroniser les tables sans perdre vos données existantes avec la commande suivante :
+```bash
+cd backend
+npm run db:sync
+```
+*(Note : La base se synchronise aussi automatiquement au lancement du serveur `npm run dev`)*
+
+### 4. Lancement du Projet
+Ouvrez deux terminaux :
+
+**Terminal 1 (Backend) :**
 ```bash
 cd backend
 npm install
-```
-Start the server:
-```bash
-npm start
-# Server will run on http://localhost:3000
+npm run seed  # Commande magique : Importe une copie EXACTE de la base de données (avec les utilisateurs, projets et tâches existants)
+npm run dev
 ```
 
-### 2. Frontend
-Navigate to the `frontend` folder and install dependencies:
+**Terminal 2 (Frontend) :**
 ```bash
 cd frontend
 npm install
+npm start
 ```
-Start the Angular application:
-```bash
-ng serve
-# Access the app at http://localhost:4200
-```
+Accédez à l'app via : `http://localhost:4200`
 
-## API Endpoints
+---
 
-### Items
-- `GET /api/items`: List all items.
-- `POST /api/items`: Create a new item.
-- `DELETE /api/items/:id`: Delete an item.
+##  Endpoints API (Résumé Simple)
 
-### Files
-- `POST /api/upload`: Upload a file (key: `file`).
-- `GET /api/download/:filename`: Download a file.
+###  Authentification
+- `POST /api/auth/register` : Créer un compte.
+- `POST /api/auth/login` : Se connecter.
 
-### Async
-- `POST /api/async-task`: Trigger a mock background task.
+###  Projets & Tâches
+- `GET /api/projects` : Liste de vos projets.
+- `GET /api/tasks` : Toutes vos tâches.
+- `PUT /api/tasks/:id` : Mettre à jour une tâche (status, priorité, etc.).
 
-### Security Demo
-- `GET /api/insecure/search?q=...`: Vulnerable search.
-- `GET /api/secure/search?q=...`: Secure search.
+###  Fichiers (Gestion Partagée)
+- `POST /api/upload` : Ajouter un fichier à une tâche.
+- `GET /api/download/:filename` : Télécharger un document.
+- `GET /api/files/preview/:filename` : Voir le fichier dans le navigateur.
+- `DELETE /api/files/delete/:id` : Supprimer un fichier (réservé à l'auteur ou au chef de projet).
 
-## SQL Injection Demonstration
-To test the vulnerability:
-1. Call `/api/insecure/search?q=' OR '1'='1`
-2. Observe that it returns ALL rows because the condition `1=1` is always true.
-3. Call `/api/secure/search?q=' OR '1'='1`
-4. Observe that it returns nothing or searches literally for that string.
+---
+
+##  Travailler en équipe sur GitHub
+Une fois que vous avez fait votre `git pull`, exécutez toujours `npm run seed` pour vous assurer que votre base de données locale est synchronisée avec la structure de l'application et possède les comptes de test.
