@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect, computed } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
@@ -15,6 +15,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
     imports: [CommonModule, FormsModule, TaskDetailComponent, ConfirmDialogComponent, KanbanViewComponent, LoaderComponent],
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('staggerList', [
             transition(':enter', [

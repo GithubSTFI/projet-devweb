@@ -6,6 +6,12 @@
         </div>
 
         <div class="form-group">
+            <label>Votre adresse e-mail</label>
+            <input type="email" [(ngModel)]="email" class="input-modern" placeholder="Ex: alice@example.com"
+                [class.error-border]="error">
+        </div>
+
+        <div class="form-group">
             <label>Choisissez un identifiant</label>
             <input type="text" [(ngModel)]="username" class="input-modern" placeholder="Ex: alice"
                 [class.error-border]="error">
@@ -15,13 +21,19 @@
             <label>Choisissez un mot de passe</label>
             <input type="password" [(ngModel)]="password" class="input-modern" placeholder="••••••••"
                 [class.error-border]="error">
+            
+            <div class="password-criteria">
+                <p [class.valid]="hasMinLength">● 8 caractères minimum</p>
+                <p [class.valid]="hasUppercase">● Au moins une majuscule</p>
+                <p [class.valid]="hasNumber">● Au moins un chiffre</p>
+            </div>
         </div>
 
         <div *ngIf="error" class="error-banner">
             ⚠️ {{ error }}
         </div>
 
-        <button (click)="register()" class="btn-gradient full-width">
+        <button (click)="register()" [disabled]="!isPasswordValid" class="btn-gradient full-width">
             S'inscrire
         </button>
 

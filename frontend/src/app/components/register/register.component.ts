@@ -15,16 +15,26 @@ export class RegisterComponent {
     @Output() switchMode = new EventEmitter<void>();
 
     username = '';
+    email = '';
     password = '';
     error = '';
 
+    get hasMinLength() { return this.password.length >= 8; }
+    get hasUppercase() { return /[A-Z]/.test(this.password); }
+    get hasNumber() { return /[0-9]/.test(this.password); }
+    get isPasswordValid() { return this.hasMinLength && this.hasUppercase && this.hasNumber; }
+
     register() {
-        if (!this.username || !this.password) {
+        if (!this.username || !this.email || !this.password) {
             this.error = "Veuillez remplir tous les champs";
             return;
         }
 
-        this.auth.register({ username: this.username, password: this.password }).subscribe({
+        this.auth.register({ 
+            username: this.username, 
+            email: this.email, 
+            password: this.password 
+        }).subscribe({
             next: () => {
                 alert('✅ Compte créé avec succès ! Connectez-vous.');
                 this.switchMode.emit();
@@ -34,7 +44,13 @@ export class RegisterComponent {
                 if (err.status === 0) {
                     this.error = "Impossible de contacter le serveur (Backend HS ?)";
                 } else {
-                    this.error = err.error?.error || 'Erreur lors de l\'inscription. Essayez un autre nom.';
+                    // Extract detail if validation failed
+                    const details = err.error?.details;
+                    if (details && details.length > 0) {
+                        this.error = details[0].msg;
+                    } else {
+                        this.error = err.error?.error || 'Erreur lors de l\'inscription. Essayez un autre nom.';
+                    }
                 }
             }
         });

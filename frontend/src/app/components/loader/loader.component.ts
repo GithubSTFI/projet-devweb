@@ -1,11 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-loader',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-loader',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="loader-container" [class.fullscreen]="fullscreen">
       <div class="spinner">
         <div class="double-bounce1"></div>
@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
       <p *ngIf="message" class="loader-message">{{ message }}</p>
     </div>
   `,
-    styles: [`
+  styles: [`
     .loader-container {
       display: flex;
       flex-direction: column;
@@ -70,9 +70,10 @@ import { CommonModule } from '@angular/common';
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoaderComponent {
-    @Input() message: string = '';
-    @Input() fullscreen: boolean = false;
+  @Input() message: string = '';
+  @Input() fullscreen: boolean = false;
 }

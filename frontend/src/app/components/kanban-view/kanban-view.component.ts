@@ -1,4 +1,4 @@
-import { Component, inject, signal, Input, Output, EventEmitter } from '@angular/core';
+import { Component, inject, signal, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Task, ApiService } from '../../api.service';
@@ -8,7 +8,8 @@ import { Task, ApiService } from '../../api.service';
     standalone: true,
     imports: [CommonModule, DragDropModule],
     templateUrl: './kanban-view.component.html',
-    styleUrls: ['./kanban-view.component.scss']
+    styleUrls: ['./kanban-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KanbanViewComponent {
     private api = inject(ApiService);

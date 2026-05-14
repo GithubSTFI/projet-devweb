@@ -144,10 +144,10 @@
 
                 <div class="upload-box" *ngIf="mode() === 'EDIT'">
                     <label for="file-upload" class="btn-upload">
-                        <span class="material-icons">cloud_upload</span>
-                        {{ isUploading ? 'Envoi...' : 'Ajouter un fichier' }}
+                        <span class="material-icons">{{ isUploading() ? 'sync' : 'cloud_upload' }}</span>
+                        {{ isUploading() ? 'Envoi...' : 'Ajouter un fichier' }}
                     </label>
-                    <input id="file-upload" type="file" (change)="uploadFile($event)" [disabled]="isUploading"
+                    <input id="file-upload" type="file" (change)="uploadFile($event)" [disabled]="isUploading()"
                         style="display:none">
                 </div>
             </div>
@@ -160,8 +160,10 @@
 
         <!-- FOOTER ACTIONS -->
         <div class="modal-footer">
-            <button *ngIf="mode() === 'EDIT'" (click)="save()" class="btn-save">
-                {{ isNew ? 'Créer' : 'Enregistrer les modifications' }}
+            <button *ngIf="mode() === 'EDIT'" (click)="save()" class="btn-save" [disabled]="isSaving()">
+                <span class="material-icons" *ngIf="isSaving()">sync</span>
+                {{ isSaving() ? (isNew ? 'Création...' : 'Enregistrement...') : (isNew ? 'Créer' : 'Enregistrer les
+                modifications') }}
             </button>
             <button *ngIf="mode() === 'VIEW' && !isNew" (click)="setMode('EDIT')" class="btn-save">
                 Modifier

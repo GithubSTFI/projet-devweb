@@ -5,13 +5,16 @@ import { ProjectService, Project } from '../../project.service';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../toast/toast.component';
+import { LoaderComponent } from '../loader/loader.component';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-projects-list',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule],
+    imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
     templateUrl: './projects-list.html',
     styleUrls: ['./projects-list.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('listAnimation', [
             transition('* <=> *', [

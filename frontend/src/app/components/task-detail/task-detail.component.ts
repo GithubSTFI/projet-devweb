@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Task } from '../../api.service';
@@ -10,9 +10,10 @@ import { ToastService } from '../toast/toast.component';
     standalone: true,
     imports: [CommonModule, FormsModule],
     templateUrl: './task-detail.component.html',
-    styleUrls: ['./task-detail.component.scss']
+    styleUrls: ['./task-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaskDetailComponent implements OnChanges {
+export class TaskDetailComponent implements OnInit, OnChanges {
     @Input() task: Partial<Task> = {};
     @Input() isNew = false;
     @Input() projectId?: number;
@@ -26,7 +27,8 @@ export class TaskDetailComponent implements OnChanges {
     private toast = inject(ToastService);
     files = signal<any[]>([]);
     users = signal<any[]>([]);
-    isUploading = false;
+    isUploading = signal(false);
+    isSaving = signal(false);
     editTask: Partial<Task> = {};
 
     // Mode Management
@@ -80,26 +82,30 @@ export class TaskDetailComponent implements OnChanges {
     }
 
     save() {
-        if (!this.editTask.title) return;
+        const task = this.editTask;
+        if (!task.title) return;
 
+        this.isSaving.set(true);
         const payload = {
-            title: this.editTask.title,
-            description: this.editTask.description,
-            priority: this.editTask.priority,
-            status: this.editTask.status,
-            dueDate: this.editTask.dueDate,
-            assignedUserId: this.editTask.assignedUserId,
-            projectId: this.projectId || this.editTask.projectId
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            status: task.status,
+            dueDate: task.dueDate,
+            assignedUserId: task.assignedUserId,
+            projectId: this.projectId || task.projectId
         };
 
         if (this.isNew) {
             this.api.createTask(payload).subscribe({
                 next: () => {
                     this.toast.show('Tâche créée avec succès', 'success');
+                    this.isSaving.set(false);
                     this.updateEvent.emit();
                     this.close();
                 },
                 error: (err) => {
+                    this.isSaving.set(false);
                     this.toast.show(err.error?.error || 'Erreur lors de la création', 'error');
                 }
             });
@@ -108,10 +114,12 @@ export class TaskDetailComponent implements OnChanges {
             this.api.updateTask(this.task.id, payload).subscribe({
                 next: () => {
                     this.toast.show('Tâche mise à jour', 'success');
+                    this.isSaving.set(false);
                     this.updateEvent.emit();
                     this.close();
                 },
                 error: (err) => {
+                    this.isSaving.set(false);
                     this.toast.show(err.error?.error || 'Erreur lors de la mise à jour', 'error');
                 }
             });
@@ -131,13 +139,13 @@ export class TaskDetailComponent implements OnChanges {
         const file = event.target.files[0];
         if (!file) return;
 
-        this.isUploading = true;
+        this.isUploading.set(true);
         this.api.uploadFile(file, this.task.id).subscribe({
             next: () => {
                 this.loadFiles();
-                this.isUploading = false;
+                this.isUploading.set(false);
             },
-            error: () => this.isUploading = false
+            error: () => this.isUploading.set(false)
         });
     }
 

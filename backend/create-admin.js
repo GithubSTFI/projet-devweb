@@ -3,12 +3,12 @@ const bcrypt = require('bcryptjs');
 
 async function createAdmin() {
     try {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const hashedPassword = await bcrypt.hash('Admin@2024!', 10);
         const [user, created] = await User.findOrCreate({
             where: { username: 'admin' },
             defaults: {
                 username: 'admin',
-                email: 'admin@taskflow.com',
+                email: 'admin@taskflow.dev',
                 password: hashedPassword,
                 role: 'ADMIN'
             }
@@ -17,13 +17,16 @@ async function createAdmin() {
         if (created) {
             console.log('✅ Compte administrateur créé avec succès !');
             console.log('Nom d\'utilisateur : admin');
-            console.log('Mot de passe : admin123');
+            console.log('Email : admin@taskflow.dev');
+            console.log('Mot de passe : Admin@2024!');
         } else {
-            // Force update role to ADMIN if it exists but is USER
-            await user.update({ role: 'ADMIN' });
-            console.log('ℹ️ L\'utilisateur "admin" existe déjà. Son rôle a été vérifié/mis à jour en ADMIN.');
-            console.log('Nom d\'utilisateur : admin');
-            console.log('Mot de passe : (inchangé ou admin123 si créé à l\'instant)');
+            // Force update password and email if already exists
+            await user.update({ 
+                email: 'admin@taskflow.dev',
+                password: hashedPassword,
+                role: 'ADMIN' 
+            });
+            console.log('ℹ️ L\'utilisateur "admin" a été mis à jour avec les nouveaux identifiants.');
         }
     } catch (error) {
         console.error('❌ Erreur lors de la création de l\'admin :', error);

@@ -1,4 +1,6 @@
-<div class="profile-container fade-in">
+<app-loader *ngIf="isLoading()" message="Chargement de votre profil..."></app-loader>
+
+<div class="profile-container fade-in" *ngIf="!isLoading()">
     <!-- NAVIGATION & HEADER COMPACT -->
     <div class="page-header-compact">
         <div class="header-top">
@@ -17,7 +19,6 @@
             </div>
             <img [src]="getAvatarUrl(user()?.avatarUrl)" class="avatar-img" *ngIf="user()?.avatarUrl"
                 alt="Photo de profil">
-
             <label class="avatar-upload-btn" [class.loading]="isUploading()">
                 <span class="material-icons">{{ isUploading() ? 'sync' : 'camera_alt' }}</span>
                 <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input">
@@ -31,7 +32,6 @@
                 <span class="material-icons">email</span>
                 {{ user()?.email }}
             </div>
-
             <div class="quick-stats">
                 <div class="stat-bubble">
                     <span class="value">{{ isLoading() ? '-' : stats().tasksCreated }}</span>
@@ -54,6 +54,7 @@
                 Informations Personnelles
             </h3>
 
+            <!-- Mode Lecture -->
             <div class="form-layout" *ngIf="!isEditing()">
                 <div class="info-row">
                     <label>Nom d'utilisateur</label>
@@ -71,9 +72,9 @@
                     <label>Membre depuis</label>
                     <div class="value">{{ user()?.createdAt | date:'longDate' }}</div>
                 </div>
-
                 <div class="actions">
                     <button class="btn btn-secondary" (click)="toggleEdit()">
+                        <span class="material-icons">edit</span>
                         Modifier le profil
                     </button>
                     <button class="btn btn-logout" (click)="logout()">
@@ -83,21 +84,28 @@
                 </div>
             </div>
 
-            <!-- Mode Édition (Placeholder) -->
+            <!-- Mode Édition -->
             <div class="form-layout edit-mode" *ngIf="isEditing()">
                 <div class="form-group">
                     <label>Nom d'utilisateur</label>
-                    <input type="text" [value]="user()?.username" disabled title="Contactez l'admin pour changer">
-                    <small>Non modifiable</small>
+                    <div class="readonly-field">
+                        <div class="readonly-username">
+                            <span class="material-icons">person</span>
+                            {{ user()?.username }}
+                        </div>
+                        <span class="readonly-hint">Identifiant unique — non modifiable</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" [value]="user()?.email" disabled>
+                    <input type="email" [(ngModel)]="editEmail" placeholder="votre@email.com" autocomplete="email">
                 </div>
-
                 <div class="actions">
-                    <button class="btn btn-secondary" (click)="toggleEdit()">Annuler</button>
-                    <button class="btn btn-primary" (click)="saveProfile()" disabled>Enregistrer</button>
+                    <button class="btn btn-secondary" (click)="toggleEdit()" [disabled]="isSaving()">Annuler</button>
+                    <button class="btn btn-primary" (click)="saveProfile()" [disabled]="isSaving()">
+                        <span class="material-icons" *ngIf="isSaving()">sync</span>
+                        {{ isSaving() ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -106,9 +114,8 @@
         <div class="info-card">
             <h3>
                 <span class="material-icons">settings</span>
-                Préférences & Sécurité
+                Préférences &amp; Sécurité
             </h3>
-
             <div class="preference-list">
                 <div class="pref-item">
                     <div class="pref-text">
@@ -124,10 +131,102 @@
                 <div class="divider"></div>
 
                 <div class="security-actions">
-                    <button class="btn-link danger">Changer de mot de passe</button>
-                    <button class="btn-link danger" (click)="logout()">Déconnexion de tous les appareils</button>
+                    <button class="btn-link-sec" (click)="openPasswordModal()">
+                        <span class="material-icons">lock</span>
+                        Changer le mot de passe
+                    </button>
+                    <button class="btn-link danger" (click)="logout()">
+                        <span class="material-icons">devices_off</span>
+                        Déconnexion de tous les appareils
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MODAL CHANGEMENT DE MOT DE PASSE ════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showPasswordModal()" (click)="closePasswordModal()">
+    <div class="modal-pw" (click)="$event.stopPropagation()">
+        <!-- Header -->
+        <div class="modal-pw-header">
+            <div class="modal-icon">
+                <span class="material-icons">lock_reset</span>
+            </div>
+            <h2>Changer le mot de passe</h2>
+            <p>Votre nouveau mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.</p>
+            <button class="close-btn" (click)="closePasswordModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-pw-body">
+            <!-- Error Banner -->
+            <div class="error-banner" *ngIf="passwordError()">
+                <span class="material-icons">error_outline</span>
+                {{ passwordError() }}
+            </div>
+
+            <!-- Current Password -->
+            <div class="pw-field">
+                <label>Mot de passe actuel</label>
+                <div class="input-wrap">
+                    <span class="material-icons field-icon">lock</span>
+                    <input [type]="showCurrentPw() ? 'text' : 'password'" [(ngModel)]="currentPassword"
+                        placeholder="Votre mot de passe actuel" autocomplete="current-password">
+                    <button class="toggle-pw" type="button" (click)="toggleCurrentPwVisibility()">
+                        <span class="material-icons">{{ showCurrentPw() ? 'visibility_off' : 'visibility' }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- New Password -->
+            <div class="pw-field">
+                <label>Nouveau mot de passe</label>
+                <div class="input-wrap">
+                    <span class="material-icons field-icon">lock_open</span>
+                    <input [type]="showNewPw() ? 'text' : 'password'" [(ngModel)]="newPassword"
+                        placeholder="Min. 8 caractères, 1 majuscule, 1 chiffre" autocomplete="new-password">
+                    <button class="toggle-pw" type="button" (click)="toggleNewPwVisibility()">
+                        <span class="material-icons">{{ showNewPw() ? 'visibility_off' : 'visibility' }}</span>
+                    </button>
+                </div>
+                <!-- Strength Indicator -->
+                <div class="strength-bar" *ngIf="newPassword.length > 0">
+                    <div class="strength-track">
+                        <div class="strength-fill" [style.width.%]="passwordStrength.level * 20"
+                            [style.background]="passwordStrength.color">
+                        </div>
+                    </div>
+                    <span class="strength-label" [style.color]="passwordStrength.color">
+                        {{ passwordStrength.label }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="pw-field">
+                <label>Confirmer le nouveau mot de passe</label>
+                <div class="input-wrap" [class.match-error]="confirmPassword && confirmPassword !== newPassword">
+                    <span class="material-icons field-icon">check_circle</span>
+                    <input type="password" [(ngModel)]="confirmPassword" placeholder="Répétez le nouveau mot de passe"
+                        autocomplete="new-password">
+                    <span class="match-icon material-icons"
+                        *ngIf="confirmPassword && confirmPassword === newPassword">check_circle</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-pw-footer">
+            <button class="btn btn-secondary" (click)="closePasswordModal()" [disabled]="passwordSaving()">
+                Annuler
+            </button>
+            <button class="btn btn-primary" (click)="submitChangePassword()" [disabled]="passwordSaving()">
+                <span class="material-icons" *ngIf="passwordSaving()">sync</span>
+                {{ passwordSaving() ? 'Modification...' : 'Confirmer' }}
+            </button>
         </div>
     </div>
 </div>

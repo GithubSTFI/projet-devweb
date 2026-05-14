@@ -1,4 +1,6 @@
-<div class="project-detail-container fade-in" *ngIf="project()">
+<app-loader *ngIf="isLoading()" message="Chargement du projet..."></app-loader>
+
+<div class="project-detail-container fade-in" *ngIf="!isLoading() && project()">
     <!-- Header with Background & Info -->
     <div class="project-header">
         <div class="header-overlay" [style.background]="project()?.color"></div>

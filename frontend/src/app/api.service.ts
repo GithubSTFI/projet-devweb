@@ -134,6 +134,17 @@ export class ApiService {
     }
 
     // --- USERS ---
+    updateProfile(data: { email?: string }): Observable<any> {
+        return this.http.put(`${this.apiUrl}/profile`, data, { headers: this.getHeaders() });
+    }
+
+    changePassword(currentPassword: string, newPassword: string): Observable<any> {
+        return this.http.put(`${this.apiUrl}/profile/change-password`,
+            { currentPassword, newPassword },
+            { headers: this.getHeaders() }
+        );
+    }
+
     updateAvatar(file: File): Observable<any> {
         const formData = new FormData();
         formData.append('avatar', file);

@@ -34,18 +34,22 @@ $text-muted: #94a3b8;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
+        gap: 20px;
     }
 }
 
 .left-box {
     display: flex;
     align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
+    gap: 16px;
+    flex: 1;
+    /* prend tout l'espace disponible */
+    min-width: 0;
+    /* permet au texte de se couper proprement */
 
     .btn-back {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.1);
         display: flex;
@@ -62,36 +66,56 @@ $text-muted: #94a3b8;
     }
 
     .icon-circle {
-        width: 64px;
-        height: 64px;
-        border-radius: 18px;
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 800;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         flex-shrink: 0;
     }
 
     .info {
         min-width: 0;
+        /* essentiel pour que le texte ne déborde pas */
+        flex: 1;
 
         h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: white;
             word-break: break-word;
             overflow-wrap: break-word;
+            white-space: normal;
+            /* Évite la troncature — on garde du wrap */
+            overflow: visible;
         }
 
         p {
             margin: 4px 0 0;
             color: $text-muted;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            /* Troncature sur 2 lignes pour la desc */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     }
+}
+
+/* Le bouton Inviter + avatars ne rétrécissent JAMAIS */
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .project-members-stack {

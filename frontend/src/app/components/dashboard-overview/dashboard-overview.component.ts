@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../api.service';
@@ -14,7 +14,8 @@ Chart.register(...registerables);
     standalone: true,
     imports: [CommonModule, RouterModule, LoaderComponent],
     templateUrl: './dashboard-overview.component.html',
-    styleUrls: ['./dashboard-overview.component.scss']
+    styleUrls: ['./dashboard-overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardOverviewComponent implements OnInit, AfterViewInit {
     private api = inject(ApiService);

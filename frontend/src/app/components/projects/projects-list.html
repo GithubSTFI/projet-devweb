@@ -11,9 +11,7 @@
     </div>
 
     <!-- Loading State -->
-    <div class="loader-container" *ngIf="isLoading()">
-        <div class="spinner"></div>
-    </div>
+    <app-loader *ngIf="isLoading()" message="Chargement des projets..."></app-loader>
 
     <!-- Project Grid -->
     <div class="project-grid" [@listAnimation]="projects().length" *ngIf="!isLoading() && projects().length > 0">

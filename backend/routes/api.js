@@ -14,37 +14,55 @@ const projectController = require('../controllers/project.controller');
 // Middlewares
 const { authenticateToken } = require('../middlewares/auth.middleware');
 const { checkRole } = require('../middlewares/role.middleware');
+const { authLimiter } = require('../middlewares/rateLimiter.middleware');
+const {
+    loginValidation,
+    registerValidation,
+    forgotPasswordValidation,
+    updateProfileValidation,
+    changePasswordValidation
+} = require('../middlewares/validate.middleware');
 
-// Multer (File Upload)
+// Multer (File Upload) – file type filter for security
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
+    destination: (req, file, cb) => cb(null, 'uploads/'),
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, Date.now() + '-' + Math.random().toString(36).slice(2) + ext);
     }
 });
-const upload = multer({ storage: storage });
-
-// --- PUBLIC ROUTES ---
-router.post('/auth/register', authController.register);
-router.post('/auth/login', authController.login);
-router.post('/auth/forgot-password', authController.forgotPassword);
-router.post('/auth/reset-password', authController.resetPassword);
-
-router.get('/test-email', (req, res) => {
-    const { sendEmail } = require('../services/email.service');
-    sendEmail('fsiewe@yaba-in.com', 'Test TaskFlow', 'Si vous voyez ce mail, la config SMTP est enfin correcte !')
-        .then(() => res.json({ message: 'Email de test envoyé.' }))
-        .catch(err => res.status(500).json({ error: err.message }));
+const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    'application/pdf', 'text/plain',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB max
+    fileFilter: (req, file, cb) => {
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Type de fichier non autorisé'), false);
+        }
+    }
 });
 
-// --- PROTECTED ROUTES (USER & ADMIN) ---
-router.use(authenticateToken); // Protect all routes below
+// ─── PUBLIC ROUTES (with rate limiting + validation) ─────────────────────────
+router.post('/auth/register', authLimiter, registerValidation, authController.register);
+router.post('/auth/login', authLimiter, loginValidation, authController.login);
+router.post('/auth/forgot-password', authLimiter, forgotPasswordValidation, authController.forgotPassword);
+router.post('/auth/reset-password', authLimiter, authController.resetPassword);
 
-// User Profile & Listing
+// ─── PROTECTED ROUTES ────────────────────────────────────────────────────────
+router.use(authenticateToken);
+
+// User Profile
 router.get('/profile', userController.getProfile);
+router.put('/profile', updateProfileValidation, userController.updateProfile);
 router.post('/profile/avatar', upload.single('avatar'), userController.updateAvatar);
+router.put('/profile/change-password', changePasswordValidation, userController.changePassword);
+
+// User Listing
 router.get('/users', userController.listUsers);
 
 // Projects
@@ -76,11 +94,10 @@ router.put('/notifications/read-all', notificationController.markAllAsRead);
 router.delete('/notifications/:id', notificationController.deleteNotification);
 router.post('/notifications/delete-multiple', notificationController.deleteMultipleNotifications);
 
-// --- ADMIN ONLY ROUTES ---
+// ─── ADMIN ONLY ROUTES ───────────────────────────────────────────────────────
 router.get('/admin/users', checkRole(['ADMIN']), userController.getAllUsers);
 router.put('/admin/users/:id', checkRole(['ADMIN']), userController.updateUser);
 router.delete('/admin/users/:id', checkRole(['ADMIN']), userController.deleteUser);
 router.get('/admin/logs', checkRole(['ADMIN']), userController.getActivityLogs);
-
 
 module.exports = router;

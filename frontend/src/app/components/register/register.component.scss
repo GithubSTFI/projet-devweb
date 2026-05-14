@@ -162,3 +162,36 @@
 .animate-scale-in {
     animation: scaleIn 0.3s ease-out forwards;
 }
+
+.password-criteria {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #a0aec0;
+    background: #f7fafc;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #edf2f7;
+
+    p {
+        margin: 4px 0;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        
+        &::before {
+            content: '○';
+            margin-right: 8px;
+            font-size: 0.7rem;
+        }
+
+        &.valid {
+            color: #38a169;
+            font-weight: 600;
+            
+            &::before {
+                content: '✓';
+                color: #38a169;
+            }
+        }
+    }
+}

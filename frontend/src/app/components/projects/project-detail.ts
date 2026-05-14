@@ -9,13 +9,16 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../toast/toast.component';
 import { FilterStatusPipe } from '../../filter-status.pipe';
 import { TaskDetailComponent } from '../task-detail/task-detail.component';
+import { LoaderComponent } from '../loader/loader.component';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-project-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, FilterStatusPipe, TaskDetailComponent],
+    imports: [CommonModule, RouterModule, FormsModule, FilterStatusPipe, TaskDetailComponent, LoaderComponent],
     templateUrl: './project-detail.html',
     styleUrls: ['./project-detail.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('fadeSlide', [
             transition(':enter', [
