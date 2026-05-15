@@ -307,9 +307,9 @@ $glass-border: var(--border-light);
     display: grid;
     grid-template-columns: 40px 1fr 120px 120px 80px;
     align-items: center;
-    padding: 14px 20px;
+    padding: 12px 20px;
     background: var(--bg-card-solid);
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid var(--border-light);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--text-primary);
@@ -716,6 +716,24 @@ $glass-border: var(--border-light);
             strong {
                 padding: 3px 6px;
             }
+        }
+    }
+}
+// ===== LIGHT THEME OVERRIDES (EXPERT DESIGN) =====
+:host-context(body.light-theme) {
+    .table-row {
+        background: linear-gradient(var(--bg-card-solid), var(--bg-card-solid)) padding-box,
+                    var(--iridescent-border) border-box;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: var(--glass-effect);
+        box-shadow: var(--shadow-sm);
+
+        &:not(.table-head):hover {
+            transform: scale(1.02) translateX(10px);
+            box-shadow: var(--shadow-luminous);
+            z-index: 10;
         }
     }
 }

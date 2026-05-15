@@ -560,3 +560,19 @@ $glass-border: var(--border-light);
         grid-template-columns: 1fr;
     }
 }
+// ===== LIGHT THEME OVERRIDES (EXPERT DESIGN) =====
+:host-context(body.light-theme) {
+    .stat-card {
+        &:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: var(--shadow-luminous);
+            border: 1px solid transparent;
+            background: linear-gradient(var(--bg-card-solid), var(--bg-card-solid)) padding-box,
+                        var(--iridescent-border) border-box;
+            
+            .stat-icon {
+                transform: scale(1.2) rotate(8deg);
+            }
+        }
+    }
+}
