@@ -1,9 +1,9 @@
-@use 'sass:color';
-
-$bg-dark: #0f172a;
-$bg-card: #1e293b;
-$border: rgba(255, 255, 255, 0.08);
-$text-muted: #94a3b8;
+/* VARIABLES */
+$bg-dark: var(--bg-main);
+$bg-card: var(--bg-card-solid);
+$border: var(--border-light);
+$text-muted: var(--text-muted);
+$primary: #6366f1;
 
 .project-detail-container {
     padding: 0;
@@ -51,17 +51,18 @@ $text-muted: #94a3b8;
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--bg-hover);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--text-primary);
         text-decoration: none;
         transition: background 0.2s;
+        border: 1px solid var(--border-light);
         flex-shrink: 0;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--bg-card);
         }
     }
 
@@ -87,7 +88,7 @@ $text-muted: #94a3b8;
         h1 {
             margin: 0;
             font-size: 1.5rem;
-            color: white;
+            color: var(--text-primary);
             word-break: break-word;
             overflow-wrap: break-word;
             white-space: normal;
@@ -125,13 +126,13 @@ $text-muted: #94a3b8;
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: #334155;
-        border: 2px solid #0f172a;
+        background: var(--bg-hover);
+        border: 2px solid var(--bg-card-solid);
         margin-left: -10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--text-primary);
         font-size: 0.7rem;
         font-weight: 600;
 
@@ -157,7 +158,7 @@ $text-muted: #94a3b8;
     margin-bottom: 24px;
 
     h3 {
-        color: white;
+        color: var(--text-primary);
         font-size: 1rem;
         margin-bottom: 20px;
     }
@@ -190,7 +191,7 @@ $text-muted: #94a3b8;
 
     .m-name {
         display: block;
-        color: white;
+        color: var(--text-primary);
         font-size: 0.9rem;
         font-weight: 500;
     }
@@ -232,8 +233,8 @@ $text-muted: #94a3b8;
         }
 
         option {
-            background: #1e293b;
-            color: white;
+            background: var(--bg-card-solid);
+            color: var(--text-primary);
             padding: 10px;
         }
     }
@@ -244,12 +245,12 @@ $text-muted: #94a3b8;
     align-items: center;
     gap: 12px;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--bg-hover);
     border-radius: 12px;
     transition: background 0.2s;
 
     &:hover {
-        background: rgba(0, 0, 0, 0.2);
+        background: var(--bg-card);
     }
 
     .material-icons {
@@ -264,7 +265,7 @@ $text-muted: #94a3b8;
         min-width: 0;
 
         .email-text {
-            color: white;
+            color: var(--text-primary);
             font-size: 0.85rem;
             font-weight: 500;
             overflow: hidden;
@@ -309,7 +310,7 @@ $text-muted: #94a3b8;
     margin-bottom: 24px;
 
     h2 {
-        color: white;
+        color: var(--text-primary);
         font-size: 1.2rem;
     }
 }
@@ -370,7 +371,7 @@ $text-muted: #94a3b8;
     }
 
     h4 {
-        color: white;
+        color: var(--text-primary);
         font-size: 0.9rem;
         margin-bottom: 8px;
     }
@@ -434,16 +435,16 @@ $text-muted: #94a3b8;
 }
 
 .btn-add-task {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid $border;
-    color: white;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
     padding: 8px 16px;
     border-radius: 10px;
     font-size: 0.85rem;
     cursor: pointer;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--bg-card);
     }
 }
 
@@ -460,11 +461,12 @@ $text-muted: #94a3b8;
 }
 
 .modal-content {
-    background: #1e293b;
+    background: var(--bg-card-solid);
     border-radius: 20px;
     padding: 32px;
     width: 400px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
 
     &.task-modal {
         max-width: 800px;
@@ -498,7 +500,7 @@ $text-muted: #94a3b8;
     }
 
     h2 {
-        color: white;
+        color: var(--text-primary);
         margin-bottom: 8px;
         font-size: 1.5rem;
     }
@@ -518,8 +520,8 @@ $text-muted: #94a3b8;
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-light);
             border-radius: 12px;
             padding: 4px 16px;
             transition: all 0.2s;
@@ -532,7 +534,7 @@ $text-muted: #94a3b8;
             input {
                 background: none;
                 border: none;
-                color: white;
+                color: var(--text-primary);
                 padding: 12px 0;
                 width: 100%;
                 font-size: 0.95rem;
@@ -564,7 +566,7 @@ $text-muted: #94a3b8;
     .input-label {
         font-size: 0.7rem;
         font-weight: 800;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted);
         text-transform: uppercase;
         margin-bottom: 8px;
         letter-spacing: 0.5px;
@@ -577,10 +579,10 @@ $text-muted: #94a3b8;
         button {
             flex: 1;
             padding: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-hover);
+            border: 1px solid var(--border-light);
             border-radius: 12px;
-            color: $text-muted;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;

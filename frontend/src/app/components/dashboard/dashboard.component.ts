@@ -44,10 +44,15 @@ export class DashboardComponent implements OnInit {
     showNotifications = signal(false);
     unreadCount = this.notificationService.unreadCount;
 
+    // Theme state
+    isDarkTheme = signal(true);
+
     constructor() {
         this.checkScreenSize();
         if (typeof window !== 'undefined') {
             window.addEventListener('resize', () => this.checkScreenSize());
+            // Init theme based on body class (to persist during navigation)
+            this.isDarkTheme.set(!document.body.classList.contains('light-theme'));
         }
     }
 
@@ -84,6 +89,17 @@ export class DashboardComponent implements OnInit {
 
     closeMobileMenu() {
         this.isMobileMenuOpen.set(false);
+    }
+
+    toggleTheme() {
+        this.isDarkTheme.update(v => !v);
+        if (typeof window !== 'undefined') {
+            if (this.isDarkTheme()) {
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+            }
+        }
     }
 
     logout() {

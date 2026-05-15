@@ -28,7 +28,8 @@ import { CommonModule } from '@angular/common';
       &.fullscreen {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.8);
+        background: var(--bg-main);
+        opacity: 0.8;
         backdrop-filter: blur(8px);
         z-index: 99999;
       }
@@ -66,7 +67,7 @@ import { CommonModule } from '@angular/common';
       margin-top: 15px;
       font-size: 0.85rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }

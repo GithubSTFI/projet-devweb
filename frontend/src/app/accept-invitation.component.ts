@@ -31,14 +31,15 @@ import { ToastService } from './components/toast/toast.component';
     </div>
   `,
     styles: [`
-    .accept-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; color: white; }
-    .card { background: #1e293b; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .accept-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-main); color: var(--text-primary); transition: background-color 0.5s ease; }
+    .card { background: var(--bg-card); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-light); backdrop-filter: var(--glass-effect); }
     .success .material-icons { font-size: 64px; color: #10b981; margin-bottom: 20px; }
     .error .material-icons { font-size: 64px; color: #f43f5e; margin-bottom: 20px; }
     h2 { margin-bottom: 12px; }
-    p { color: #94a3b8; margin-bottom: 32px; }
+    p { color: var(--text-muted); margin-bottom: 32px; }
     .btn-primary { background: #6366f1; color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: 600; }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; }
+    .btn-secondary { background: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border-light); padding: 12px 24px; border-radius: 12px; cursor: pointer; }
+    .btn-secondary:hover { background: rgba(0,0,0,0.1); }
     .spinner { width: 40px; height: 40px; border: 3px solid rgba(99,102,241,0.1); border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
   `]

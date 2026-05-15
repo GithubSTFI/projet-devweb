@@ -6,11 +6,7 @@ $primary-light: #818cf8;
 $secondary: #8b5cf6;
 $accent: #ec4899;
 
-$glass-bg: rgba(30, 41, 59, 0.7); // Plus sombre pour lisibilité
-$glass-border: rgba(255, 255, 255, 0.1);
-$text-primary: #f8fafc;
-$text-secondary: rgba(241, 245, 249, 0.7);
-$text-muted: rgba(241, 245, 249, 0.5);
+// Les autres couleurs utilisent désormais les variables globales du thème (:root / .light-theme)
 
 // ===== MAIN CONTAINER =====
 .auth-container {
@@ -23,7 +19,8 @@ $text-muted: rgba(241, 245, 249, 0.5);
     overflow: hidden;
     font-family: 'Inter', sans-serif;
     padding: 20px;
-    background: #0f172a; // Fond solide plus sombre
+    background: var(--bg-main); // Utilise la variable du thème
+    transition: background-color 0.5s ease;
     perspective: 1200px;
 }
 
@@ -135,12 +132,12 @@ $text-muted: rgba(241, 245, 249, 0.5);
     position: absolute;
     inset: 0;
     backface-visibility: hidden;
-    background: $glass-bg;
-    backdrop-filter: blur(12px);
-    border: 1px solid $glass-border;
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-effect);
+    border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
 }
@@ -174,13 +171,13 @@ $text-muted: rgba(241, 245, 249, 0.5);
 .title {
     font-size: 1.2rem;
     font-weight: 700;
-    color: $text-primary;
+    color: var(--text-primary);
     margin-bottom: 4px;
 }
 
 .subtitle {
     font-size: 0.75rem;
-    color: $text-secondary;
+    color: var(--text-secondary);
     line-height: 1.4;
 }
 
@@ -199,7 +196,7 @@ $text-muted: rgba(241, 245, 249, 0.5);
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: $text-muted;
+        color: var(--text-muted);
         z-index: 2;
 
         .material-icons {
@@ -212,14 +209,14 @@ $text-muted: rgba(241, 245, 249, 0.5);
         right: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: $text-muted;
+        color: var(--text-muted);
         cursor: pointer;
         padding: 4px;
         z-index: 2;
         transition: color 0.2s;
 
         &:hover {
-            color: $text-primary;
+            color: var(--text-primary);
         }
 
         .material-icons {
@@ -230,18 +227,22 @@ $text-muted: rgba(241, 245, 249, 0.5);
 
 .premium-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid $glass-border;
+    background: rgba(0, 0, 0, 0.05); /* Plus neutre pour les deux thèmes */
+    border: 1px solid var(--border-light);
     border-radius: 8px;
-    padding: 10px 40px 10px 36px; // More padding right for toggle
-    color: $text-primary;
+    padding: 10px 40px 10px 36px;
+    color: var(--text-primary);
     font-size: 0.85rem;
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background 0.3s;
 
     &:focus {
         border-color: $primary-light;
-        background: rgba(0, 0, 0, 0.3);
+        background: var(--bg-hover);
+    }
+
+    &.error {
+        border-color: #ef4444; // Rouge
     }
 }
 
@@ -257,7 +258,7 @@ $text-muted: rgba(241, 245, 249, 0.5);
     display: flex;
     align-items: center;
     gap: 6px;
-    color: $text-secondary;
+    color: var(--text-secondary);
     cursor: pointer;
 
     input {
@@ -308,7 +309,7 @@ $text-muted: rgba(241, 245, 249, 0.5);
 .switch-link-wrapper {
     text-align: center;
     font-size: 0.75rem;
-    color: $text-muted;
+    color: var(--text-muted);
     margin-top: 12px;
 
     .switch-btn {
@@ -328,12 +329,12 @@ $text-muted: rgba(241, 245, 249, 0.5);
 .card-footer {
     margin-top: auto;
     padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border-light);
 }
 
 .footer-text {
     font-size: 0.65rem;
-    color: $text-muted;
+    color: var(--text-muted);
     text-align: center;
     line-height: 1.4;
 
@@ -351,4 +352,11 @@ $text-muted: rgba(241, 245, 249, 0.5);
     border-radius: 6px;
     font-size: 0.75rem;
     text-align: center;
+}
+
+.error-text {
+    color: #ef4444; // Rouge
+    font-size: 0.7rem; // Petit caractère
+    margin-top: -6px; // Rapproche de l'input
+    padding-left: 12px;
 }

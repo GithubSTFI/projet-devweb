@@ -1,12 +1,18 @@
 // ===== VARIABLES COHÉRENTES - COMPACT =====
+$bg-dark: var(--bg-main);
+$bg-card: var(--bg-card);
+$text-main: var(--text-primary);
+$text-muted: var(--text-muted);
+$border-color: var(--border-light);
+
 $primary: #6366f1;
 $primary-light: #818cf8;
 $secondary: #8b5cf6;
 $success: #10b981;
 $warning: #f59e0b;
 $danger: #f43f5e;
-$glass-bg: rgba(30, 41, 59, 0.5);
-$glass-border: rgba(255, 255, 255, 0.08);
+$glass-bg: var(--bg-card);
+$glass-border: var(--border-light);
 
 // ===== ICONES MATERIAL - RENDU OPTIMAL =====
 :host ::ng-deep .material-icons {
@@ -40,27 +46,30 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
 // ===== WELCOME & STATS (REUSE FROM PREVIOUS BUT ADAPTED) =====
 .welcome-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 10px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+    backdrop-filter: var(--glass-effect);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
 
     .welcome-text h1 {
-        font-size: 1.5rem;
+        font-size: 2rem;
         font-weight: 800;
-        margin: 0 0 6px 0;
-        background: linear-gradient(to right, #fff, $primary-light);
-        -webkit-background-clip: text;
+        margin: 0 0 8px 0;
+        background: linear-gradient(to right, var(--text-primary), #6366f1);
         background-clip: text;
+        -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        letter-spacing: -1px;
     }
 
     .welcome-text p {
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--text-muted);
         margin: 0;
-        font-size: 0.9rem;
+        font-size: 1rem;
+        font-weight: 500;
     }
 }
 
@@ -84,41 +93,55 @@ $glass-border: rgba(255, 255, 255, 0.08);
     will-change: transform;
 
     .stat-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba($primary, 0.2);
-        color: white;
+        background: rgba($primary, 0.1);
+        color: var(--text-primary);
+        transition: all 0.3s;
     }
 
     .stat-info {
         .stat-value {
             font-size: 1.4rem;
             font-weight: 800;
-            color: white;
+            color: var(--text-primary);
             display: block;
         }
 
         .stat-label {
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-muted);
             text-transform: uppercase;
         }
     }
 
     &.total .stat-icon {
-        background: linear-gradient(135deg, $primary, $secondary);
+        background: linear-gradient(135deg, rgba($primary, 0.1), rgba($secondary, 0.1));
+        color: $primary;
     }
-
+ 
     &.done .stat-icon {
-        background: linear-gradient(135deg, $success, #059669);
+        background: linear-gradient(135deg, rgba($success, 0.1), rgba(#059669, 0.1));
+        color: $success;
+    }
+ 
+    &.danger .stat-icon {
+        background: linear-gradient(135deg, rgba($danger, 0.1), rgba(#be123c, 0.1));
+        color: $danger;
     }
 
-    &.danger .stat-icon {
-        background: linear-gradient(135deg, $danger, #be123c);
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        background: var(--bg-card-solid);
+        
+        .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
     }
 }
 
@@ -136,7 +159,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         h2 {
             font-size: 1rem;
-            color: white;
+            color: var(--text-primary);
             margin: 0;
             display: flex;
             align-items: center;
@@ -193,7 +216,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                color: white;
+                color: var(--text-primary);
                 margin: 0;
 
                 .material-icons {
@@ -202,7 +225,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
             }
 
             p {
-                color: rgba(255, 255, 255, 0.4);
+                color: var(--text-muted);
                 font-size: 0.9rem;
                 margin: 4px 0 0 0;
             }
@@ -229,7 +252,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
             &:hover {
                 background: rgba($primary, 0.2);
                 transform: translateX(5px);
-                color: white;
+                color: var(--text-primary);
             }
         }
     }
@@ -265,13 +288,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
     align-items: center;
     gap: 15px;
     padding: 14px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-hover);
     border-radius: 12px;
     border: 1px solid transparent;
     transition: all 0.2s;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--bg-card);
         border-color: rgba($primary, 0.3);
         transform: scale(1.01);
     }
@@ -305,19 +328,19 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         .task-title {
             font-size: 0.95rem;
-            color: white;
+            color: var(--text-primary);
             font-weight: 500;
         }
 
         .task-owner {
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--text-muted);
         }
     }
 
     .task-time {
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.3);
+        color: var(--text-secondary);
     }
 }
 
@@ -343,7 +366,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--bg-hover);
         cursor: pointer;
 
         .pg-title {
@@ -360,7 +383,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
             h3 {
                 margin: 0;
                 font-size: 1rem;
-                color: white;
+                color: var(--text-primary);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -370,7 +393,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         .material-icons {
             font-size: 18px;
-            color: rgba(255, 255, 255, 0.2);
+            color: var(--text-muted);
             transition: color 0.2s;
         }
 
@@ -392,13 +415,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
         align-items: center;
         gap: 12px;
         padding: 10px 12px;
-        background: rgba(255, 255, 255, 0.03);
+        background: var(--bg-hover);
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.2s;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.07);
+            background: var(--bg-card);
         }
 
         .t-status {
@@ -422,7 +445,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         .t-title {
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.85);
+            color: var(--text-primary);
             font-weight: 500;
         }
     }
@@ -430,19 +453,19 @@ $glass-border: rgba(255, 255, 255, 0.08);
     .empty-pg {
         text-align: center;
         padding: 30px;
-        color: rgba(255, 255, 255, 0.2);
+        color: var(--text-muted);
         font-size: 0.85rem;
         font-style: italic;
     }
 
     .pg-footer {
         padding: 15px 18px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid var(--border-light);
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted);
         cursor: pointer;
 
         .view-more {
@@ -462,25 +485,26 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .add-project-cta.mini {
     justify-content: center;
     align-items: center;
-    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border: 2px dashed var(--border-light);
     background: transparent;
     cursor: pointer;
 
     h3 {
-        color: rgba(255, 255, 255, 0.3);
+        color: var(--text-muted);
     }
 
     .material-icons {
         font-size: 32px;
-        color: rgba(255, 255, 255, 0.1);
+        color: var(--text-muted);
         margin-bottom: 8px;
     }
 
     &:hover {
         border-color: $primary;
+        background: var(--bg-hover);
 
         h3 {
-            color: white;
+            color: var(--text-primary);
         }
 
         .material-icons {
@@ -499,7 +523,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-hover);
     border-radius: 12px;
     font-size: 0.85rem;
 
@@ -514,12 +538,12 @@ $glass-border: rgba(255, 255, 255, 0.08);
         }
 
         .act-text {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-primary);
         }
     }
 
     .act-time {
-        color: rgba(255, 255, 255, 0.3);
+        color: var(--text-muted);
         font-size: 0.75rem;
     }
 }

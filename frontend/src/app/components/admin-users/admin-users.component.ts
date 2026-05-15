@@ -71,16 +71,17 @@ import { FormsModule } from '@angular/forms';
         </app-confirm-dialog>
     `,
     styles: [`
-        .admin-container { padding: 24px; animation: fadeIn 0.4s ease; }
-        .header-section { margin-bottom: 24px; h1 { font-size: 1.5rem; color: white; margin-bottom: 4px; } p { color: rgba(255,255,255,0.4); font-size: 0.9rem; } }
-        .table-card { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; overflow: hidden; }
+        .admin-container { padding: 32px; animation: fadeIn 0.4s ease; max-width: 1200px; margin: 0 auto; }
+        .header-section { margin-bottom: 32px; h1 { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; } p { color: var(--text-muted); font-size: 1rem; } }
+        .table-card { background: var(--bg-card-solid); border: 1px solid var(--border-light); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); }
         .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .admin-table th { padding: 16px; font-size: 0.75rem; text-transform: uppercase; color: rgba(255,255,255,0.3); letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .admin-table td { padding: 16px; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.9rem; }
-        .user-info { display: flex; flex-direction: column; .username { font-weight: 600; color: white; } .email { font-size: 0.75rem; color: rgba(255,255,255,0.3); } }
-        .role-select { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; outline: none; cursor: pointer; &.admin { color: #818cf8; border-color: rgba(99, 102, 241, 0.3); } &.user { color: rgba(255,255,255,0.5); } }
-        .btn-delete { background: none; border: none; color: rgba(239, 68, 68, 0.5); cursor: pointer; transition: color 0.2s; &:hover:not(:disabled) { color: #ef4444; } &:disabled { opacity: 0.2; cursor: not-allowed; } }
-        .empty-state { padding: 60px; text-align: center; color: rgba(255,255,255,0.2); .material-icons { font-size: 48px; margin-bottom: 12px; } }
+        .admin-table th { padding: 18px 24px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1.5px; border-bottom: 2px solid var(--border-light); background: rgba(0,0,0,0.01); }
+        .admin-table td { padding: 18px 24px; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); font-size: 0.95rem; }
+        .admin-table tr:hover:not(thead tr) { background: var(--bg-hover); }
+        .user-info { display: flex; flex-direction: column; .username { font-weight: 700; color: var(--text-primary); } .email { font-size: 0.8rem; color: var(--text-muted); } }
+        .role-select { background: var(--bg-hover); border: 1px solid var(--border-light); color: var(--text-primary); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; outline: none; cursor: pointer; transition: all 0.2s; &:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); } &.admin { color: #6366f1; background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.2); } }
+        .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; transition: all 0.2s; .material-icons { font-size: 20px; } &:hover:not(:disabled) { color: #f43f5e; transform: scale(1.1); } &:disabled { opacity: 0.2; cursor: not-allowed; } }
+        .empty-state { padding: 80px; text-align: center; color: var(--text-muted); .material-icons { font-size: 64px; margin-bottom: 16px; opacity: 0.5; } p { font-weight: 600; font-size: 1.1rem; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     `]
 })

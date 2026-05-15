@@ -14,10 +14,11 @@ $info: #0ea5e9;
 // ===== LAYOUT =====
 .dashboard-layout {
     min-height: 100vh;
-    background: #0f172a;
+    background: var(--bg-main);
     position: relative;
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
+    transition: background-color 0.5s ease;
 }
 
 // ===== SIDEBAR COMPACT =====
@@ -27,15 +28,15 @@ $info: #0ea5e9;
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 10000; // Très haut
-    background: #0f172a; // Fond opaque sur mobile/desktop pour éviter les superpositions d'overlay
-    backdrop-filter: blur(15px);
-    border-right: 1px solid $glass-border;
+    z-index: 10000;
+    background: var(--bg-sidebar);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-light);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    padding: 16px 12px;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    padding: 24px 16px;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
 
     &.collapsed {
         width: $sidebar-collapsed;
@@ -120,7 +121,7 @@ $info: #0ea5e9;
     .logo-text {
         font-weight: 800;
         font-size: 0.95rem;
-        color: #f8fafc;
+        color: var(--text-primary);
         white-space: nowrap;
         transition: opacity 0.2s ease, width 0.2s ease;
     }
@@ -135,7 +136,7 @@ $info: #0ea5e9;
 
 .nav-divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--border-light);
     margin: 16px 12px;
 }
 
@@ -146,7 +147,7 @@ $info: #0ea5e9;
     font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
     letter-spacing: 1px;
     white-space: nowrap;
     transition: opacity 0.2s ease, width 0.2s ease;
@@ -158,7 +159,7 @@ $info: #0ea5e9;
     gap: 10px;
     padding: 8px 12px;
     border-radius: 8px;
-    color: rgba(241, 245, 249, 0.5);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.2s;
     font-weight: 500;
@@ -175,22 +176,25 @@ $info: #0ea5e9;
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #f8fafc;
-        transform: translateX(4px);
+        background: rgba($primary, 0.05);
+        color: $primary;
+        transform: translateX(8px);
     }
 
     &.active {
-        background: rgba(99, 102, 241, 0.1);
-        color: $primary-light;
-        border: 1px solid rgba(99, 102, 241, 0.2);
+        background: var(--bg-card-solid);
+        color: $primary;
+        border: 1px solid rgba($primary, 0.1);
+        box-shadow: 
+            0 4px 12px -2px rgba($primary, 0.1),
+            0 2px 4px -2px rgba($primary, 0.05);
     }
 }
 
 .user-sidebar {
     margin-top: auto;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-hover);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -199,7 +203,8 @@ $info: #0ea5e9;
     transition: background 0.2s;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--bg-hover);
+        filter: brightness(0.95);
     }
 
     .avatar {
@@ -215,7 +220,7 @@ $info: #0ea5e9;
         font-weight: 700;
         font-size: 0.7rem;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-light);
 
         img {
             width: 100%;
@@ -232,7 +237,7 @@ $info: #0ea5e9;
         .user-name {
             font-size: 0.75rem;
             font-weight: 600;
-            color: white;
+            color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -240,7 +245,7 @@ $info: #0ea5e9;
 
         .user-role {
             font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--text-muted);
         }
 
         .user-name,
@@ -276,11 +281,11 @@ $info: #0ea5e9;
     top: calc(100% + 15px);
     right: 0;
     width: 320px;
-    background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-card-solid);
+    backdrop-filter: var(--glass-effect);
+    border: 1px solid var(--border-light);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-lg);
     z-index: 1000;
     overflow: hidden;
     animation: slideDown 0.3s ease;
@@ -300,7 +305,7 @@ $info: #0ea5e9;
 
 .dropdown-header {
     padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-light);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -308,7 +313,7 @@ $info: #0ea5e9;
     h3 {
         margin: 0;
         font-size: 0.85rem;
-        color: white;
+        color: var(--text-primary);
     }
 
     .count {
@@ -327,16 +332,16 @@ $info: #0ea5e9;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--border-light);
         border-radius: 10px;
     }
 }
 
 .dropdown-footer {
     padding: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border-light);
     text-align: center;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.02);
 
     a {
         color: $primary-light;
@@ -348,7 +353,7 @@ $info: #0ea5e9;
         transition: color 0.2s;
 
         &:hover {
-            color: white;
+            color: $primary;
         }
     }
 }
@@ -359,10 +364,10 @@ $info: #0ea5e9;
     gap: 12px;
     cursor: pointer;
     transition: background 0.2s;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-light);
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--bg-hover);
     }
 
     &.unread {
@@ -381,20 +386,20 @@ $info: #0ea5e9;
     .n-message {
         margin: 0;
         font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--text-secondary);
         line-height: 1.4;
     }
-
+    
     .n-time {
         font-size: 0.65rem;
-        color: rgba(255, 255, 255, 0.3);
+        color: var(--text-muted);
     }
 }
 
 .empty-notifications {
     padding: 30px 20px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
 
     .material-icons {
         font-size: 30px;
@@ -410,9 +415,9 @@ $info: #0ea5e9;
 // ===== HEADER COMPACT =====
 .header {
     height: 55px;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid $glass-border;
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-effect);
+    border-bottom: 1px solid var(--border-light);
     position: fixed;
     top: 0;
     right: 0;
@@ -422,7 +427,7 @@ $info: #0ea5e9;
     align-items: center;
     padding: 0 16px;
     gap: 16px;
-    transition: left 0.3s;
+    transition: left 0.3s, background-color 0.5s ease;
 
     &.wide {
         left: $sidebar-collapsed;
@@ -430,8 +435,8 @@ $info: #0ea5e9;
 }
 
 .menu-toggle {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid $glass-border;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-light);
     border-radius: 6px;
     width: 32px;
     height: 32px;
@@ -439,11 +444,12 @@ $info: #0ea5e9;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
 
     &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
+        background: var(--bg-hover);
+        color: var(--text-primary);
+        filter: brightness(0.9);
     }
 
     .material-icons {
@@ -454,29 +460,37 @@ $info: #0ea5e9;
 .search-bar {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid $glass-border;
-    border-radius: 8px;
-    padding: 4px 12px;
-    max-width: 300px;
-    gap: 8px;
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 6px 14px;
+    max-width: 350px;
+    gap: 10px;
     flex: 1;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:focus-within {
+        border-color: $primary;
+        box-shadow: var(--shadow-lg);
+        max-width: 400px;
+    }
 
     input {
         background: transparent;
         border: none;
-        color: white;
+        color: var(--text-primary);
         outline: none;
         font-size: 0.75rem;
         flex: 1;
 
         &::placeholder {
-            color: rgba(255, 255, 255, 0.2);
+            color: var(--text-muted);
         }
     }
 
     .material-icons {
-        color: rgba(255, 255, 255, 0.2);
+        color: var(--text-muted);
         font-size: 16px;
     }
 }
@@ -491,7 +505,7 @@ $info: #0ea5e9;
 .icon-btn {
     position: relative;
     background: transparent;
-    border: 1px solid $glass-border;
+    border: 1px solid var(--border-light);
     border-radius: 6px;
     width: 32px;
     height: 32px;
@@ -499,11 +513,11 @@ $info: #0ea5e9;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary);
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: white;
+        background: var(--bg-hover);
+        color: var(--text-primary);
     }
 
     .material-icons {
@@ -532,7 +546,7 @@ $info: #0ea5e9;
     margin-left: $sidebar-width;
     padding-top: 55px;
     min-height: 100vh;
-    background: #0f172a;
+    background: transparent;
     transition: margin-left 0.3s;
 
     &.wide {
@@ -568,7 +582,7 @@ $info: #0ea5e9;
         z-index: 10000;
         transform: translateX(-100%);
         width: 250px !important;
-        background: #111827 !important; // Noir profond pour contraste
+        background: var(--bg-card-solid) !important; // Couleur pleine pour le mobile
 
         &.mobile-open {
             transform: translateX(0);

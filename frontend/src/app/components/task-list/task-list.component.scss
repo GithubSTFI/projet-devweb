@@ -1,11 +1,17 @@
+$bg-dark: var(--bg-main);
+$bg-card: var(--bg-card);
+$text-main: var(--text-primary);
+$text-muted: var(--text-muted);
+$border-color: var(--border-light);
+
 $primary: #6366f1;
 $primary-light: #818cf8;
 $secondary: #8b5cf6;
 $success: #10b981;
 $warning: #f59e0b;
 $danger: #f43f5e;
-$glass-bg: rgba(30, 41, 59, 0.5);
-$glass-border: rgba(255, 255, 255, 0.08);
+$glass-bg: var(--bg-card);
+$glass-border: var(--border-light);
 
 .task-page {
     padding: 10px; // Compact
@@ -41,7 +47,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         .material-icons {
             font-size: 18px;
-            color: white;
+            color: var(--text-primary);
         }
     }
 
@@ -81,14 +87,14 @@ $glass-border: rgba(255, 255, 255, 0.08);
         .stat-value {
             font-size: 1.1rem;
             font-weight: 800;
-            color: white;
+            color: var(--text-primary);
             display: block;
             line-height: 1;
         }
 
         .stat-label {
             font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--text-muted);
             text-transform: uppercase;
         }
     }
@@ -131,7 +137,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .filter-label {
     font-size: 0.6rem;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding-left: 4px;
@@ -139,17 +145,17 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
 .filter-tabs {
     display: flex;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.05);
     padding: 3px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
     backdrop-filter: blur(5px);
 
     .filter-tab {
         background: transparent;
         border: none;
         padding: 5px 12px;
-        color: rgba(255, 255, 255, 0.3);
+        color: var(--text-muted);
         font-size: 0.7rem;
         font-weight: 600;
         border-radius: 9px;
@@ -171,13 +177,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
     }
 
     &.priority-tabs {
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--bg-hover);
 
         .filter-tab.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            box-shadow: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card-solid);
+            color: $primary;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
         }
     }
 }
@@ -185,8 +191,8 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .search-bar {
     display: flex;
     align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
+    border: 1px solid var(--border-light);
     border-radius: 12px;
     padding: 8px 16px;
     min-width: 200px;
@@ -197,7 +203,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
     &:focus-within {
         border-color: $primary;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.08);
         box-shadow: 0 0 15px rgba($primary, 0.1);
     }
 
@@ -209,13 +215,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
     input {
         background: transparent;
         border: none;
-        color: white;
+        color: var(--text-primary);
         font-size: 0.85rem;
         width: 100%;
         outline: none;
 
         &::placeholder {
-            color: rgba(255, 255, 255, 0.2);
+            color: var(--text-muted);
         }
     }
 }
@@ -228,7 +234,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
 .view-toggle {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
     border-radius: 8px;
     padding: 3px;
 
@@ -241,17 +247,17 @@ $glass-border: rgba(255, 255, 255, 0.08);
         align-items: center;
         justify-content: center;
         border-radius: 6px;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted);
         cursor: pointer;
         transition: all 0.2s;
 
         &:hover {
-            color: white;
+            color: var(--text-primary);
         }
 
         &.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: var(--bg-hover);
+            color: $primary;
         }
 
         .material-icons {
@@ -293,35 +299,47 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .task-table {
     display: flex;
     flex-direction: column;
+    gap: 8px; /* Espace entre les lignes pour l'effet flottant */
+    padding: 10px;
 }
 
 .table-row {
     display: grid;
-    grid-template-columns: 40px 1fr 100px 100px 80px;
+    grid-template-columns: 40px 1fr 120px 120px 80px;
     align-items: center;
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    transition: all 0.2s;
+    padding: 14px 20px;
+    background: var(--bg-card-solid);
+    border-radius: 14px;
+    border: 1px solid var(--border-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
 
     &:not(.table-head):hover {
-        background: rgba(255, 255, 255, 0.03);
+        transform: scale(1.01) translateY(-2px);
+        background: var(--bg-card-solid);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba($primary, 0.3);
         cursor: pointer;
     }
 
     &.table-head {
-        background: rgba(0, 0, 0, 0.1);
-        font-size: 0.65rem;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 0.3);
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1.5px;
+        padding: 10px 20px;
     }
 }
 
 .task-check {
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--border-light);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -347,19 +365,19 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .task-title-text {
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 1); // Full white
+    color: var(--text-primary);
     letter-spacing: -0.01em;
 
     &.done {
-        opacity: 0.4;
+        opacity: 0.5;
         text-decoration: line-through;
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--text-muted);
     }
 }
 
 .task-desc {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-muted);
     margin-top: 2px;
 }
 
@@ -371,25 +389,25 @@ $glass-border: rgba(255, 255, 255, 0.08);
     text-transform: uppercase;
 
     &.high {
-        background: rgba($danger, 0.2);
-        color: #fda4af;
+        background: rgba($danger, 0.1);
+        color: $danger;
     }
 
     &.medium {
-        background: rgba($warning, 0.2);
-        color: #fcd34d;
+        background: rgba($warning, 0.1);
+        color: #d97706; // Ambre foncé pour lisibilité
     }
 
     &.low {
-        background: rgba($success, 0.2);
-        color: #6ee7b7;
+        background: rgba($success, 0.1);
+        color: #059669;
     }
 }
 
 .status-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -421,7 +439,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 .btn-delete {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s;
 
@@ -441,24 +459,24 @@ $glass-border: rgba(255, 255, 255, 0.08);
     justify-content: center;
     align-items: center;
     gap: 24px;
-    background: rgba(0, 0, 0, 0.1);
-    border-top: 1px solid $glass-border;
+    background: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid var(--border-light);
 
     .page-nav-btn {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid $glass-border;
+        background: var(--bg-hover);
+        border: 1px solid var(--border-light);
         width: 40px;
         height: 40px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--text-primary);
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--bg-card);
             transform: translateY(-2px);
             border-color: rgba($primary, 0.3);
         }
@@ -475,11 +493,11 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
     .page-info {
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted);
         font-weight: 500;
 
         strong {
-            color: white;
+            color: var(--text-primary);
             font-weight: 700;
             background: rgba($primary, 0.15);
             padding: 4px 10px;
@@ -498,10 +516,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
     align-items: center;
     justify-content: center;
     gap: 16px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.03);
     border-radius: 20px;
     margin: 20px;
-    border: 1px dashed rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--border-light);
 
     .material-icons {
         font-size: 64px;
@@ -516,15 +534,15 @@ $glass-border: rgba(255, 255, 255, 0.08);
     p {
         font-size: 1.1rem;
         font-weight: 600;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted);
         margin: 0;
     }
 
     .create-first-btn {
         margin-top: 10px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid $glass-border;
-        color: white;
+        background: var(--bg-card-solid);
+        border: 1px solid var(--border-light);
+        color: var(--text-primary);
         padding: 12px 24px;
         border-radius: 12px;
         font-size: 0.9rem;

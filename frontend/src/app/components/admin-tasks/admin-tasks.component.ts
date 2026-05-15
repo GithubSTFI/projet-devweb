@@ -111,45 +111,47 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
         </app-confirm-dialog>
     `,
     styles: [`
-        .admin-container { padding: 24px; animation: fadeIn 0.4s ease; }
-        .header-section { margin-bottom: 24px; }
-        .title-row { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
-        h1 { font-size: 1.5rem; color: white; margin: 0; }
-        .badge { background: rgba(99, 102, 241, 0.2); color: #818cf8; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
-        p { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin: 0; }
+        .admin-container { padding: 32px; animation: fadeIn 0.4s ease; max-width: 1300px; margin: 0 auto; }
+        .header-section { margin-bottom: 32px; }
+        .title-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+        h1 { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0; }
+        .badge { background: rgba(99, 102, 241, 0.1); color: #6366f1; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.2); }
+        p { color: var(--text-muted); font-size: 1rem; margin: 0; }
 
-        .filter-bar { display: flex; gap: 16px; margin-bottom: 20px; }
-        .search-box { flex: 1; display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 0 12px;
-            input { background: transparent; border: none; color: white; padding: 10px; width: 100%; outline: none; font-size: 0.85rem; }
-            .material-icons { color: rgba(255,255,255,0.2); font-size: 20px; }
+        .filter-bar { display: flex; gap: 20px; margin-bottom: 24px; }
+        .search-box { flex: 1; display: flex; align-items: center; background: var(--bg-card-solid); border: 1px solid var(--border-light); border-radius: 14px; padding: 0 16px; box-shadow: var(--shadow-sm); transition: all 0.2s;
+            &:focus-within { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+            input { background: transparent; border: none; color: var(--text-primary); padding: 12px; width: 100%; outline: none; font-size: 0.95rem; }
+            .material-icons { color: var(--text-muted); font-size: 22px; }
         }
-        .status-filters select { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px 16px; border-radius: 10px; outline: none; font-size: 0.85rem; cursor: pointer; }
+        .status-filters select { background: var(--bg-card-solid); border: 1px solid var(--border-light); color: var(--text-primary); padding: 12px 20px; border-radius: 14px; outline: none; font-size: 0.95rem; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.2s; &:focus { border-color: #6366f1; } }
 
-        .table-card { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; overflow: hidden; }
+        .table-card { background: var(--bg-card-solid); border: 1px solid var(--border-light); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); }
         .admin-table { width: 100%; border-collapse: collapse; }
-        th { padding: 16px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); letter-spacing: 1px; }
-        td { padding: 16px; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.85rem; }
+        th { padding: 18px 24px; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid var(--border-light); background: rgba(0,0,0,0.01); letter-spacing: 1.5px; }
+        td { padding: 18px 24px; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+        tr:hover:not(thead tr) { background: var(--bg-hover); }
 
-        .task-col { min-width: 250px; .task-info { display: flex; flex-direction: column; .title { font-weight: 600; color: white; } .date { font-size: 0.7rem; color: rgba(255,255,255,0.3); } } }
-        .user-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 10px; font-size: 0.8rem; .material-icons { font-size: 14px; opacity: 0.5; } }
-        .unassigned { color: rgba(255,255,255,0.2); }
+        .task-col { min-width: 250px; .task-info { display: flex; flex-direction: column; .title { font-weight: 700; color: var(--text-primary); margin-bottom: 2px; } .date { font-size: 0.75rem; color: var(--text-muted); } } }
+        .user-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-hover); padding: 6px 12px; border-radius: 10px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; .material-icons { font-size: 16px; color: var(--text-muted); } }
+        .unassigned { color: var(--text-muted); font-style: italic; opacity: 0.5; }
 
-        .badge-priority, .badge-status { padding: 3px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
-        .badge-priority.high { color: #f87171; background: rgba(248, 113, 113, 0.1); }
-        .badge-priority.medium { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
-        .badge-priority.low { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+        .badge-priority, .badge-status { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .badge-priority.high { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .badge-priority.medium { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .badge-priority.low { color: #10b981; background: rgba(16, 185, 129, 0.1); }
         
-        .badge-status.todo { border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24; }
-        .badge-status.in_progress { border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; }
-        .badge-status.done { border: 1px solid rgba(52, 211, 153, 0.3); color: #34d399; }
+        .badge-status.todo { background: var(--bg-hover); color: var(--text-muted); border: 1px solid var(--border-light); }
+        .badge-status.in_progress { background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.2); }
+        .badge-status.done { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
 
-        .actions { text-align: right; .btn-icon { background: transparent; border: none; color: rgba(239, 68, 68, 0.5); cursor: pointer; &:hover { color: #f87171; } } }
+        .actions { text-align: right; .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: all 0.2s; .material-icons { font-size: 22px; } &:hover { color: #ef4444; transform: scale(1.1); } } }
 
-        .pagination { padding: 16px; display: flex; justify-content: center; align-items: center; gap: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .pagination button { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; &:disabled { opacity: 0.3; cursor: not-allowed; } }
-        .pagination span { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+        .pagination { padding: 20px; display: flex; justify-content: center; align-items: center; gap: 24px; border-top: 1px solid var(--border-light); background: rgba(0,0,0,0.01); }
+        .pagination button { background: var(--bg-card-solid); border: 1px solid var(--border-light); color: var(--text-primary); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); transition: all 0.2s; &:hover:not(:disabled) { border-color: #6366f1; color: #6366f1; transform: translateY(-2px); } &:disabled { opacity: 0.3; cursor: not-allowed; } }
+        .pagination span { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); }
 
-        .empty-state { padding: 80px; text-align: center; color: rgba(255,255,255,0.15); .material-icons { font-size: 60px; margin-bottom: 20px; } }
+        .empty-state { padding: 100px; text-align: center; color: var(--text-muted); .material-icons { font-size: 72px; margin-bottom: 20px; opacity: 0.3; } p { font-size: 1.1rem; font-weight: 500; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     `]
 })

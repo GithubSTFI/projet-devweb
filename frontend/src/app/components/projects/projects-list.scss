@@ -1,11 +1,12 @@
 @use 'sass:color';
 
+/* VARIABLES */
+$bg-dark: var(--bg-main);
+$bg-card: var(--bg-card-solid);
+$text-main: var(--text-primary);
+$text-muted: var(--text-muted);
+$border: var(--border-light);
 $primary: #6366f1;
-$bg-dark: #0f172a;
-$bg-card: rgba(30, 41, 59, 0.6);
-$text-main: #f8fafc;
-$text-muted: #94a3b8;
-$border: rgba(255, 255, 255, 0.08);
 
 .projects-container {
     padding: 32px;
@@ -46,15 +47,17 @@ $border: rgba(255, 255, 255, 0.08);
 }
 
 .project-card {
-    background: $bg-card;
-    border: 1px solid $border;
+    background: var(--bg-card-gradient);
+    border: 1px solid var(--border-solid);
     border-radius: 24px;
-    padding: 24px;
+    padding: 28px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    backdrop-filter: blur(12px);
+    transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.02),
+        0 2px 4px -1px rgba(0, 0, 0, 0.01);
     transform-style: preserve-3d;
     perspective: 1000px;
 
@@ -70,9 +73,11 @@ $border: rgba(255, 255, 255, 0.08);
     }
 
     &:hover {
-        transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
-        border-color: rgba($primary, 0.3);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        transform: translateY(-8px) scale(1.02);
+        border-color: rgba($primary, 0.4);
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.05),
+            0 10px 10px -5px rgba(0, 0, 0, 0.02);
 
         &::after {
             opacity: 1;
@@ -107,16 +112,17 @@ $border: rgba(255, 255, 255, 0.08);
     z-index: 50;
 
     .project-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 800;
-        font-size: 1.2rem;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        font-size: 1.3rem;
+        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.5);
     }
 
     .menu-btn {
@@ -135,13 +141,11 @@ $border: rgba(255, 255, 255, 0.08);
             position: absolute;
             top: 100%;
             right: 0;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-light);
             border-radius: 16px;
             padding: 8px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
             z-index: 100;
             min-width: 180px;
             margin-top: 12px;
@@ -169,7 +173,7 @@ $border: rgba(255, 255, 255, 0.08);
                 }
 
                 &:hover {
-                    background: rgba(255, 255, 255, 0.08);
+                    background: var(--bg-hover);
                     transform: translateX(4px);
                     
                     .material-icons {
@@ -223,7 +227,7 @@ $border: rgba(255, 255, 255, 0.08);
     position: relative;
     z-index: 10;
     margin-bottom: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border-light);
 
     .members-preview {
         display: flex;
@@ -232,8 +236,8 @@ $border: rgba(255, 255, 255, 0.08);
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: #334155;
-            border: 2px solid #1e293b;
+            background: var(--bg-hover);
+            border: 2px solid var(--bg-card-solid);
             margin-left: -8px;
             display: flex;
             align-items: center;
@@ -282,13 +286,13 @@ $border: rgba(255, 255, 255, 0.08);
 }
 
 .modal-content {
-    background: #1e293b;
-    border: 1px solid $border;
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border-light);
     border-radius: 24px;
     width: 100%;
     max-width: 500px;
     padding: 32px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-lg);
 }
 
 .modal-header {
@@ -323,11 +327,11 @@ $border: rgba(255, 255, 255, 0.08);
     input,
     textarea {
         width: 100%;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid $border;
+        background: var(--bg-card-solid);
+        border: 1px solid var(--border-light);
         border-radius: 12px;
         padding: 12px;
-        color: white;
+        color: var(--text-primary);
         font-family: inherit;
 
         &:focus {
@@ -430,6 +434,7 @@ $border: rgba(255, 255, 255, 0.08);
 
         .material-icons {
             font-size: 80px;
+            color: var(--border-solid);
         }
     }
 

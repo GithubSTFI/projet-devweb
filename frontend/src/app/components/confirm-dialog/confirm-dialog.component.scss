@@ -17,16 +17,16 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .dialog-card {
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid $glass-border;
+    background: var(--bg-card-solid);
+    backdrop-filter: var(--glass-effect);
+    border: 1px solid var(--border-light);
     border-radius: 20px;
-    padding: 24px;
-    max-width: 400px;
+    padding: 32px;
+    max-width: 420px;
     width: 90%;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-lg);
     animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    color: white;
+    color: var(--text-primary);
 }
 
 .dialog-header {
@@ -37,9 +37,9 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
     h3 {
         margin: 0;
-        font-size: 1.15rem;
+        font-size: 1.25rem;
         font-weight: 800;
-        color: white;
+        color: var(--text-primary);
         letter-spacing: -0.5px;
     }
 }
@@ -51,10 +51,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .dialog-message {
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0 0 24px 0;
+    color: var(--text-secondary);
+    margin: 0 0 32px 0;
     line-height: 1.6;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .dialog-actions {
@@ -75,13 +75,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .btn-cancel {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
-    border-color: $glass-border;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    border-color: var(--border-light);
 
     &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
+        background: var(--bg-card);
+        color: var(--text-primary);
     }
 }
 
